@@ -5,53 +5,132 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Comparateur d'Assurance Vie</title>
   <style>
-    /* Styles de base inspirés d'un design moderne */
-    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f7f7f7; }
-    h1 { text-align: center; }
-    .filters { margin-bottom: 20px; text-align: center; }
-    .filters select, .filters input { margin: 0 10px; padding: 5px; }
-    table { width: 100%; border-collapse: collapse; background: #fff; }
-    th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
-    th { cursor: pointer; background-color: #f0f0f0; }
-    tr:nth-child(even) { background-color: #f9f9f9; }
+    /* Réinitialisation de quelques styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f2f4f8;
+      color: #333;
+      line-height: 1.6;
+    }
+    /* Header moderne */
+    .header {
+      background-color: #2b6cb0;
+      color: #fff;
+      padding: 20px 0;
+      text-align: center;
+      font-size: 2em;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    /* Conteneur principal centré */
+    .container {
+      max-width: 1200px;
+      margin: 30px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    /* Styles pour la section des filtres */
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    .filters label {
+      font-size: 1em;
+      margin-right: 5px;
+    }
+    .filters select, .filters input {
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1em;
+    }
+    /* Styles pour le tableau */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    table thead {
+      background-color: #f0f0f0;
+    }
+    table th, table td {
+      padding: 12px 15px;
+      text-align: left;
+    }
+    table th {
+      cursor: pointer;
+    }
+    table tbody tr {
+      border-bottom: 1px solid #eee;
+      transition: background-color 0.3s;
+    }
+    table tbody tr:hover {
+      background-color: #f9f9f9;
+    }
+    /* Adaptation pour les petits écrans */
+    @media (max-width: 768px) {
+      .filters {
+        flex-direction: column;
+        align-items: center;
+      }
+      table th, table td {
+        padding: 10px;
+      }
+    }
   </style>
 </head>
 <body>
-  <h1>Comparateur d'Assurance Vie</h1>
+  <!-- Header du site -->
+  <div class="header">Comparateur d'Assurance Vie</div>
   
-  <!-- Section des filtres -->
-  <div class="filters">
-    <label for="assureur">Assureur :</label>
-    <select id="assureur">
-      <option value="">Tous</option>
-      <!-- Les options seront générées dynamiquement -->
-    </select>
-    <!-- Vous pourrez ajouter d'autres filtres ici -->
+  <!-- Conteneur principal -->
+  <div class="container">
+    <!-- Section des filtres -->
+    <div class="filters">
+      <div>
+        <label for="assureur">Assureur :</label>
+        <select id="assureur">
+          <option value="">Tous</option>
+          <!-- Les options seront générées dynamiquement -->
+        </select>
+      </div>
+      <!-- Vous pouvez ajouter d'autres filtres ici, par exemple : année, nature du contrat, etc. -->
+    </div>
+    
+    <!-- Tableau d'affichage des contrats -->
+    <table id="contrats">
+      <thead>
+        <tr>
+          <th data-key="nom">Nom du contrat</th>
+          <th data-key="annee">Année de lancement</th>
+          <th data-key="assureur">Assureur</th>
+          <th data-key="distributeur">Distributeur</th>
+          <th data-key="nature">Nature du contrat</th>
+          <th data-key="versement">Versement initial</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Les données seront insérées ici -->
+      </tbody>
+    </table>
   </div>
   
-  <!-- Tableau d'affichage des contrats -->
-  <table id="contrats">
-    <thead>
-      <tr>
-        <th data-key="nom">Nom du contrat</th>
-        <th data-key="annee">Année de lancement</th>
-        <th data-key="assureur">Assureur</th>
-        <th data-key="distributeur">Distributeur</th>
-        <th data-key="nature">Nature du contrat</th>
-        <th data-key="versement">Versement initial</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Les données seront insérées ici -->
-    </tbody>
-  </table>
-  
   <script>
-    // Exemple de données statiques (à remplacer plus tard par vos données de Google Sheets)
+    // Exemple de données statiques à titre de démonstration
     const data = [
       { nom: "Contrat A", annee: 2015, assureur: "Assureur 1", distributeur: "Distributeur A", nature: "Type 1", versement: 1000 },
-      { nom: "Contrat B", annee: 2018, assureur: "Assureur 2", distributeur: "Distributeur B", nature: "Type 2", versement: 1500 }
-      // Ajoutez d'autres données si nécessaire
+      { nom: "Contrat B", annee: 2018, assureur: "Assureur 2", distributeur: "Distributeur B", nature: "Type 2", versement: 1500 },
+      { nom: "Contrat C", annee: 2020, assureur: "Assureur 1", distributeur: "Distributeur C", nature: "Type 1", versement: 2000 }
+      // Vous pouvez ajouter d'autres objets de données ici
     ];
     
     // Fonction pour afficher les données dans le tableau
@@ -72,7 +151,7 @@
       });
     }
     
-    // Fonction pour remplir le filtre "assureur"
+    // Fonction pour remplir le filtre "assureur" avec les valeurs uniques
     function remplirFiltreAssureur(donnees) {
       const select = document.getElementById("assureur");
       const assureurs = [...new Set(donnees.map(item => item.assureur))];
@@ -84,7 +163,7 @@
       });
     }
     
-    // Fonction pour filtrer les données
+    // Fonction de filtrage en fonction de la sélection dans le filtre "assureur"
     function filtrerDonnees() {
       const filtreAssureur = document.getElementById("assureur").value;
       let donneesFiltrees = data;
