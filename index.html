@@ -52,9 +52,9 @@
       </tbody>
     </table>
   </div>
-
-  <!-- Inclusion de Tabletop.js (version minifiée depuis cdnjs) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.5.1/tabletop.min.js"></script>
+  
+  <!-- Inclusion de PapaParse depuis cdnjs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <script>
     // Fonction pour afficher les données dans le tableau
     function afficherDonnees(donnees) {
@@ -74,7 +74,7 @@
       });
     }
     
-    // Fonction pour remplir le filtre "assureur"
+    // Fonction pour remplir le filtre "assureur" avec les valeurs uniques
     function remplirFiltreAssureur(donnees) {
       const select = document.getElementById("assureur");
       const assureurs = [...new Set(donnees.map(item => item.assureur))];
@@ -86,31 +86,39 @@
       });
     }
     
-    // Fonction pour filtrer les données en fonction du filtre "assureur"
+    // Fonction pour filtrer les données selon le filtre "assureur"
     function filtrerDonnees(donnees) {
       const filtreAssureur = document.getElementById("assureur").value;
       const donneesFiltrees = filtreAssureur 
-                                ? donnees.filter(item => item.assureur === filtreAssureur) 
+                                ? donnees.filter(item => item.assureur === filtreAssureur)
                                 : donnees;
       afficherDonnees(donneesFiltrees);
     }
     
     function init() {
-      // Utilisez la clé extraite de votre URL de publication
-      const spreadsheetKey = '2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI';
+      // URL de votre Google Sheet publiée au format CSV
+      const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?output=csv';
       
-      Tabletop.init({
-        key: spreadsheetKey,
-        callback: function(data, tabletop) {
-          console.log("Données chargées :", data);
-          afficherDonnees(data);
-          remplirFiltreAssureur(data);
-          document.getElementById("assureur").addEventListener("change", () => filtrerDonnees(data));
+      Papa.parse(csvUrl, {
+        download: true,
+        header: true,
+        complete: function(results) {
+          console.log("Données chargées :", results.data);
+          afficherDonnees(results.data);
+          remplirFiltreAssureur(results.data);
+          document.getElementById("assureur").addEventListener("change", () => filtrerDonnees(results.data));
         },
-        simpleSheet: true
+        error: function(err) {
+          console.error("Erreur lors du chargement du CSV :", err);
+        }
       });
     }
     
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
+
     window.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
