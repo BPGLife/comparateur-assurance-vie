@@ -5,108 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Comparateur d'Assurance Vie</title>
   <style>
-    /* Réinitialisation de quelques styles */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f2f4f8;
-      color: #333;
-      line-height: 1.6;
-    }
-    /* Header moderne */
-    .header {
-      background-color: #2b6cb0;
-      color: #fff;
-      padding: 20px 0;
-      text-align: center;
-      font-size: 2em;
-      font-weight: bold;
-      letter-spacing: 1px;
-    }
-    /* Conteneur principal centré */
-    .container {
-      max-width: 1200px;
-      margin: 30px auto;
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    /* Styles pour la section des filtres */
-    .filters {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 15px;
-      margin-bottom: 30px;
-    }
-    .filters label {
-      font-size: 1em;
-      margin-right: 5px;
-    }
-    .filters select, .filters input {
-      padding: 8px 12px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 1em;
-    }
-    /* Styles pour le tableau */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    table thead {
-      background-color: #f0f0f0;
-    }
-    table th, table td {
-      padding: 12px 15px;
-      text-align: left;
-    }
-    table th {
-      cursor: pointer;
-    }
-    table tbody tr {
-      border-bottom: 1px solid #eee;
-      transition: background-color 0.3s;
-    }
-    table tbody tr:hover {
-      background-color: #f9f9f9;
-    }
-    /* Adaptation pour les petits écrans */
+    /* Réinitialisation */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f2f4f8; color: #333; line-height: 1.6; }
+    .header { background-color: #2b6cb0; color: #fff; padding: 20px 0; text-align: center; font-size: 2em; font-weight: bold; letter-spacing: 1px; }
+    .container { max-width: 1200px; margin: 30px auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    .filters { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-bottom: 30px; }
+    .filters label { font-size: 1em; margin-right: 5px; }
+    .filters select, .filters input { padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 1em; }
+    table { width: 100%; border-collapse: collapse; }
+    table thead { background-color: #f0f0f0; }
+    table th, table td { padding: 12px 15px; text-align: left; }
+    table th { cursor: pointer; }
+    table tbody tr { border-bottom: 1px solid #eee; transition: background-color 0.3s; }
+    table tbody tr:hover { background-color: #f9f9f9; }
     @media (max-width: 768px) {
-      .filters {
-        flex-direction: column;
-        align-items: center;
-      }
-      table th, table td {
-        padding: 10px;
-      }
+      .filters { flex-direction: column; align-items: center; }
+      table th, table td { padding: 10px; }
     }
   </style>
 </head>
 <body>
-  <!-- Header du site -->
   <div class="header">Comparateur d'Assurance Vie</div>
-  
-  <!-- Conteneur principal -->
   <div class="container">
-    <!-- Section des filtres -->
     <div class="filters">
       <div>
         <label for="assureur">Assureur :</label>
         <select id="assureur">
           <option value="">Tous</option>
-          <!-- Les options seront générées dynamiquement -->
         </select>
       </div>
-      <!-- Vous pouvez ajouter d'autres filtres ici -->
     </div>
-    
-    <!-- Tableau d'affichage des contrats -->
     <table id="contrats">
       <thead>
         <tr>
@@ -123,12 +52,11 @@
       </tbody>
     </table>
   </div>
-  
-  <!-- Inclusion de Tabletop.js depuis un CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/tabletop@1.5.1/src/tabletop.js"></script>
-  
+
+  <!-- Utilisation de la version minifiée de Tabletop.js depuis cdnjs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.5.1/tabletop.min.js"></script>
   <script>
-    // Fonction pour afficher les données dans le tableau
+    // Affiche les données dans le tableau
     function afficherDonnees(donnees) {
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
@@ -146,10 +74,9 @@
       });
     }
     
-    // Fonction pour remplir le filtre "assureur" avec les valeurs uniques
+    // Remplit le filtre "assureur" avec les valeurs uniques
     function remplirFiltreAssureur(donnees) {
       const select = document.getElementById("assureur");
-      // Récupérer les assureurs uniques depuis les données
       const assureurs = [...new Set(donnees.map(item => item.assureur))];
       assureurs.forEach(assureur => {
         const option = document.createElement("option");
@@ -159,33 +86,33 @@
       });
     }
     
-    // Fonction de filtrage en fonction du filtre "assureur"
+    // Filtre les données en fonction du choix dans le filtre "assureur"
     function filtrerDonnees(donnees) {
       const filtreAssureur = document.getElementById("assureur").value;
-      let donneesFiltrees = donnees;
-      if (filtreAssureur) {
-        donneesFiltrees = donneesFiltrees.filter(item => item.assureur === filtreAssureur);
-      }
+      const donneesFiltrees = filtreAssureur ? donnees.filter(item => item.assureur === filtreAssureur) : donnees;
       afficherDonnees(donneesFiltrees);
     }
     
-    // Fonction d'initialisation qui charge les données depuis votre Google Sheet via Tabletop.js
     function init() {
+      // Vous pouvez essayer de simplifier l'URL en retirant les paramètres après "pubhtml"
+      const publicSpreadsheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pubhtml';
+      
       Tabletop.init({
-        key: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pubhtml?gid=1832506958&single=true',
+        key: publicSpreadsheetUrl,
         callback: function(data, tabletop) {
           console.log("Données chargées :", data);
           afficherDonnees(data);
           remplirFiltreAssureur(data);
-          // Écouter le changement du filtre "assureur"
           document.getElementById("assureur").addEventListener("change", () => filtrerDonnees(data));
         },
-        simpleSheet: true
+        simpleSheet: true,
+        // Ajoutez éventuellement 'parseNumbers: true' si vous souhaitez convertir les nombres
+        // parseNumbers: true
       });
     }
     
-    // Démarrer l'initialisation une fois que la page est chargée
     window.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>
+
