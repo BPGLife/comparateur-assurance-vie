@@ -53,10 +53,10 @@
     </table>
   </div>
 
-  <!-- Utilisation de la version minifiée de Tabletop.js depuis cdnjs -->
+  <!-- Inclusion de Tabletop.js (version minifiée depuis cdnjs) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.5.1/tabletop.min.js"></script>
   <script>
-    // Affiche les données dans le tableau
+    // Fonction pour afficher les données dans le tableau
     function afficherDonnees(donnees) {
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
@@ -74,7 +74,7 @@
       });
     }
     
-    // Remplit le filtre "assureur" avec les valeurs uniques
+    // Fonction pour remplir le filtre "assureur"
     function remplirFiltreAssureur(donnees) {
       const select = document.getElementById("assureur");
       const assureurs = [...new Set(donnees.map(item => item.assureur))];
@@ -86,28 +86,28 @@
       });
     }
     
-    // Filtre les données en fonction du choix dans le filtre "assureur"
+    // Fonction pour filtrer les données en fonction du filtre "assureur"
     function filtrerDonnees(donnees) {
       const filtreAssureur = document.getElementById("assureur").value;
-      const donneesFiltrees = filtreAssureur ? donnees.filter(item => item.assureur === filtreAssureur) : donnees;
+      const donneesFiltrees = filtreAssureur 
+                                ? donnees.filter(item => item.assureur === filtreAssureur) 
+                                : donnees;
       afficherDonnees(donneesFiltrees);
     }
     
     function init() {
-      // Vous pouvez essayer de simplifier l'URL en retirant les paramètres après "pubhtml"
-      const publicSpreadsheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pubhtml';
+      // Utilisez la clé extraite de votre URL de publication
+      const spreadsheetKey = '2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI';
       
       Tabletop.init({
-        key: publicSpreadsheetUrl,
+        key: spreadsheetKey,
         callback: function(data, tabletop) {
           console.log("Données chargées :", data);
           afficherDonnees(data);
           remplirFiltreAssureur(data);
           document.getElementById("assureur").addEventListener("change", () => filtrerDonnees(data));
         },
-        simpleSheet: true,
-        // Ajoutez éventuellement 'parseNumbers: true' si vous souhaitez convertir les nombres
-        // parseNumbers: true
+        simpleSheet: true
       });
     }
     
@@ -115,4 +115,3 @@
   </script>
 </body>
 </html>
-
