@@ -103,7 +103,7 @@
           <!-- Les options seront générées dynamiquement -->
         </select>
       </div>
-      <!-- Vous pouvez ajouter d'autres filtres ici, par exemple : année, nature du contrat, etc. -->
+      <!-- Vous pouvez ajouter d'autres filtres ici -->
     </div>
     
     <!-- Tableau d'affichage des contrats -->
@@ -124,15 +124,10 @@
     </table>
   </div>
   
+  <!-- Inclusion de Tabletop.js depuis un CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/tabletop@1.5.1/src/tabletop.js"></script>
+  
   <script>
-    // Exemple de données statiques à titre de démonstration
-    const data = [
-      { nom: "Contrat A", annee: 2015, assureur: "Assureur 1", distributeur: "Distributeur A", nature: "Type 1", versement: 1000 },
-      { nom: "Contrat B", annee: 2018, assureur: "Assureur 2", distributeur: "Distributeur B", nature: "Type 2", versement: 1500 },
-      { nom: "Contrat C", annee: 2020, assureur: "Assureur 1", distributeur: "Distributeur C", nature: "Type 1", versement: 2000 }
-      // Vous pouvez ajouter d'autres objets de données ici
-    ];
-    
     // Fonction pour afficher les données dans le tableau
     function afficherDonnees(donnees) {
       const tbody = document.querySelector("#contrats tbody");
@@ -154,6 +149,7 @@
     // Fonction pour remplir le filtre "assureur" avec les valeurs uniques
     function remplirFiltreAssureur(donnees) {
       const select = document.getElementById("assureur");
+      // Récupérer les assureurs uniques depuis les données
       const assureurs = [...new Set(donnees.map(item => item.assureur))];
       assureurs.forEach(assureur => {
         const option = document.createElement("option");
@@ -163,22 +159,33 @@
       });
     }
     
-    // Fonction de filtrage en fonction de la sélection dans le filtre "assureur"
-    function filtrerDonnees() {
+    // Fonction de filtrage en fonction du filtre "assureur"
+    function filtrerDonnees(donnees) {
       const filtreAssureur = document.getElementById("assureur").value;
-      let donneesFiltrees = data;
+      let donneesFiltrees = donnees;
       if (filtreAssureur) {
         donneesFiltrees = donneesFiltrees.filter(item => item.assureur === filtreAssureur);
       }
       afficherDonnees(donneesFiltrees);
     }
     
-    // Initialisation au chargement de la page
-    document.addEventListener("DOMContentLoaded", () => {
-      remplirFiltreAssureur(data);
-      afficherDonnees(data);
-      document.getElementById("assureur").addEventListener("change", filtrerDonnees);
-    });
+    // Fonction d'initialisation qui charge les données depuis votre Google Sheet via Tabletop.js
+    function init() {
+      Tabletop.init({
+        key: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pubhtml?gid=1832506958&single=true',
+        callback: function(data, tabletop) {
+          console.log("Données chargées :", data);
+          afficherDonnees(data);
+          remplirFiltreAssureur(data);
+          // Écouter le changement du filtre "assureur"
+          document.getElementById("assureur").addEventListener("change", () => filtrerDonnees(data));
+        },
+        simpleSheet: true
+      });
+    }
+    
+    // Démarrer l'initialisation une fois que la page est chargée
+    window.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>
