@@ -134,7 +134,7 @@
   <!-- Inclusion de PapaParse depuis cdnjs -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <script>
-    // Affiche les données dans le tableau HTML (sans la colonne "gestion pilotée")
+    // Fonction pour afficher les données dans le tableau (sans la colonne "gestion pilotée")
     function afficherDonnees(donnees) {
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
@@ -186,10 +186,11 @@
 
       const donneesFiltrees = donnees.filter(item => {
         let versement = parseFloat(item.versement) || 0;
-        // Si la case "Gestion pilotée" est cochée, ne garder que les lignes dont la colonne correspondante contient "gestion pilotée"
+        // Filtrer selon la case "Gestion pilotée" si cochée
         let gestionCondition = true;
         if (gestionChecked) {
-          gestionCondition = item["gestion pilotée"] && item["gestion pilotée"].toLowerCase().trim() === "gestion pilotée";
+          gestionCondition = item["gestion pilotée"] &&
+                             item["gestion pilotée"].toLowerCase().trim() === "gestion pilotée";
         }
 
         return (
@@ -217,17 +218,17 @@
           remplirFiltreAssureur(data);
           remplirFiltreDistributeur(data);
 
-          // Définir la plage du curseur selon les versements
+          // Définir la plage du curseur selon les valeurs de versement
           const versements = data.map(item => parseFloat(item.versement) || 0);
           const minVersement = Math.min(...versements);
-          const maxVersement = Math.max(...versements);
+          const maxVersementData = Math.max(...versements);
           const slider = document.getElementById("versement");
           slider.min = minVersement;
-          slider.max = maxVersement;
-          slider.value = maxVersement;
-          document.getElementById("versementValue").textContent = maxVersement;
+          slider.max = maxVersementData;
+          slider.value = maxVersementData; // Affiche tous les contrats par défaut
+          document.getElementById("versementValue").textContent = maxVersementData;
 
-          // Ajout d'écouteurs d'événements pour chaque filtre
+          // Écouteurs d'événements pour chaque filtre
           document.getElementById("assureur").addEventListener("change", () => filtrerDonnees(data));
           document.getElementById("distributeur").addEventListener("change", () => filtrerDonnees(data));
           document.getElementById("nom").addEventListener("input", () => filtrerDonnees(data));
