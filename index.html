@@ -50,7 +50,7 @@
       border-radius: 4px;
       font-size: 1em;
     }
-    /* Style pour la case à cocher */
+    /* Style pour les cases à cocher */
     .filters input[type="checkbox"] {
       transform: scale(1.2);
       margin-right: 5px;
@@ -106,14 +106,34 @@
         <input type="range" id="versement" value="0" step="100">
         <span id="versementValue"></span>
       </div>
-      <!-- Case à cocher pour Gestion pilotée -->
+      <!-- Cases à cocher pour les colonnes supplémentaires -->
       <div>
-        <input type="checkbox" id="gestion">
-        <label for="gestion">Gestion pilotée</label>
+        <input type="checkbox" id="versements_programmes" class="checkbox-filter" data-column="Versements programmés" data-value="Versements programmés">
+        <label for="versements_programmes">Versements programmés</label>
+      </div>
+      <div>
+        <input type="checkbox" id="securisation" class="checkbox-filter" data-column="Sécurisation des plus-values" data-value="Sécurisation des plus-values">
+        <label for="securisation">Sécurisation des plus-values</label>
+      </div>
+      <div>
+        <input type="checkbox" id="dynamisation" class="checkbox-filter" data-column="Dynamisation des plus-values" data-value="Dynamisation des plus-values">
+        <label for="dynamisation">Dynamisation des plus-values</label>
+      </div>
+      <div>
+        <input type="checkbox" id="investissement" class="checkbox-filter" data-column="Investissement progressif" data-value="Investissement progressif">
+        <label for="investissement">Investissement progressif</label>
+      </div>
+      <div>
+        <input type="checkbox" id="stoploss" class="checkbox-filter" data-column="Stop/Loss" data-value="Stop/Loss">
+        <label for="stoploss">Stop/Loss</label>
+      </div>
+      <div>
+        <input type="checkbox" id="reequilibrage" class="checkbox-filter" data-column="Réequilibrage auitomatique" data-value="Réequilibrage auitomatique">
+        <label for="reequilibrage">Réequilibrage auitomatique</label>
       </div>
     </div>
 
-    <!-- Tableau d'affichage -->
+    <!-- Tableau d'affichage (colonnes de filtrage non affichées) -->
     <table id="contrats">
       <thead>
         <tr>
@@ -134,7 +154,7 @@
   <!-- Inclusion de PapaParse depuis cdnjs -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <script>
-    // Fonction pour afficher les données dans le tableau (sans la colonne "gestion pilotée")
+    // Fonction pour afficher les données dans le tableau (on n'affiche que les colonnes principales)
     function afficherDonnees(donnees) {
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
@@ -182,23 +202,28 @@
       const filtreDistributeur = document.getElementById("distributeur").value;
       const filtreNom = document.getElementById("nom").value.toLowerCase();
       const maxVersement = parseFloat(document.getElementById("versement").value);
-      const gestionChecked = document.getElementById("gestion").checked;
 
+      // Vérification des cases à cocher (colonnes supplémentaires)
+      const checkboxes = document.querySelectorAll(".checkbox-filter");
+      
       const donneesFiltrees = donnees.filter(item => {
         let versement = parseFloat(item.versement) || 0;
-        // Filtrer selon la case "Gestion pilotée" si cochée
-        let gestionCondition = true;
-        if (gestionChecked) {
-          gestionCondition = item["gestion pilotée"] &&
-                             item["gestion pilotée"].toLowerCase().trim() === "gestion pilotée";
-        }
-
+        let conditionsCheckbox = true;
+        checkboxes.forEach(checkbox => {
+          if (checkbox.checked) {
+            const col = checkbox.dataset.column;
+            const val = checkbox.dataset.value;
+            // Vérifie que la valeur dans la colonne correspond exactement (en minuscules et épurée)
+            conditionsCheckbox = conditionsCheckbox &&
+              (item[col] && item[col].toLowerCase().trim() === val.toLowerCase().trim());
+          }
+        });
         return (
           (filtreAssureur === "" || item.assureur === filtreAssureur) &&
           (filtreDistributeur === "" || item.distributeur === filtreDistributeur) &&
           (filtreNom === "" || item.nom.toLowerCase().includes(filtreNom)) &&
           (isNaN(maxVersement) || versement <= maxVersement) &&
-          gestionCondition
+          conditionsCheckbox
         );
       });
       afficherDonnees(donneesFiltrees);
@@ -225,10 +250,10 @@
           const slider = document.getElementById("versement");
           slider.min = minVersement;
           slider.max = maxVersementData;
-          slider.value = maxVersementData; // Affiche tous les contrats par défaut
+          slider.value = maxVersementData; // Par défaut, afficher tous les contrats
           document.getElementById("versementValue").textContent = maxVersementData;
 
-          // Écouteurs d'événements pour chaque filtre
+          // Ajout d'écouteurs d'événements pour chaque filtre
           document.getElementById("assureur").addEventListener("change", () => filtrerDonnees(data));
           document.getElementById("distributeur").addEventListener("change", () => filtrerDonnees(data));
           document.getElementById("nom").addEventListener("input", () => filtrerDonnees(data));
@@ -236,7 +261,10 @@
             document.getElementById("versementValue").textContent = this.value;
             filtrerDonnees(data);
           });
-          document.getElementById("gestion").addEventListener("change", () => filtrerDonnees(data));
+          const checkboxFilters = document.querySelectorAll(".checkbox-filter");
+          checkboxFilters.forEach(checkbox => {
+            checkbox.addEventListener("change", () => filtrerDonnees(data));
+          });
         },
         error: function(err) {
           console.error("Erreur lors du chargement du CSV :", err);
@@ -244,7 +272,7 @@
       });
     }
 
-    window.addEventListener('DOMContentLoaded', init);
+    window.addEventListener("DOMContentLoaded", init);
   </script>
 </body>
 </html>
