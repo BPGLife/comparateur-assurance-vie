@@ -70,9 +70,71 @@
       transition: background-color 0.3s;
     }
     table tbody tr:hover { background-color: #f9f9f9; }
+    /* Style pour le bouton d'action */
+    .btn-performance {
+      background-color: #2b6cb0;
+      color: #fff;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+    .btn-performance:hover {
+      background-color: #234a7d;
+    }
     @media (max-width: 768px) {
       .filters { flex-direction: column; align-items: center; }
       table th, table td { padding: 10px; }
+    }
+    /* Styles pour le modal */
+    .modal {
+      display: none; /* caché par défaut */
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.5);
+    }
+    .modal-content {
+      background-color: #fff;
+      margin: 5% auto;
+      padding: 20px;
+      border-radius: 8px;
+      width: 95%;
+      max-width: 900px;
+      position: relative;
+    }
+    .modal-close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 1.5em;
+      cursor: pointer;
+      color: #888;
+    }
+    .profile-section {
+      margin-bottom: 40px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 20px;
+    }
+    .profile-section:last-child {
+      border-bottom: none;
+    }
+    .charts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: space-around;
+    }
+    .charts canvas {
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 10px;
     }
   </style>
 </head>
@@ -137,16 +199,17 @@
       </div>
     </div>
 
-    <!-- Tableau d'affichage (seules les colonnes principales sont affichées) -->
+    <!-- Tableau d'affichage (colonnes principales) -->
     <table id="contrats">
       <thead>
         <tr>
           <th data-key="nom">Nom du contrat</th>
-          <th data-key="annee">Année de lancement</th>
+          <th data-key="annee">Année</th>
           <th data-key="assureur">Assureur</th>
           <th data-key="distributeur">Distributeur</th>
-          <th data-key="nature">Nature du contrat</th>
+          <th data-key="nature">Nature</th>
           <th data-key="versement">Versement initial</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -155,10 +218,22 @@
     </table>
   </div>
 
-  <!-- Inclusion de PapaParse depuis cdnjs -->
+  <!-- Modal pour le focus performance -->
+  <div id="performanceModal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close" id="modalClose">&times;</span>
+      <h2 id="modalTitle">Performances de la gestion pilotée</h2>
+      <!-- Container pour les sections de profils -->
+      <div id="profileChartsContainer"></div>
+    </div>
+  </div>
+
+  <!-- Inclusion de PapaParse et Chart.js depuis CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // Affiche les données dans le tableau (seules les colonnes principales)
+    // Variables globales pour le comparateur (charts du modal seront créés dynamiquement)
+    // Fonction pour afficher les données dans le tableau principal
     function afficherDonnees(donnees) {
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
@@ -171,6 +246,11 @@
           <td>${item.distributeur}</td>
           <td>${item.nature}</td>
           <td>${item.versement}</td>
+          <td>${
+            (item["Gestion pilotée"] && item["Gestion pilotée"].toLowerCase().trim() === "gestion pilotée")
+              ? `<button class="btn-performance" onclick='viewPerformance(${JSON.stringify(item)})'>Accéder aux performances de la gestion pilotée</button>`
+              : ''
+          }</td>
         `;
         tbody.appendChild(tr);
       });
@@ -206,9 +286,8 @@
       const filtreDistributeur = document.getElementById("distributeur").value;
       const filtreNom = document.getElementById("nom").value.toLowerCase();
       const maxVersement = parseFloat(document.getElementById("versement").value);
-
       const checkboxes = document.querySelectorAll(".checkbox-filter");
-      
+
       const donneesFiltrees = donnees.filter(item => {
         let versement = parseFloat(item.versement) || 0;
         let conditionsCheckbox = true;
@@ -231,8 +310,125 @@
       afficherDonnees(donneesFiltrees);
     }
 
+    // Fonction pour ouvrir le modal et afficher les graphiques de performances pour tous les profils du contrat
+    function viewPerformance(contract) {
+      // Ouvre le modal
+      const modal = document.getElementById("performanceModal");
+      modal.style.display = "block";
+      document.getElementById("modalTitle").textContent = `Performances de ${contract.nom}`;
+
+      // Vider le container de profils
+      const chartsContainer = document.getElementById("profileChartsContainer");
+      chartsContainer.innerHTML = "";
+
+      // URL du second onglet contenant les données de performance
+      // Remplacez "PERFORMANCE_GID" par le véritable gid de l'onglet performance.
+      const performanceCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?output=csv&gid=PERFORMANCE_GID';
+
+      Papa.parse(performanceCsvUrl, {
+        download: true,
+        header: true,
+        complete: function(results) {
+          const perfData = results.data;
+          // Filtrer les lignes correspondant au contrat (en se basant sur "Nom du contrat")
+          const contractPerfRows = perfData.filter(row => row["Nom du contrat"] === contract.nom);
+
+          if (contractPerfRows.length === 0) {
+            chartsContainer.innerHTML = "<p>Aucune donnée de performance trouvée pour ce contrat.</p>";
+            return;
+          }
+
+          // Pour chaque profil du contrat, créer une section avec ses graphiques
+          contractPerfRows.forEach((profileRow, index) => {
+            // Créer un container pour le profil
+            const profileDiv = document.createElement("div");
+            profileDiv.className = "profile-section";
+            profileDiv.innerHTML = `<h3>Profil : ${profileRow["Profil"] || "Non défini"}</h3>`;
+
+            // Créer deux canvases pour le camembert et le graphique en barres
+            const pieCanvas = document.createElement("canvas");
+            pieCanvas.id = `pieChart_${index}`;
+            pieCanvas.width = 300;
+            pieCanvas.height = 300;
+
+            const barCanvas = document.createElement("canvas");
+            barCanvas.id = `barChart_${index}`;
+            barCanvas.width = 300;
+            barCanvas.height = 300;
+
+            // Ajouter les canvases au container du profil
+            const chartsDiv = document.createElement("div");
+            chartsDiv.className = "charts";
+            chartsDiv.appendChild(pieCanvas);
+            chartsDiv.appendChild(barCanvas);
+            profileDiv.appendChild(chartsDiv);
+            chartsContainer.appendChild(profileDiv);
+
+            // Récupérer les données pour le camembert (répartition UC / Fonds en euros)
+            const partUC = profileRow.part_uc ? parseFloat(profileRow.part_uc) : 50;
+            const partFonds = profileRow.part_fonds ? parseFloat(profileRow.part_fonds) : (100 - partUC);
+
+            new Chart(pieCanvas.getContext("2d"), {
+              type: 'pie',
+              data: {
+                labels: ['UC', 'Fonds en euros'],
+                datasets: [{
+                  data: [partUC, partFonds],
+                  backgroundColor: ['#36A2EB', '#FFCE56']
+                }]
+              },
+              options: {
+                responsive: true
+              }
+            });
+
+            // Récupérer les données pour le graphique en barres (performances sur 1, 3, 5 ans)
+            const perf1 = profileRow.perf_1 ? parseFloat(profileRow.perf_1) : 5;
+            const perf3 = profileRow.perf_3 ? parseFloat(profileRow.perf_3) : 10;
+            const perf5 = profileRow.perf_5 ? parseFloat(profileRow.perf_5) : 15;
+
+            new Chart(barCanvas.getContext("2d"), {
+              type: 'bar',
+              data: {
+                labels: ['1 an', '3 ans', '5 ans'],
+                datasets: [{
+                  label: 'Performance (%)',
+                  data: [perf1, perf3, perf5],
+                  backgroundColor: '#4BC0C0'
+                }]
+              },
+              options: {
+                responsive: true,
+                scales: {
+                  y: {
+                    beginAtZero: true
+                  }
+                }
+              }
+            });
+          });
+        },
+        error: function(err) {
+          console.error("Erreur lors du chargement du CSV de performance :", err);
+        }
+      });
+    }
+
+    // Gestion de la fermeture du modal
+    document.getElementById("modalClose").addEventListener("click", function() {
+      document.getElementById("performanceModal").style.display = "none";
+    });
+    // Fermer le modal si l'utilisateur clique en dehors du contenu
+    window.addEventListener("click", function(event) {
+      const modal = document.getElementById("performanceModal");
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
+    });
+
+    // Fonction d'initialisation : chargement du CSV principal et configuration des filtres
     function init() {
-      // URL de votre Google Sheet publiée au format CSV
+      // URL du CSV du premier onglet (comparateur principal)
       const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?output=csv';
 
       Papa.parse(csvUrl, {
