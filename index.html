@@ -5,19 +5,65 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Comparateur d'Assurance Vie</title>
   <style>
-    /* Réinitialisation */
+    /* Réinitialisation et styles de base */
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f2f4f8; color: #333; line-height: 1.6; }
-    .header { background-color: #2b6cb0; color: #fff; padding: 20px 0; text-align: center; font-size: 2em; font-weight: bold; letter-spacing: 1px; }
-    .container { max-width: 1200px; margin: 30px auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-    .filters { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-bottom: 30px; }
-    .filters label { font-size: 1em; margin-right: 5px; }
-    .filters select, .filters input { padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 1em; }
-    table { width: 100%; border-collapse: collapse; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f2f4f8;
+      color: #333;
+      line-height: 1.6;
+    }
+    .header {
+      background-color: #2b6cb0;
+      color: #fff;
+      padding: 20px 0;
+      text-align: center;
+      font-size: 2em;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 30px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    .filters > div { margin: 5px; }
+    .filters label {
+      font-size: 1em;
+      margin-right: 5px;
+    }
+    .filters select,
+    .filters input[type="text"],
+    .filters input[type="range"] {
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1em;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
     table thead { background-color: #f0f0f0; }
-    table th, table td { padding: 12px 15px; text-align: left; }
+    table th, table td {
+      padding: 12px 15px;
+      text-align: left;
+    }
     table th { cursor: pointer; }
-    table tbody tr { border-bottom: 1px solid #eee; transition: background-color 0.3s; }
+    table tbody tr {
+      border-bottom: 1px solid #eee;
+      transition: background-color 0.3s;
+    }
     table tbody tr:hover { background-color: #f9f9f9; }
     @media (max-width: 768px) {
       .filters { flex-direction: column; align-items: center; }
@@ -28,14 +74,36 @@
 <body>
   <div class="header">Comparateur d'Assurance Vie</div>
   <div class="container">
+    <!-- Section des filtres -->
     <div class="filters">
+      <!-- Filtre pour l'assureur -->
       <div>
         <label for="assureur">Assureur :</label>
         <select id="assureur">
           <option value="">Tous</option>
         </select>
       </div>
+      <!-- Filtre pour le distributeur -->
+      <div>
+        <label for="distributeur">Distributeur :</label>
+        <select id="distributeur">
+          <option value="">Tous</option>
+        </select>
+      </div>
+      <!-- Recherche sur le nom du contrat -->
+      <div>
+        <label for="nom">Nom du contrat :</label>
+        <input type="text" id="nom" placeholder="Rechercher un contrat">
+      </div>
+      <!-- Curseur sur le versement initial -->
+      <div>
+        <label for="versement">Versement initial (max) :</label>
+        <input type="range" id="versement" value="0" step="100">
+        <span id="versementValue"></span>
+      </div>
     </div>
+
+    <!-- Tableau d'affichage -->
     <table id="contrats">
       <thead>
         <tr>
@@ -52,11 +120,11 @@
       </tbody>
     </table>
   </div>
-  
+
   <!-- Inclusion de PapaParse depuis cdnjs -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <script>
-    // Fonction pour afficher les données dans le tableau
+    // Affiche les données dans le tableau HTML
     function afficherDonnees(donnees) {
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
@@ -73,8 +141,8 @@
         tbody.appendChild(tr);
       });
     }
-    
-    // Fonction pour remplir le filtre "assureur" avec les valeurs uniques
+
+    // Remplit le menu déroulant pour les assureurs
     function remplirFiltreAssureur(donnees) {
       const select = document.getElementById("assureur");
       const assureurs = [...new Set(donnees.map(item => item.assureur))];
@@ -85,39 +153,76 @@
         select.appendChild(option);
       });
     }
-    
-    // Fonction pour filtrer les données selon le filtre "assureur"
+
+    // Remplit le menu déroulant pour les distributeurs
+    function remplirFiltreDistributeur(donnees) {
+      const select = document.getElementById("distributeur");
+      const distributeurs = [...new Set(donnees.map(item => item.distributeur))];
+      distributeurs.forEach(distributeur => {
+        const option = document.createElement("option");
+        option.value = distributeur;
+        option.textContent = distributeur;
+        select.appendChild(option);
+      });
+    }
+
+    // Fonction de filtrage combiné pour tous les filtres
     function filtrerDonnees(donnees) {
       const filtreAssureur = document.getElementById("assureur").value;
-      const donneesFiltrees = filtreAssureur 
-                                ? donnees.filter(item => item.assureur === filtreAssureur)
-                                : donnees;
+      const filtreDistributeur = document.getElementById("distributeur").value;
+      const filtreNom = document.getElementById("nom").value.toLowerCase();
+      const maxVersement = parseFloat(document.getElementById("versement").value);
+
+      const donneesFiltrees = donnees.filter(item => {
+        let versement = parseFloat(item.versement) || 0;
+        return (
+          (filtreAssureur === "" || item.assureur === filtreAssureur) &&
+          (filtreDistributeur === "" || item.distributeur === filtreDistributeur) &&
+          (filtreNom === "" || item.nom.toLowerCase().includes(filtreNom)) &&
+          (isNaN(maxVersement) || versement <= maxVersement)
+        );
+      });
       afficherDonnees(donneesFiltrees);
     }
-    
+
     function init() {
       // URL de votre Google Sheet publiée au format CSV
       const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?output=csv';
-      
+
       Papa.parse(csvUrl, {
         download: true,
         header: true,
         complete: function(results) {
-          console.log("Données chargées :", results.data);
-          afficherDonnees(results.data);
-          remplirFiltreAssureur(results.data);
-          document.getElementById("assureur").addEventListener("change", () => filtrerDonnees(results.data));
+          const data = results.data;
+          console.log("Données chargées :", data);
+          afficherDonnees(data);
+          remplirFiltreAssureur(data);
+          remplirFiltreDistributeur(data);
+
+          // Définir la plage du curseur en fonction des valeurs de versement dans les données
+          const versements = data.map(item => parseFloat(item.versement) || 0);
+          const minVersement = Math.min(...versements);
+          const maxVersement = Math.max(...versements);
+          const slider = document.getElementById("versement");
+          slider.min = minVersement;
+          slider.max = maxVersement;
+          slider.value = maxVersement;
+          document.getElementById("versementValue").textContent = maxVersement;
+
+          // Ajout d'écouteurs d'événements pour chaque filtre
+          document.getElementById("assureur").addEventListener("change", () => filtrerDonnees(data));
+          document.getElementById("distributeur").addEventListener("change", () => filtrerDonnees(data));
+          document.getElementById("nom").addEventListener("input", () => filtrerDonnees(data));
+          document.getElementById("versement").addEventListener("input", function() {
+            document.getElementById("versementValue").textContent = this.value;
+            filtrerDonnees(data);
+          });
         },
         error: function(err) {
           console.error("Erreur lors du chargement du CSV :", err);
         }
       });
     }
-    
-    window.addEventListener('DOMContentLoaded', init);
-  </script>
-</body>
-</html>
 
     window.addEventListener('DOMContentLoaded', init);
   </script>
