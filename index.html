@@ -232,7 +232,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // Variables globales pour le comparateur (charts du modal seront créés dynamiquement)
     // Fonction pour afficher les données dans le tableau principal
     function afficherDonnees(donnees) {
       const tbody = document.querySelector("#contrats tbody");
@@ -312,7 +311,7 @@
 
     // Fonction pour ouvrir le modal et afficher les graphiques de performances pour tous les profils du contrat
     function viewPerformance(contract) {
-      // Ouvre le modal
+      // Ouvrir le modal
       const modal = document.getElementById("performanceModal");
       modal.style.display = "block";
       document.getElementById("modalTitle").textContent = `Performances de ${contract.nom}`;
@@ -321,9 +320,8 @@
       const chartsContainer = document.getElementById("profileChartsContainer");
       chartsContainer.innerHTML = "";
 
-      // URL du second onglet contenant les données de performance
-      // Remplacez "PERFORMANCE_GID" par le véritable gid de l'onglet performance.
-      const performanceCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?output=csv&gid=PERFORMANCE_GID';
+      // URL du second onglet contenant les données de performance (utilisez ici votre URL fournie)
+      const performanceCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?gid=1183800682&single=true&output=csv';
 
       Papa.parse(performanceCsvUrl, {
         download: true,
@@ -377,9 +375,7 @@
                   backgroundColor: ['#36A2EB', '#FFCE56']
                 }]
               },
-              options: {
-                responsive: true
-              }
+              options: { responsive: true }
             });
 
             // Récupérer les données pour le graphique en barres (performances sur 1, 3, 5 ans)
@@ -399,11 +395,7 @@
               },
               options: {
                 responsive: true,
-                scales: {
-                  y: {
-                    beginAtZero: true
-                  }
-                }
+                scales: { y: { beginAtZero: true } }
               }
             });
           });
@@ -469,6 +461,11 @@
         }
       });
     }
+
+    window.addEventListener("DOMContentLoaded", init);
+  </script>
+</body>
+</html>
 
     window.addEventListener("DOMContentLoaded", init);
   </script>
