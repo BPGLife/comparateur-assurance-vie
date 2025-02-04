@@ -50,6 +50,11 @@
       border-radius: 4px;
       font-size: 1em;
     }
+    /* Style pour la case à cocher */
+    .filters input[type="checkbox"] {
+      transform: scale(1.2);
+      margin-right: 5px;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -101,6 +106,11 @@
         <input type="range" id="versement" value="0" step="100">
         <span id="versementValue"></span>
       </div>
+      <!-- Case à cocher pour Gestion pilotée -->
+      <div>
+        <input type="checkbox" id="gestion">
+        <label for="gestion">Gestion pilotée</label>
+      </div>
     </div>
 
     <!-- Tableau d'affichage -->
@@ -124,7 +134,7 @@
   <!-- Inclusion de PapaParse depuis cdnjs -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <script>
-    // Affiche les données dans le tableau HTML
+    // Affiche les données dans le tableau HTML (sans la colonne "gestion pilotée")
     function afficherDonnees(donnees) {
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
@@ -172,14 +182,22 @@
       const filtreDistributeur = document.getElementById("distributeur").value;
       const filtreNom = document.getElementById("nom").value.toLowerCase();
       const maxVersement = parseFloat(document.getElementById("versement").value);
+      const gestionChecked = document.getElementById("gestion").checked;
 
       const donneesFiltrees = donnees.filter(item => {
         let versement = parseFloat(item.versement) || 0;
+        // Si la case "Gestion pilotée" est cochée, ne garder que les lignes dont la colonne correspondante contient "gestion pilotée"
+        let gestionCondition = true;
+        if (gestionChecked) {
+          gestionCondition = item["gestion pilotée"] && item["gestion pilotée"].toLowerCase().trim() === "gestion pilotée";
+        }
+
         return (
           (filtreAssureur === "" || item.assureur === filtreAssureur) &&
           (filtreDistributeur === "" || item.distributeur === filtreDistributeur) &&
           (filtreNom === "" || item.nom.toLowerCase().includes(filtreNom)) &&
-          (isNaN(maxVersement) || versement <= maxVersement)
+          (isNaN(maxVersement) || versement <= maxVersement) &&
+          gestionCondition
         );
       });
       afficherDonnees(donneesFiltrees);
@@ -199,7 +217,7 @@
           remplirFiltreAssureur(data);
           remplirFiltreDistributeur(data);
 
-          // Définir la plage du curseur en fonction des valeurs de versement dans les données
+          // Définir la plage du curseur selon les versements
           const versements = data.map(item => parseFloat(item.versement) || 0);
           const minVersement = Math.min(...versements);
           const maxVersement = Math.max(...versements);
@@ -217,6 +235,7 @@
             document.getElementById("versementValue").textContent = this.value;
             filtrerDonnees(data);
           });
+          document.getElementById("gestion").addEventListener("change", () => filtrerDonnees(data));
         },
         error: function(err) {
           console.error("Erreur lors du chargement du CSV :", err);
