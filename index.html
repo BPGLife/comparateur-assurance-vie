@@ -108,6 +108,10 @@
       </div>
       <!-- Cases à cocher pour les colonnes supplémentaires -->
       <div>
+        <input type="checkbox" id="gestion" class="checkbox-filter" data-column="Gestion pilotée" data-value="Gestion pilotée">
+        <label for="gestion">Gestion pilotée</label>
+      </div>
+      <div>
         <input type="checkbox" id="versements_programmes" class="checkbox-filter" data-column="Versements programmés" data-value="Versements programmés">
         <label for="versements_programmes">Versements programmés</label>
       </div>
@@ -133,7 +137,7 @@
       </div>
     </div>
 
-    <!-- Tableau d'affichage (colonnes de filtrage non affichées) -->
+    <!-- Tableau d'affichage (seules les colonnes principales sont affichées) -->
     <table id="contrats">
       <thead>
         <tr>
@@ -154,7 +158,7 @@
   <!-- Inclusion de PapaParse depuis cdnjs -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <script>
-    // Fonction pour afficher les données dans le tableau (on n'affiche que les colonnes principales)
+    // Affiche les données dans le tableau (seules les colonnes principales)
     function afficherDonnees(donnees) {
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
@@ -203,7 +207,6 @@
       const filtreNom = document.getElementById("nom").value.toLowerCase();
       const maxVersement = parseFloat(document.getElementById("versement").value);
 
-      // Vérification des cases à cocher (colonnes supplémentaires)
       const checkboxes = document.querySelectorAll(".checkbox-filter");
       
       const donneesFiltrees = donnees.filter(item => {
@@ -213,7 +216,6 @@
           if (checkbox.checked) {
             const col = checkbox.dataset.column;
             const val = checkbox.dataset.value;
-            // Vérifie que la valeur dans la colonne correspond exactement (en minuscules et épurée)
             conditionsCheckbox = conditionsCheckbox &&
               (item[col] && item[col].toLowerCase().trim() === val.toLowerCase().trim());
           }
@@ -243,7 +245,7 @@
           remplirFiltreAssureur(data);
           remplirFiltreDistributeur(data);
 
-          // Définir la plage du curseur selon les valeurs de versement
+          // Définir la plage du curseur pour le versement initial
           const versements = data.map(item => parseFloat(item.versement) || 0);
           const minVersement = Math.min(...versements);
           const maxVersementData = Math.max(...versements);
