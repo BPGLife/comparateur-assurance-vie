@@ -113,6 +113,15 @@
     .btn-performance:hover {
       background-color: #357ab8;
     }
+    @media (max-width: 768px) {
+      .filters {
+        flex-direction: column;
+        align-items: center;
+      }
+      table th, table td {
+        padding: 10px;
+      }
+    }
     /* Modal */
     .modal {
       display: none;
@@ -182,15 +191,6 @@
     .perf-table th {
       background-color: #f0f4f8;
     }
-    @media (max-width: 768px) {
-      .filters {
-        flex-direction: column;
-        align-items: center;
-      }
-      table th, table td {
-        padding: 10px;
-      }
-    }
   </style>
 </head>
 <body>
@@ -216,8 +216,9 @@
       </div>
       <div>
         <label for="versement">Versement initial (max) :</label>
-        <input type="range" id="versement" value="0" step="100">
-        <span id="versementValue"></span>
+        <!-- Le curseur est maintenant configuré avec une échelle de 0 à 10 000 -->
+        <input type="range" id="versement" value="10000" min="0" max="10000" step="100">
+        <span id="versementValue">10000</span>
       </div>
       <!-- Cases à cocher pour filtres supplémentaires -->
       <div>
@@ -283,7 +284,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // Affichage du tableau principal
+    // Fonction d'affichage du tableau principal
     function afficherDonnees(donnees) {
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
@@ -328,7 +329,7 @@
       });
     }
 
-    // Filtrage combiné avec vérification du versement (nettoyé)
+    // Filtrage combiné (nettoyage du versement inclus)
     function filtrerDonnees(donnees) {
       const filtreAssureur = document.getElementById("assureur").value;
       const filtreDistributeur = document.getElementById("distributeur").value;
@@ -358,7 +359,7 @@
       afficherDonnees(donneesFiltrees);
     }
 
-    // Ouverture du modal et affichage des performances pour tous les profils du contrat
+    // Ouverture du modal et affichage des performances (données du second onglet)
     function viewPerformance(contract) {
       const modal = document.getElementById("performanceModal");
       modal.style.display = "block";
@@ -367,7 +368,7 @@
       const chartsContainer = document.getElementById("profileChartsContainer");
       chartsContainer.innerHTML = "";
 
-      // URL du second onglet contenant les données de performance
+      // URL du second onglet (données de performance)
       const performanceCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?gid=1183800682&single=true&output=csv';
 
       Papa.parse(performanceCsvUrl, {
@@ -382,18 +383,17 @@
             return;
           }
 
-          // Pour chaque profil du contrat, création d'une section
+          // Pour chaque profil du contrat, créer une section
           contractPerfRows.forEach((profileRow, index) => {
             const profileDiv = document.createElement("div");
             profileDiv.className = "profile-section";
             profileDiv.innerHTML = `<h3>Profil : ${profileRow["Profil"] || "Non défini"} - Gestionnaire : ${profileRow["Gestionnaire d'actif"] || "Non défini"}</h3>`;
 
-            // Camembert (200x200) pour UC / Fonds en euros
+            // Camembert pour UC / Fonds (200x200)
             const pieCanvas = document.createElement("canvas");
             pieCanvas.id = `pieChart_${index}`;
             pieCanvas.width = 200;
             pieCanvas.height = 200;
-
             const chartsDiv = document.createElement("div");
             chartsDiv.className = "charts";
             chartsDiv.appendChild(pieCanvas);
@@ -413,12 +413,10 @@
               options: { responsive: true }
             });
 
-            // Tableau des performances annuelles pour les années 2024 à 2016
-            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2020", "2018", "2017", "2016"];
-            // Correction : utiliser l'array demandé : 2024,2023,2022,2021,2020,2019,2018,2017,2016.
-            const correctYearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016"];
+            // Tableau des performances annuelles pour 2024 à 2016
+            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016"];
             let tableHTML = `<table class="perf-table"><thead><tr><th>Année</th><th>Performance (%)</th></tr></thead><tbody>`;
-            correctYearsArray.forEach(year => {
+            yearsArray.forEach(year => {
               const perfValue = (profileRow[year] !== undefined && profileRow[year] !== "") ? profileRow[year] : "-";
               tableHTML += `<tr><td>${year}</td><td>${perfValue}</td></tr>`;
             });
@@ -445,7 +443,7 @@
       }
     });
 
-    // Initialisation du comparateur principal
+    // Initialisation : chargement du CSV principal et configuration des filtres
     function init() {
       const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?output=csv';
       Papa.parse(csvUrl, {
@@ -458,15 +456,14 @@
           remplirFiltreAssureur(data);
           remplirFiltreDistributeur(data);
 
-          const versements = data.map(item => parseFloat(item.versement.replace(/[^\d.]/g, '')) || 0);
-          const minVersement = Math.min(...versements);
-          const maxVersementData = Math.max(...versements);
+          // Configuration fixe du curseur : de 0 à 10 000
           const slider = document.getElementById("versement");
-          slider.min = minVersement;
-          slider.max = maxVersementData;
-          slider.value = maxVersementData;
-          document.getElementById("versementValue").textContent = maxVersementData;
+          slider.min = 0;
+          slider.max = 10000;
+          slider.value = 10000;
+          document.getElementById("versementValue").textContent = 10000;
 
+          // Écouteurs d'événements pour les filtres
           document.getElementById("assureur").addEventListener("change", () => filtrerDonnees(data));
           document.getElementById("distributeur").addEventListener("change", () => filtrerDonnees(data));
           document.getElementById("nom").addEventListener("input", () => filtrerDonnees(data));
