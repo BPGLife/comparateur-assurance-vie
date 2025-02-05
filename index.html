@@ -76,7 +76,7 @@
     .filters input[type="range"] {
       cursor: pointer;
     }
-    /* Bouton toggle pour déplier la section "voir davantage" */
+    /* Bouton toggle (flèche) pour déplier la section extra */
     .toggle-arrow {
       background: none;
       border: none;
@@ -263,16 +263,13 @@
       </div>
     </div>
 
-    <!-- Tableau principal -->
+    <!-- Tableau principal (les colonnes "Année" et "Nature" ont été retirées) -->
     <table id="contrats">
       <thead>
         <tr>
-          <!-- La première colonne contiendra la flèche toggle intégrée au nom du contrat -->
           <th data-key="nom">Nom du contrat</th>
-          <th data-key="annee">Année</th>
           <th data-key="assureur">Assureur</th>
           <th data-key="distributeur">Distributeur</th>
-          <th data-key="nature">Nature</th>
           <th data-key="versement">Versement initial</th>
           <th>Actions</th>
         </tr>
@@ -296,23 +293,20 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // Affichage du tableau principal avec flèche toggle dans la cellule du nom du contrat
+    // Fonction pour afficher le tableau principal avec bouton toggle intégré
     function afficherDonnees(donnees) {
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
       donnees.forEach((item, index) => {
-        // Ligne principale
+        // Ligne principale du contrat avec flèche toggle dans la première cellule
         const tr = document.createElement("tr");
-        // La première cellule intègre le bouton toggle (flèche) suivi du nom du contrat
         tr.innerHTML = `
           <td>
             <button class="toggle-arrow" onclick="toggleExtra(${index}, this)">▼</button>
             ${item.nom}
           </td>
-          <td>${item.annee}</td>
           <td>${item.assureur}</td>
           <td>${item.distributeur}</td>
-          <td>${item.nature}</td>
           <td>${item.versement}</td>
           <td>${
             (item["Gestion pilotée"] && item["Gestion pilotée"].toLowerCase().trim() === "gestion pilotée")
@@ -322,17 +316,21 @@
         `;
         tbody.appendChild(tr);
 
-        // Ligne supplémentaire cachée pour les informations "voir davantage"
+        // Ligne supplémentaire dépliable (affichant Année et Nature, plus un espace pour infos complémentaires)
         const extraRow = document.createElement("tr");
         extraRow.id = "extra_" + index;
         extraRow.className = "extra-info";
         extraRow.style.display = "none";
-        extraRow.innerHTML = `<td colspan="7"><div class="extra-content">Informations supplémentaires à venir.</div></td>`;
+        extraRow.innerHTML = `<td colspan="5">
+          <p><strong>Année de lancement :</strong> ${item.annee}</p>
+          <p><strong>Nature du contrat :</strong> ${item.nature}</p>
+          <div class="extra-content">Informations supplémentaires à venir.</div>
+        </td>`;
         tbody.appendChild(extraRow);
       });
     }
 
-    // Fonction de bascule de la ligne supplémentaire et modification de l'icône de la flèche
+    // Fonction de bascule de la ligne supplémentaire et changement de l'icône de la flèche
     function toggleExtra(index, btn) {
       const extraRow = document.getElementById("extra_" + index);
       if (extraRow.style.display === "none" || extraRow.style.display === "") {
@@ -344,7 +342,7 @@
       }
     }
 
-    // Remplissage des menus déroulants
+    // Remplit les menus déroulants
     function remplirFiltreAssureur(donnees) {
       const select = document.getElementById("assureur");
       const assureurs = [...new Set(donnees.map(item => item.assureur))];
@@ -366,7 +364,7 @@
       });
     }
 
-    // Filtrage combiné, avec nettoyage du versement
+    // Filtrage combiné avec nettoyage du versement
     function filtrerDonnees(donnees) {
       const filtreAssureur = document.getElementById("assureur").value;
       const filtreDistributeur = document.getElementById("distributeur").value;
@@ -425,7 +423,7 @@
             profileDiv.className = "profile-section";
             profileDiv.innerHTML = `<h3>Profil : ${profileRow["Profil"] || "Non défini"} - Gestionnaire : ${profileRow["Gestionnaire d'actif"] || "Non défini"}</h3>`;
 
-            // Camembert pour la répartition UC/Fonds en euros (200x200)
+            // Camembert pour la répartition UC / Fonds en euros (200x200)
             const pieCanvas = document.createElement("canvas");
             pieCanvas.id = `pieChart_${index}`;
             pieCanvas.width = 200;
@@ -449,12 +447,10 @@
               options: { responsive: true }
             });
 
-            // Tableau des performances annuelles (2024 à 2016)
-            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2018", "2020", "2017", "2016"];
-            // Correction : utiliser l'array suivant pour les années souhaitées
-            const correctYearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016"];
+            // Tableau des performances annuelles pour 2024 à 2016
+            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016"];
             let tableHTML = `<table class="perf-table"><thead><tr><th>Année</th><th>Performance (%)</th></tr></thead><tbody>`;
-            correctYearsArray.forEach(year => {
+            yearsArray.forEach(year => {
               const perfValue = (profileRow[year] !== undefined && profileRow[year] !== "") ? profileRow[year] : "-";
               tableHTML += `<tr><td>${year}</td><td>${perfValue}</td></tr>`;
             });
@@ -524,3 +520,4 @@
   </script>
 </body>
 </html>
+
