@@ -4,42 +4,58 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Comparateur d'Assurance Vie</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    /* Réinitialisation et styles de base */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    /* Base & Réinitialisation */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f2f4f8;
+      font-family: 'Roboto', sans-serif;
+      background-color: #f7f9fc;
       color: #333;
       line-height: 1.6;
     }
-    .header {
-      background-color: #2b6cb0;
-      color: #fff;
-      padding: 20px 0;
-      text-align: center;
-      font-size: 2em;
-      font-weight: bold;
-      letter-spacing: 1px;
+    a {
+      text-decoration: none;
+      color: inherit;
     }
+    /* Header moderne */
+    .header {
+      background: linear-gradient(135deg, #4a90e2, #357ab8);
+      color: #fff;
+      padding: 30px 0;
+      text-align: center;
+      font-size: 2.2em;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+    /* Conteneur principal */
     .container {
       max-width: 1200px;
-      margin: 30px auto;
+      margin: 0 auto 40px;
       background-color: #fff;
-      padding: 20px;
+      padding: 25px;
       border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     }
+    /* Zone des filtres */
     .filters {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 15px;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
     }
-    .filters > div { margin: 5px; }
+    .filters > div {
+      margin: 5px;
+    }
     .filters label {
-      font-size: 1em;
+      font-weight: 500;
       margin-right: 5px;
     }
     .filters select,
@@ -47,49 +63,59 @@
     .filters input[type="range"] {
       padding: 8px 12px;
       border: 1px solid #ccc;
-      border-radius: 4px;
+      border-radius: 6px;
       font-size: 1em;
+      transition: all 0.3s ease;
     }
-    /* Style pour les cases à cocher */
+    .filters input[type="text"]:focus,
+    .filters select:focus {
+      outline: none;
+      border-color: #4a90e2;
+      box-shadow: 0 0 5px rgba(74,144,226,0.3);
+    }
+    .filters input[type="range"] {
+      cursor: pointer;
+    }
+    /* Cases à cocher */
     .filters input[type="checkbox"] {
       transform: scale(1.2);
       margin-right: 5px;
+      cursor: pointer;
     }
+    /* Tableau moderne */
     table {
       width: 100%;
       border-collapse: collapse;
+      margin-top: 15px;
     }
-    table thead { background-color: #f0f0f0; }
+    table thead {
+      background-color: #f0f4f8;
+    }
     table th, table td {
       padding: 12px 15px;
       text-align: left;
+      border-bottom: 1px solid #e2e8f0;
     }
-    table th { cursor: pointer; }
-    table tbody tr {
-      border-bottom: 1px solid #eee;
-      transition: background-color 0.3s;
+    table tbody tr:hover {
+      background-color: #f9fafb;
     }
-    table tbody tr:hover { background-color: #f9f9f9; }
-    /* Style pour le bouton d'action */
+    /* Bouton d'action */
     .btn-performance {
-      background-color: #2b6cb0;
+      background-color: #4a90e2;
       color: #fff;
-      padding: 6px 10px;
+      padding: 6px 12px;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
       font-size: 0.9em;
+      transition: background-color 0.3s ease;
     }
     .btn-performance:hover {
-      background-color: #234a7d;
+      background-color: #357ab8;
     }
-    @media (max-width: 768px) {
-      .filters { flex-direction: column; align-items: center; }
-      table th, table td { padding: 10px; }
-    }
-    /* Styles pour le modal */
+    /* Modal */
     .modal {
-      display: none; /* caché par défaut */
+      display: none;
       position: fixed;
       z-index: 1000;
       left: 0;
@@ -97,7 +123,8 @@
       width: 100%;
       height: 100%;
       overflow: auto;
-      background-color: rgba(0,0,0,0.5);
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 20px;
     }
     .modal-content {
       background-color: #fff;
@@ -107,6 +134,7 @@
       width: 95%;
       max-width: 900px;
       position: relative;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
     .modal-close {
       position: absolute;
@@ -118,7 +146,7 @@
     }
     .profile-section {
       margin-bottom: 40px;
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid #e2e8f0;
       padding-bottom: 20px;
     }
     .profile-section:last-child {
@@ -128,62 +156,70 @@
       display: flex;
       flex-wrap: wrap;
       gap: 20px;
-      justify-content: space-around;
+      justify-content: center;
+      margin-bottom: 20px;
     }
     .charts canvas {
-      background: #f9f9f9;
-      border: 1px solid #ddd;
-      border-radius: 4px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
       padding: 10px;
     }
-    /* Styles pour le tableau de performances */
+    /* Tableau de performances */
     .perf-table {
       border-collapse: collapse;
       width: 100%;
       max-width: 400px;
-      margin-top: 10px;
+      margin: 10px auto;
     }
-    .perf-table th, .perf-table td {
-      border: 1px solid #ddd;
-      padding: 5px;
+    .perf-table th,
+    .perf-table td {
+      border: 1px solid #e2e8f0;
+      padding: 6px 8px;
       text-align: center;
+      font-size: 0.9em;
     }
     .perf-table th {
-      background-color: #f0f0f0;
+      background-color: #f0f4f8;
+    }
+    @media (max-width: 768px) {
+      .filters {
+        flex-direction: column;
+        align-items: center;
+      }
+      table th, table td {
+        padding: 10px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="header">Comparateur d'Assurance Vie</div>
   <div class="container">
-    <!-- Section des filtres -->
+    <!-- Filtres -->
     <div class="filters">
-      <!-- Filtre pour l'assureur -->
       <div>
         <label for="assureur">Assureur :</label>
         <select id="assureur">
           <option value="">Tous</option>
         </select>
       </div>
-      <!-- Filtre pour le distributeur -->
       <div>
         <label for="distributeur">Distributeur :</label>
         <select id="distributeur">
           <option value="">Tous</option>
         </select>
       </div>
-      <!-- Recherche sur le nom du contrat -->
       <div>
         <label for="nom">Nom du contrat :</label>
         <input type="text" id="nom" placeholder="Rechercher un contrat">
       </div>
-      <!-- Curseur sur le versement initial -->
       <div>
         <label for="versement">Versement initial (max) :</label>
         <input type="range" id="versement" value="0" step="100">
         <span id="versementValue"></span>
       </div>
-      <!-- Cases à cocher pour les colonnes supplémentaires -->
+      <!-- Cases à cocher pour filtres supplémentaires -->
       <div>
         <input type="checkbox" id="gestion" class="checkbox-filter" data-column="Gestion pilotée" data-value="Gestion pilotée">
         <label for="gestion">Gestion pilotée</label>
@@ -214,7 +250,7 @@
       </div>
     </div>
 
-    <!-- Tableau d'affichage (colonnes principales) -->
+    <!-- Tableau principal -->
     <table id="contrats">
       <thead>
         <tr>
@@ -228,26 +264,26 @@
         </tr>
       </thead>
       <tbody>
-        <!-- Les données seront insérées ici -->
+        <!-- Les données se chargeront ici -->
       </tbody>
     </table>
   </div>
 
-  <!-- Modal pour le focus performance -->
+  <!-- Modal de performance -->
   <div id="performanceModal" class="modal">
     <div class="modal-content">
       <span class="modal-close" id="modalClose">&times;</span>
       <h2 id="modalTitle">Performances de la gestion pilotée</h2>
-      <!-- Container pour les sections de profils -->
+      <!-- Conteneur pour sections de profils -->
       <div id="profileChartsContainer"></div>
     </div>
   </div>
 
-  <!-- Inclusion de PapaParse et Chart.js depuis CDN -->
+  <!-- Scripts : PapaParse & Chart.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // Fonction pour afficher les données dans le tableau principal
+    // Affichage du tableau principal
     function afficherDonnees(donnees) {
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
@@ -262,7 +298,7 @@
           <td>${item.versement}</td>
           <td>${
             (item["Gestion pilotée"] && item["Gestion pilotée"].toLowerCase().trim() === "gestion pilotée")
-              ? `<button class="btn-performance" onclick='viewPerformance(${JSON.stringify(item)})'>Accéder aux performances de la gestion pilotée</button>`
+              ? `<button class="btn-performance" onclick='viewPerformance(${JSON.stringify(item)})'>Accéder aux performances</button>`
               : ''
           }</td>
         `;
@@ -270,7 +306,7 @@
       });
     }
 
-    // Remplit le menu déroulant pour les assureurs
+    // Remplit les menus déroulants
     function remplirFiltreAssureur(donnees) {
       const select = document.getElementById("assureur");
       const assureurs = [...new Set(donnees.map(item => item.assureur))];
@@ -281,8 +317,6 @@
         select.appendChild(option);
       });
     }
-
-    // Remplit le menu déroulant pour les distributeurs
     function remplirFiltreDistributeur(donnees) {
       const select = document.getElementById("distributeur");
       const distributeurs = [...new Set(donnees.map(item => item.distributeur))];
@@ -294,7 +328,7 @@
       });
     }
 
-    // Fonction de filtrage combiné pour tous les filtres
+    // Filtrage combiné avec vérification du versement (nettoyé)
     function filtrerDonnees(donnees) {
       const filtreAssureur = document.getElementById("assureur").value;
       const filtreDistributeur = document.getElementById("distributeur").value;
@@ -303,7 +337,6 @@
       const checkboxes = document.querySelectorAll(".checkbox-filter");
 
       const donneesFiltrees = donnees.filter(item => {
-        // Nettoyage de la valeur de versement : on retire tout caractère non numérique (sauf le point)
         let versement = parseFloat(item.versement.replace(/[^\d.]/g, '')) || 0;
         let conditionsCheckbox = true;
         checkboxes.forEach(checkbox => {
@@ -325,14 +358,12 @@
       afficherDonnees(donneesFiltrees);
     }
 
-    // Fonction pour ouvrir le modal et afficher les performances pour tous les profils du contrat
+    // Ouverture du modal et affichage des performances pour tous les profils du contrat
     function viewPerformance(contract) {
-      // Ouvrir le modal
       const modal = document.getElementById("performanceModal");
       modal.style.display = "block";
       document.getElementById("modalTitle").textContent = `Performances de ${contract.nom}`;
 
-      // Vider le container de profils
       const chartsContainer = document.getElementById("profileChartsContainer");
       chartsContainer.innerHTML = "";
 
@@ -344,7 +375,6 @@
         header: true,
         complete: function(results) {
           const perfData = results.data;
-          // Filtrer les lignes correspondant au contrat (basé sur "Nom du contrat")
           const contractPerfRows = perfData.filter(row => row["Nom du contrat"] === contract.nom);
 
           if (contractPerfRows.length === 0) {
@@ -352,26 +382,23 @@
             return;
           }
 
-          // Pour chaque profil du contrat, créer une section avec ses graphiques et son tableau de performances
+          // Pour chaque profil du contrat, création d'une section
           contractPerfRows.forEach((profileRow, index) => {
-            // Créer un container pour le profil et afficher le nom du profil et le gestionnaire d'actif
             const profileDiv = document.createElement("div");
             profileDiv.className = "profile-section";
             profileDiv.innerHTML = `<h3>Profil : ${profileRow["Profil"] || "Non défini"} - Gestionnaire : ${profileRow["Gestionnaire d'actif"] || "Non défini"}</h3>`;
 
-            // Créer un canvas plus petit pour le camembert UC/Fonds (200x200)
+            // Camembert (200x200) pour UC / Fonds en euros
             const pieCanvas = document.createElement("canvas");
             pieCanvas.id = `pieChart_${index}`;
             pieCanvas.width = 200;
             pieCanvas.height = 200;
 
-            // Ajouter le canvas du camembert
             const chartsDiv = document.createElement("div");
             chartsDiv.className = "charts";
             chartsDiv.appendChild(pieCanvas);
             profileDiv.appendChild(chartsDiv);
 
-            // Création du camembert via Chart.js
             const partUC = profileRow.part_uc ? parseFloat(profileRow.part_uc) : 50;
             const partFonds = profileRow.part_fonds ? parseFloat(profileRow.part_fonds) : (100 - partUC);
             new Chart(pieCanvas.getContext("2d"), {
@@ -386,13 +413,12 @@
               options: { responsive: true }
             });
 
-            // Création d'un tableau pour afficher les performances annuelles
-            // Années à afficher : 2024 à 2016
-            const performanceYears = ["2024", "2023", "2022", "2021", "2020", "2019", "2020", "2018", "2017", "2016"];
-            // Correction : ici, je vous propose d'utiliser exactement les années demandées (2024,2023,...,2016)
-            const yearsToDisplay = ["2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016"];
+            // Tableau des performances annuelles pour les années 2024 à 2016
+            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2020", "2018", "2017", "2016"];
+            // Correction : utiliser l'array demandé : 2024,2023,2022,2021,2020,2019,2018,2017,2016.
+            const correctYearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016"];
             let tableHTML = `<table class="perf-table"><thead><tr><th>Année</th><th>Performance (%)</th></tr></thead><tbody>`;
-            yearsToDisplay.forEach(year => {
+            correctYearsArray.forEach(year => {
               const perfValue = (profileRow[year] !== undefined && profileRow[year] !== "") ? profileRow[year] : "-";
               tableHTML += `<tr><td>${year}</td><td>${perfValue}</td></tr>`;
             });
@@ -408,11 +434,10 @@
       });
     }
 
-    // Gestion de la fermeture du modal
+    // Fermeture du modal
     document.getElementById("modalClose").addEventListener("click", function() {
       document.getElementById("performanceModal").style.display = "none";
     });
-    // Fermer le modal si l'utilisateur clique en dehors du contenu
     window.addEventListener("click", function(event) {
       const modal = document.getElementById("performanceModal");
       if (event.target === modal) {
@@ -420,11 +445,9 @@
       }
     });
 
-    // Fonction d'initialisation : chargement du CSV principal et configuration des filtres
+    // Initialisation du comparateur principal
     function init() {
-      // URL du CSV du premier onglet (comparateur principal)
       const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?output=csv';
-
       Papa.parse(csvUrl, {
         download: true,
         header: true,
@@ -435,17 +458,15 @@
           remplirFiltreAssureur(data);
           remplirFiltreDistributeur(data);
 
-          // Définir la plage du curseur pour le versement initial
           const versements = data.map(item => parseFloat(item.versement.replace(/[^\d.]/g, '')) || 0);
           const minVersement = Math.min(...versements);
           const maxVersementData = Math.max(...versements);
           const slider = document.getElementById("versement");
           slider.min = minVersement;
           slider.max = maxVersementData;
-          slider.value = maxVersementData; // Par défaut, afficher tous les contrats
+          slider.value = maxVersementData;
           document.getElementById("versementValue").textContent = maxVersementData;
 
-          // Écouteurs d'événements pour chaque filtre
           document.getElementById("assureur").addEventListener("change", () => filtrerDonnees(data));
           document.getElementById("distributeur").addEventListener("change", () => filtrerDonnees(data));
           document.getElementById("nom").addEventListener("input", () => filtrerDonnees(data));
