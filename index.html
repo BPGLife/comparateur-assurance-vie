@@ -303,7 +303,8 @@
       const checkboxes = document.querySelectorAll(".checkbox-filter");
 
       const donneesFiltrees = donnees.filter(item => {
-        let versement = parseFloat(item.versement) || 0;
+        // Nettoyage de la valeur de versement : on retire tout caractère non numérique (sauf le point)
+        let versement = parseFloat(item.versement.replace(/[^\d.]/g, '')) || 0;
         let conditionsCheckbox = true;
         checkboxes.forEach(checkbox => {
           if (checkbox.checked) {
@@ -343,7 +344,7 @@
         header: true,
         complete: function(results) {
           const perfData = results.data;
-          // Filtrer les lignes correspondant au contrat (en se basant sur "Nom du contrat")
+          // Filtrer les lignes correspondant au contrat (basé sur "Nom du contrat")
           const contractPerfRows = perfData.filter(row => row["Nom du contrat"] === contract.nom);
 
           if (contractPerfRows.length === 0) {
@@ -351,7 +352,7 @@
             return;
           }
 
-          // Pour chaque profil du contrat, créer une section avec ses graphiques
+          // Pour chaque profil du contrat, créer une section avec ses graphiques et son tableau de performances
           contractPerfRows.forEach((profileRow, index) => {
             // Créer un container pour le profil et afficher le nom du profil et le gestionnaire d'actif
             const profileDiv = document.createElement("div");
@@ -364,13 +365,13 @@
             pieCanvas.width = 200;
             pieCanvas.height = 200;
 
-            // Ajouter le canvas du camembert au profil
+            // Ajouter le canvas du camembert
             const chartsDiv = document.createElement("div");
             chartsDiv.className = "charts";
             chartsDiv.appendChild(pieCanvas);
             profileDiv.appendChild(chartsDiv);
 
-            // Créer le camembert avec Chart.js
+            // Création du camembert via Chart.js
             const partUC = profileRow.part_uc ? parseFloat(profileRow.part_uc) : 50;
             const partFonds = profileRow.part_fonds ? parseFloat(profileRow.part_fonds) : (100 - partUC);
             new Chart(pieCanvas.getContext("2d"), {
@@ -387,18 +388,17 @@
 
             // Création d'un tableau pour afficher les performances annuelles
             // Années à afficher : 2024 à 2016
-            const performanceYears = ["2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016"];
+            const performanceYears = ["2024", "2023", "2022", "2021", "2020", "2019", "2020", "2018", "2017", "2016"];
+            // Correction : ici, je vous propose d'utiliser exactement les années demandées (2024,2023,...,2016)
+            const yearsToDisplay = ["2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016"];
             let tableHTML = `<table class="perf-table"><thead><tr><th>Année</th><th>Performance (%)</th></tr></thead><tbody>`;
-            performanceYears.forEach(year => {
-              // On récupère la performance pour l'année ; si absente, on affiche un tiret
-              const perfValue = profileRow[year] !== undefined && profileRow[year] !== "" ? profileRow[year] : "-";
+            yearsToDisplay.forEach(year => {
+              const perfValue = (profileRow[year] !== undefined && profileRow[year] !== "") ? profileRow[year] : "-";
               tableHTML += `<tr><td>${year}</td><td>${perfValue}</td></tr>`;
             });
             tableHTML += `</tbody></table>`;
-            // Ajouter le tableau de performances au profil
             profileDiv.innerHTML += tableHTML;
 
-            // Ajouter la section profil au container général
             chartsContainer.appendChild(profileDiv);
           });
         },
@@ -436,7 +436,7 @@
           remplirFiltreDistributeur(data);
 
           // Définir la plage du curseur pour le versement initial
-          const versements = data.map(item => parseFloat(item.versement) || 0);
+          const versements = data.map(item => parseFloat(item.versement.replace(/[^\d.]/g, '')) || 0);
           const minVersement = Math.min(...versements);
           const maxVersementData = Math.max(...versements);
           const slider = document.getElementById("versement");
@@ -445,7 +445,7 @@
           slider.value = maxVersementData; // Par défaut, afficher tous les contrats
           document.getElementById("versementValue").textContent = maxVersementData;
 
-          // Ajout d'écouteurs d'événements pour chaque filtre
+          // Écouteurs d'événements pour chaque filtre
           document.getElementById("assureur").addEventListener("change", () => filtrerDonnees(data));
           document.getElementById("distributeur").addEventListener("change", () => filtrerDonnees(data));
           document.getElementById("nom").addEventListener("input", () => filtrerDonnees(data));
