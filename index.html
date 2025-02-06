@@ -263,7 +263,7 @@
       </div>
     </div>
 
-    <!-- Tableau principal (colonnes "Année" et "Nature" sont transférées dans la section extra) -->
+    <!-- Tableau principal (colonnes "Année" et "Nature" transférées dans la section extra) -->
     <table id="contrats">
       <thead>
         <tr>
@@ -317,7 +317,8 @@
         `;
         tbody.appendChild(tr);
 
-        // Ligne supplémentaire dépliable pour afficher les informations "Année", "Nature" et "Ticket"
+        // Ligne supplémentaire dépliable pour afficher les informations supplémentaires
+        // Transfert des informations "Année", "Nature", "Ticket", "Architecture" et "Frais additionnels de la gestion pilotée"
         const extraRow = document.createElement("tr");
         extraRow.id = "extra_" + index;
         extraRow.className = "extra-info";
@@ -326,13 +327,15 @@
           <p><strong>Année de lancement :</strong> ${item.annee}</p>
           <p><strong>Nature du contrat :</strong> ${item.nature}</p>
           <p><strong>Encours min. en gestion pilotée :</strong> ${item.ticket}</p>
+          <p><strong>Architecture :</strong> ${item.architecture}</p>
+          <p><strong>Frais additionnels de la gestion pilotée :</strong> ${item["frais add. GP"]}</p>
           <div class="extra-content">Informations supplémentaires à venir.</div>
         </td>`;
         tbody.appendChild(extraRow);
       });
     }
 
-    // Fonction de bascule pour la ligne supplémentaire et changement de l'icône de la flèche
+    // Fonction de bascule pour la ligne supplémentaire et changement de la flèche
     function toggleExtra(index, btn) {
       const extraRow = document.getElementById("extra_" + index);
       if (extraRow.style.display === "none" || extraRow.style.display === "") {
