@@ -199,7 +199,7 @@
     .perf-table th {
       background-color: #f0f4f8;
     }
-    /* Ligne supplémentaire pour les infos "Voir davantage" */
+    /* Ligne supplémentaire pour la section extra */
     .extra-info {
       background-color: #f9fafb;
     }
@@ -263,10 +263,11 @@
       </div>
     </div>
 
-    <!-- Tableau principal (les colonnes "Année" et "Nature" ont été retirées) -->
+    <!-- Tableau principal (colonnes "Année" et "Nature" sont transférées dans la section extra) -->
     <table id="contrats">
       <thead>
         <tr>
+          <!-- La première colonne inclut la flèche toggle à gauche du nom du contrat -->
           <th data-key="nom">Nom du contrat</th>
           <th data-key="assureur">Assureur</th>
           <th data-key="distributeur">Distributeur</th>
@@ -293,7 +294,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // Fonction pour afficher le tableau principal avec bouton toggle intégré
+    // Fonction pour afficher le tableau principal avec flèche toggle intégrée
     function afficherDonnees(donnees) {
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
@@ -316,7 +317,7 @@
         `;
         tbody.appendChild(tr);
 
-        // Ligne supplémentaire dépliable (affichant Année et Nature, plus un espace pour infos complémentaires)
+        // Ligne supplémentaire dépliable pour afficher les informations "Année", "Nature" et "Ticket"
         const extraRow = document.createElement("tr");
         extraRow.id = "extra_" + index;
         extraRow.className = "extra-info";
@@ -324,13 +325,14 @@
         extraRow.innerHTML = `<td colspan="5">
           <p><strong>Année de lancement :</strong> ${item.annee}</p>
           <p><strong>Nature du contrat :</strong> ${item.nature}</p>
+          <p><strong>Encours min. en gestion pilotée :</strong> ${item.ticket}</p>
           <div class="extra-content">Informations supplémentaires à venir.</div>
         </td>`;
         tbody.appendChild(extraRow);
       });
     }
 
-    // Fonction de bascule de la ligne supplémentaire et changement de l'icône de la flèche
+    // Fonction de bascule pour la ligne supplémentaire et changement de l'icône de la flèche
     function toggleExtra(index, btn) {
       const extraRow = document.getElementById("extra_" + index);
       if (extraRow.style.display === "none" || extraRow.style.display === "") {
@@ -364,7 +366,7 @@
       });
     }
 
-    // Filtrage combiné avec nettoyage du versement
+    // Fonction de filtrage combiné, avec nettoyage du versement
     function filtrerDonnees(donnees) {
       const filtreAssureur = document.getElementById("assureur").value;
       const filtreDistributeur = document.getElementById("distributeur").value;
@@ -394,7 +396,7 @@
       afficherDonnees(donneesFiltrees);
     }
 
-    // Ouverture du modal pour afficher les performances pour chaque profil du contrat
+    // Fonction pour ouvrir le modal et afficher les performances pour chaque profil (données du second onglet)
     function viewPerformance(contract) {
       const modal = document.getElementById("performanceModal");
       modal.style.display = "block";
@@ -520,4 +522,3 @@
   </script>
 </body>
 </html>
-
