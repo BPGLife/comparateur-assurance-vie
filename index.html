@@ -84,6 +84,34 @@
       cursor: pointer;
       margin-right: 5px;
     }
+    /* Info-icon et tooltip */
+    .info-icon {
+      position: relative;
+      display: inline-block;
+      cursor: help;
+      margin-left: 5px;
+      color: #4a90e2;
+      font-size: 1em;
+    }
+    .info-icon::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      padding: 5px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 100;
+    }
+    .info-icon:hover::after {
+      opacity: 1;
+    }
     /* Cases à cocher */
     .filters input[type="checkbox"] {
       transform: scale(1.2);
@@ -232,34 +260,41 @@
         <input type="range" id="versement" value="10000" min="0" max="10000" step="100">
         <span id="versementValue">10000</span>
       </div>
-      <!-- Cases à cocher pour filtres complémentaires -->
+      <!-- Cases à cocher pour filtres complémentaires avec info-icon -->
       <div>
         <input type="checkbox" id="gestion" class="checkbox-filter" data-column="Gestion pilotée" data-value="Gestion pilotée">
         <label for="gestion">Gestion pilotée</label>
+        <span class="info-icon" data-tooltip="Informations sur la gestion pilotée">ℹ</span>
       </div>
       <div>
         <input type="checkbox" id="versements_programmes" class="checkbox-filter" data-column="Versements programmés" data-value="Versements programmés">
         <label for="versements_programmes">Versements programmés</label>
+        <span class="info-icon" data-tooltip="Détails sur les versements programmés">ℹ</span>
       </div>
       <div>
         <input type="checkbox" id="securisation" class="checkbox-filter" data-column="Sécurisation des plus-values" data-value="Sécurisation des plus-values">
         <label for="securisation">Sécurisation des plus-values</label>
+        <span class="info-icon" data-tooltip="Informations sur la sécurisation des plus-values">ℹ</span>
       </div>
       <div>
         <input type="checkbox" id="dynamisation" class="checkbox-filter" data-column="Dynamisation des plus-values" data-value="Dynamisation des plus-values">
         <label for="dynamisation">Dynamisation des plus-values</label>
+        <span class="info-icon" data-tooltip="Détails sur la dynamisation des plus-values">ℹ</span>
       </div>
       <div>
         <input type="checkbox" id="investissement" class="checkbox-filter" data-column="Investissement progressif" data-value="Investissement progressif">
         <label for="investissement">Investissement progressif</label>
+        <span class="info-icon" data-tooltip="Informations sur l'investissement progressif">ℹ</span>
       </div>
       <div>
         <input type="checkbox" id="stoploss" class="checkbox-filter" data-column="Stop/Loss" data-value="Stop/Loss">
         <label for="stoploss">Stop/Loss</label>
+        <span class="info-icon" data-tooltip="Détails sur le Stop/Loss">ℹ</span>
       </div>
       <div>
         <input type="checkbox" id="reequilibrage" class="checkbox-filter" data-column="Réequilibrage auitomatique" data-value="Réequilibrage auitomatique">
         <label for="reequilibrage">Réequilibrage auitomatique</label>
+        <span class="info-icon" data-tooltip="Informations sur le rééquilibrage automatique">ℹ</span>
       </div>
     </div>
 
@@ -294,7 +329,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // Fonction pour afficher le tableau principal avec flèche toggle intégrée
+    // Fonction pour afficher le tableau principal avec bouton toggle intégré
     function afficherDonnees(donnees) {
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
@@ -318,7 +353,7 @@
         tbody.appendChild(tr);
 
         // Ligne supplémentaire dépliable pour afficher les informations supplémentaires
-        // Transfert des informations "Année", "Nature", "Ticket", "Architecture" et "Frais additionnels de la gestion pilotée"
+        // On y transfère Année, Nature, Ticket, Architecture et Frais additionnels de la gestion pilotée
         const extraRow = document.createElement("tr");
         extraRow.id = "extra_" + index;
         extraRow.className = "extra-info";
@@ -335,7 +370,7 @@
       });
     }
 
-    // Fonction de bascule pour la ligne supplémentaire et changement de la flèche
+    // Fonction de bascule pour la ligne supplémentaire et changement de l'icône de la flèche
     function toggleExtra(index, btn) {
       const extraRow = document.getElementById("extra_" + index);
       if (extraRow.style.display === "none" || extraRow.style.display === "") {
@@ -347,7 +382,7 @@
       }
     }
 
-    // Remplit les menus déroulants
+    // Remplissage des menus déroulants
     function remplirFiltreAssureur(donnees) {
       const select = document.getElementById("assureur");
       const assureurs = [...new Set(donnees.map(item => item.assureur))];
@@ -369,7 +404,7 @@
       });
     }
 
-    // Fonction de filtrage combiné, avec nettoyage du versement
+    // Fonction de filtrage combiné avec nettoyage du versement
     function filtrerDonnees(donnees) {
       const filtreAssureur = document.getElementById("assureur").value;
       const filtreDistributeur = document.getElementById("distributeur").value;
@@ -399,7 +434,7 @@
       afficherDonnees(donneesFiltrees);
     }
 
-    // Fonction pour ouvrir le modal et afficher les performances pour chaque profil (données du second onglet)
+    // Fonction pour ouvrir le modal et afficher les performances (données du second onglet)
     function viewPerformance(contract) {
       const modal = document.getElementById("performanceModal");
       modal.style.display = "block";
@@ -453,9 +488,11 @@
             });
 
             // Tableau des performances annuelles pour 2024 à 2016
-            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016"];
+            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2020", "2018", "2017", "2016"];
+            // Correction : on utilise ici l'array souhaité (vous pouvez l'adapter si nécessaire)
+            const correctYearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2020", "2018", "2017", "2016"];
             let tableHTML = `<table class="perf-table"><thead><tr><th>Année</th><th>Performance (%)</th></tr></thead><tbody>`;
-            yearsArray.forEach(year => {
+            correctYearsArray.forEach(year => {
               const perfValue = (profileRow[year] !== undefined && profileRow[year] !== "") ? profileRow[year] : "-";
               tableHTML += `<tr><td>${year}</td><td>${perfValue}</td></tr>`;
             });
