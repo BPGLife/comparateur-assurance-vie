@@ -34,7 +34,7 @@
       letter-spacing: 1px;
       margin-bottom: 10px;
     }
-    /* Sous-header pour le copyright sous le header */
+    /* Sous-header pour le copyright */
     .sub-header {
       text-align: center;
       font-size: 0.9em;
@@ -92,7 +92,7 @@
     .filters input[type="range"] {
       cursor: pointer;
     }
-    /* Bouton toggle (flèche) */
+    /* Bouton toggle (flèche) pour déplier la section extra */
     .toggle-arrow {
       background: none;
       border: none;
@@ -100,7 +100,7 @@
       cursor: pointer;
       margin-right: 5px;
     }
-    /* Info-icons avec data-tooltip */
+    /* Info-icons avec tooltip */
     .info-icon {
       position: relative;
       display: inline-block;
@@ -134,7 +134,7 @@
       margin-right: 5px;
       cursor: pointer;
     }
-    /* Tableau moderne avec alternance de couleur */
+    /* Tableau principal avec alternance de couleur */
     table {
       width: 100%;
       border-collapse: collapse;
@@ -252,7 +252,7 @@
 <body>
   <!-- Header -->
   <div class="header">Comparateur d'Assurance Vie</div>
-  <!-- Sous-header avec copyright sous le header -->
+  <!-- Sous-header -->
   <div class="sub-header">
     <p>&copy; Baptiste Plat Garnier</p>
   </div>
@@ -281,7 +281,7 @@
         <input type="range" id="versement" value="10000" min="0" max="10000" step="100">
         <span id="versementValue">10000</span>
       </div>
-      <!-- Cases à cocher pour filtres complémentaires avec info-icons -->
+      <!-- Cases à cocher avec info-icons -->
       <div>
         <input type="checkbox" id="gestion" class="checkbox-filter" data-column="Gestion pilotée" data-value="Gestion pilotée">
         <label for="gestion">Gestion pilotée</label>
@@ -319,7 +319,7 @@
       </div>
     </div>
 
-    <!-- Tableau principal (colonnes "Année" et "Nature" transférées dans la section extra) -->
+    <!-- Tableau principal (les colonnes "Année" et "Nature" sont transférées dans la section extra) -->
     <table id="contrats">
       <thead>
         <tr>
@@ -355,12 +355,38 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // Fonction pour afficher le tableau principal avec flèche toggle intégrée et alternance de couleur
+    // Fonction pour construire le tableau des informations financières supplémentaires
+    function buildFinancialTable(item) {
+      const headers = [
+        "Frais de dossier",
+        "Droits d'entrée",
+        "FV€",
+        "Frais de rachat",
+        "Fonds en euro classique",
+        "Frais de gestion UC",
+        "Frais forfaitaires annuels",
+        "FVUC",
+        "FVGSM",
+        "Arbitrages gratuits/an"
+      ];
+      let tableHTML = `<table class="perf-table"><thead><tr>`;
+      headers.forEach(header => {
+        tableHTML += `<th>${header}</th>`;
+      });
+      tableHTML += `</tr></thead><tbody><tr>`;
+      headers.forEach(header => {
+        tableHTML += `<td>${item[header] || "-"}</td>`;
+      });
+      tableHTML += `</tr></tbody></table>`;
+      return tableHTML;
+    }
+
+    // Fonction pour afficher le tableau principal avec flèche toggle intégrée
     function afficherDonnees(donnees) {
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
       donnees.forEach((item, index) => {
-        // Ligne principale avec couleur alternée : pair -> blanc, impair -> #EFEFEF
+        // Création de la ligne principale avec alternance de couleur
         const tr = document.createElement("tr");
         tr.style.backgroundColor = (index % 2 === 0) ? "#fff" : "#EFEFEF";
         tr.innerHTML = `
@@ -380,6 +406,7 @@
         tbody.appendChild(tr);
 
         // Ligne supplémentaire dépliable pour afficher les informations supplémentaires
+        // Transfert des informations "Année", "Nature", "Ticket", "Architecture", "Frais add. GP" et le nouveau tableau financier
         const extraRow = document.createElement("tr");
         extraRow.id = "extra_" + index;
         extraRow.className = "extra-info";
@@ -390,13 +417,15 @@
           <p><strong>Encours min. en gestion pilotée :</strong> ${item.ticket}</p>
           <p><strong>Architecture :</strong> ${item.architecture}</p>
           <p><strong>Frais additionnels de la gestion pilotée :</strong> ${item["frais add. GP"]}</p>
+          <h4>Détails financiers</h4>
+          ${buildFinancialTable(item)}
           <div class="extra-content">Informations supplémentaires à venir.</div>
         </td>`;
         tbody.appendChild(extraRow);
       });
     }
 
-    // Fonction de bascule pour la ligne supplémentaire et changement de la flèche
+    // Fonction de bascule pour la ligne supplémentaire et changement de l'icône de la flèche
     function toggleExtra(index, btn) {
       const extraRow = document.getElementById("extra_" + index);
       if (extraRow.style.display === "none" || extraRow.style.display === "") {
@@ -514,9 +543,10 @@
             });
 
             // Tableau des performances annuelles pour 2024 à 2016
-            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016"];
+            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2020", "2018", "2017", "2016"];
+            const correctYearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2020", "2018", "2017", "2016"];
             let tableHTML = `<table class="perf-table"><thead><tr><th>Année</th><th>Performance (%)</th></tr></thead><tbody>`;
-            yearsArray.forEach(year => {
+            correctYearsArray.forEach(year => {
               const perfValue = (profileRow[year] !== undefined && profileRow[year] !== "") ? profileRow[year] : "-";
               tableHTML += `<tr><td>${year}</td><td>${perfValue}</td></tr>`;
             });
@@ -543,7 +573,7 @@
       }
     });
 
-    // Initialisation du comparateur principal
+    // Fonction pour initialiser le comparateur principal
     function init() {
       const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?output=csv';
       Papa.parse(csvUrl, {
