@@ -32,6 +32,13 @@
       font-size: 2.2em;
       font-weight: 700;
       letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+    /* Sous-header pour le copyright sous le header */
+    .sub-header {
+      text-align: center;
+      font-size: 0.9em;
+      color: #666;
       margin-bottom: 20px;
     }
     /* Conteneur principal */
@@ -42,6 +49,15 @@
       padding: 25px;
       border-radius: 8px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+    /* Footer */
+    .footer {
+      text-align: center;
+      font-size: 0.9em;
+      color: #666;
+      margin-top: 40px;
+      padding: 10px 0;
+      border-top: 1px solid #e2e8f0;
     }
     /* Zone des filtres */
     .filters {
@@ -76,7 +92,7 @@
     .filters input[type="range"] {
       cursor: pointer;
     }
-    /* Bouton toggle (flèche) pour déplier la section extra */
+    /* Bouton toggle (flèche) */
     .toggle-arrow {
       background: none;
       border: none;
@@ -84,7 +100,7 @@
       cursor: pointer;
       margin-right: 5px;
     }
-    /* Info-icon et tooltip */
+    /* Info-icons avec data-tooltip */
     .info-icon {
       position: relative;
       display: inline-block;
@@ -118,7 +134,7 @@
       margin-right: 5px;
       cursor: pointer;
     }
-    /* Tableau moderne */
+    /* Tableau moderne avec alternance de couleur */
     table {
       width: 100%;
       border-collapse: collapse;
@@ -234,7 +250,12 @@
   </style>
 </head>
 <body>
+  <!-- Header -->
   <div class="header">Comparateur d'Assurance Vie</div>
+  <!-- Sous-header avec copyright sous le header -->
+  <div class="sub-header">
+    <p>&copy; Baptiste Plat Garnier</p>
+  </div>
   <div class="container">
     <!-- Zone des filtres -->
     <div class="filters">
@@ -260,41 +281,41 @@
         <input type="range" id="versement" value="10000" min="0" max="10000" step="100">
         <span id="versementValue">10000</span>
       </div>
-      <!-- Cases à cocher pour filtres complémentaires avec info-icon -->
+      <!-- Cases à cocher pour filtres complémentaires avec info-icons -->
       <div>
         <input type="checkbox" id="gestion" class="checkbox-filter" data-column="Gestion pilotée" data-value="Gestion pilotée">
         <label for="gestion">Gestion pilotée</label>
-        <span class="info-icon" data-tooltip="La gestion pilotée ou gestion sous mandat permet de déléguer la gestion de votre épargne à un gestionnaire qui déterminera une allocation et effectuera des arbitrages en votre nom.">ℹ</span>
+        <span class="info-icon" data-tooltip="Ce contrat offre une gestion pilotée par des experts.">ℹ</span>
       </div>
       <div>
         <input type="checkbox" id="versements_programmes" class="checkbox-filter" data-column="Versements programmés" data-value="Versements programmés">
         <label for="versements_programmes">Versements programmés</label>
-        <span class="info-icon" data-tooltip="Il s'agit d'une méthode d'épargne qui consiste à investir une somme d'argent de manière automatique et régulière, par exemple mensuellement ou trimestriellement.">ℹ</span>
+        <span class="info-icon" data-tooltip="Ce contrat permet des versements programmés réguliers.">ℹ</span>
       </div>
       <div>
         <input type="checkbox" id="securisation" class="checkbox-filter" data-column="Sécurisation des plus-values" data-value="Sécurisation des plus-values">
         <label for="securisation">Sécurisation des plus-values</label>
-        <span class="info-icon" data-tooltip="Elle permet de définir un seuil à partir duquel les plus-values générées par les unités de compte seront reversées sur le fonds en euros.">ℹ</span>
+        <span class="info-icon" data-tooltip="Ce contrat offre une sécurisation optimisée de vos plus-values.">ℹ</span>
       </div>
       <div>
         <input type="checkbox" id="dynamisation" class="checkbox-filter" data-column="Dynamisation des plus-values" data-value="Dynamisation des plus-values">
         <label for="dynamisation">Dynamisation des plus-values</label>
-        <span class="info-icon" data-tooltip="Elle permet de transférer les intérêts réalisés sur un fonds en euros vers des unités de compte.">ℹ</span>
+        <span class="info-icon" data-tooltip="Ce contrat permet une dynamisation active de vos plus-values.">ℹ</span>
       </div>
       <div>
         <input type="checkbox" id="investissement" class="checkbox-filter" data-column="Investissement progressif" data-value="Investissement progressif">
         <label for="investissement">Investissement progressif</label>
-        <span class="info-icon" data-tooltip="L'investissement progressif facilite la diversification vers les unités de compte en lissant les risques sur une période déterminée à l'avance.">ℹ</span>
+        <span class="info-icon" data-tooltip="Ce contrat propose un investissement progressif adapté.">ℹ</span>
       </div>
       <div>
         <input type="checkbox" id="stoploss" class="checkbox-filter" data-column="Stop/Loss" data-value="Stop/Loss">
         <label for="stoploss">Stop/Loss</label>
-        <span class="info-icon" data-tooltip="Elle permet de réaliser des arbitrages automatiques sur les investissements réalisés. Cette solution vise à limiter les pertes en cas de baisse de la valeur des investissements.">ℹ</span>
+        <span class="info-icon" data-tooltip="Ce contrat inclut un mécanisme de stop/loss pour limiter les pertes.">ℹ</span>
       </div>
       <div>
         <input type="checkbox" id="reequilibrage" class="checkbox-filter" data-column="Réequilibrage auitomatique" data-value="Réequilibrage auitomatique">
         <label for="reequilibrage">Réequilibrage auitomatique</label>
-        <span class="info-icon" data-tooltip="Elle permet de réaliser périodiquement les arbitrages nécessaires pour rétablir l'allocation-cible.">ℹ</span>
+        <span class="info-icon" data-tooltip="Ce contrat offre un rééquilibrage automatique de votre portefeuille.">ℹ</span>
       </div>
     </div>
 
@@ -316,6 +337,11 @@
     </table>
   </div>
 
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; Baptiste Plat Garnier</p>
+  </footer>
+
   <!-- Modal de performance -->
   <div id="performanceModal" class="modal">
     <div class="modal-content">
@@ -329,13 +355,14 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // Fonction pour afficher le tableau principal avec bouton toggle intégré
+    // Fonction pour afficher le tableau principal avec flèche toggle intégrée et alternance de couleur
     function afficherDonnees(donnees) {
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
       donnees.forEach((item, index) => {
-        // Ligne principale du contrat avec flèche toggle dans la première cellule
+        // Ligne principale avec couleur alternée : pair -> blanc, impair -> #EFEFEF
         const tr = document.createElement("tr");
+        tr.style.backgroundColor = (index % 2 === 0) ? "#fff" : "#EFEFEF";
         tr.innerHTML = `
           <td>
             <button class="toggle-arrow" onclick="toggleExtra(${index}, this)">▼</button>
@@ -353,7 +380,6 @@
         tbody.appendChild(tr);
 
         // Ligne supplémentaire dépliable pour afficher les informations supplémentaires
-        // On y transfère Année, Nature, Ticket, Architecture et Frais additionnels de la gestion pilotée
         const extraRow = document.createElement("tr");
         extraRow.id = "extra_" + index;
         extraRow.className = "extra-info";
@@ -370,7 +396,7 @@
       });
     }
 
-    // Fonction de bascule pour la ligne supplémentaire et changement de l'icône de la flèche
+    // Fonction de bascule pour la ligne supplémentaire et changement de la flèche
     function toggleExtra(index, btn) {
       const extraRow = document.getElementById("extra_" + index);
       if (extraRow.style.display === "none" || extraRow.style.display === "") {
@@ -404,7 +430,7 @@
       });
     }
 
-    // Fonction de filtrage combiné avec nettoyage du versement
+    // Fonction de filtrage combiné, avec nettoyage du versement
     function filtrerDonnees(donnees) {
       const filtreAssureur = document.getElementById("assureur").value;
       const filtreDistributeur = document.getElementById("distributeur").value;
@@ -434,7 +460,7 @@
       afficherDonnees(donneesFiltrees);
     }
 
-    // Fonction pour ouvrir le modal et afficher les performances (données du second onglet)
+    // Fonction pour ouvrir le modal et afficher les performances pour chaque profil (données du second onglet)
     function viewPerformance(contract) {
       const modal = document.getElementById("performanceModal");
       modal.style.display = "block";
@@ -488,11 +514,9 @@
             });
 
             // Tableau des performances annuelles pour 2024 à 2016
-            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2020", "2018", "2017", "2016"];
-            // Correction : on utilise ici l'array souhaité (vous pouvez l'adapter si nécessaire)
-            const correctYearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2020", "2018", "2017", "2016"];
+            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016"];
             let tableHTML = `<table class="perf-table"><thead><tr><th>Année</th><th>Performance (%)</th></tr></thead><tbody>`;
-            correctYearsArray.forEach(year => {
+            yearsArray.forEach(year => {
               const perfValue = (profileRow[year] !== undefined && profileRow[year] !== "") ? profileRow[year] : "-";
               tableHTML += `<tr><td>${year}</td><td>${perfValue}</td></tr>`;
             });
