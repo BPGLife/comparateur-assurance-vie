@@ -481,27 +481,35 @@
 
         tbody.appendChild(tr);
 
-        // Ligne supplémentaire dépliable pour afficher les informations complémentaires (suppression de la ligne sur les frais additionnels)
+        // Ligne supplémentaire dépliable pour afficher les informations complémentaires
         const extraRow = document.createElement("tr");
         extraRow.id = "extra_" + index;
         extraRow.className = "extra-info";
         extraRow.style.display = "none";
         const tdExtra = document.createElement("td");
         tdExtra.colSpan = 5;
-        tdExtra.innerHTML = `<p><strong>Année de lancement :</strong> ${item.annee}</p>
-          <p><strong>Nature du contrat :</strong> ${item.nature}</p>
-          <p><strong>Encours min. en gestion pilotée :</strong> ${item.ticket}</p>
-          <p><strong>Architecture :</strong> ${item.architecture}</p>
-          <h4>Supports d'investissement en gestion libre</h4>
-          <p><strong>ETF :</strong> ${item["ETF"] || "-"}</p>
-          <p><strong>Titres vifs :</strong> ${item["Titres vifs"] || "-"}</p>
-          <p><strong>FCPR :</strong> ${item["FCPR"] || "-"}</p>
-          <p><strong>OPCI :</strong> ${item["OPCI"] || "-"}</p>
-          <p><strong>SCPI :</strong> ${item["SCPI"] || "-"}</p>
-          <p><strong>SCI :</strong> ${item["SCI"] || "-"}</p>
-          <h4>Détails financiers</h4>
-          ${buildFinancialTables(item)}
-          <div class="extra-content">Informations supplémentaires à venir.</div>`;
+        tdExtra.innerHTML = `
+          <div style="display: flex; gap: 20px;">
+            <div style="flex: 1;">
+              <p><strong>Année de lancement :</strong> ${item.annee}</p>
+              <p><strong>Nature du contrat :</strong> ${item.nature}</p>
+              <p><strong>Encours min. en gestion pilotée :</strong> ${item.ticket}</p>
+              <p><strong>Architecture :</strong> ${item.architecture}</p>
+              <h4>Supports d'investissement en gestion libre</h4>
+              <p><strong>ETF :</strong> ${item["ETF"] || "-"}</p>
+              <p><strong>Titres vifs :</strong> ${item["Titres vifs"] || "-"}</p>
+              <p><strong>FCPR :</strong> ${item["FCPR"] || "-"}</p>
+              <p><strong>OPCI :</strong> ${item["OPCI"] || "-"}</p>
+              <p><strong>SCPI :</strong> ${item["SCPI"] || "-"}</p>
+              <p><strong>SCI :</strong> ${item["SCI"] || "-"}</p>
+            </div>
+            <div style="flex: 1;">
+              <h4>Détails financiers</h4>
+              ${buildFinancialTables(item)}
+            </div>
+          </div>
+          <div class="extra-content">Informations supplémentaires à venir.</div>
+        `;
         extraRow.appendChild(tdExtra);
         tbody.appendChild(extraRow);
       });
