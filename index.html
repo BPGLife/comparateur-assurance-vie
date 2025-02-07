@@ -606,17 +606,43 @@
             const profileDiv = document.createElement("div");
             profileDiv.className = "profile-section";
             profileDiv.innerHTML = `<h3>Profil : ${profileRow["Profil"] || "Non défini"} - Gestionnaire : ${profileRow["Gestionnaire d'actif"] || "Non défini"}</h3>`;
-
-            // Camembert pour la répartition UC / Fonds en euros (200x200)
+            
+            // Création d'un conteneur flex pour disposer le tableau et le graphique côte à côte
+            const containerDiv = document.createElement("div");
+            containerDiv.style.display = "flex";
+            containerDiv.style.gap = "20px";
+            
+            // Création de la div pour le tableau des performances
+            const tableDiv = document.createElement("div");
+            tableDiv.style.flex = "1";
+            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2020", "2018", "2017", "2016"];
+            let tableHTML = `<table class="perf-table"><thead><tr><th>Année</th><th>Performance (%)</th></tr></thead><tbody>`;
+            yearsArray.forEach(year => {
+              const perfValue = (profileRow[year] !== undefined && profileRow[year] !== "") ? profileRow[year] : "-";
+              tableHTML += `<tr><td>${year}</td><td>${perfValue}</td></tr>`;
+            });
+            tableHTML += `</tbody></table>`;
+            tableDiv.innerHTML = tableHTML;
+            
+            // Création de la div pour le graphique (pie chart)
+            const chartDiv = document.createElement("div");
+            chartDiv.style.flex = "1";
             const pieCanvas = document.createElement("canvas");
             pieCanvas.id = `pieChart_${index}`;
             pieCanvas.width = 200;
             pieCanvas.height = 200;
-            const chartsDiv = document.createElement("div");
-            chartsDiv.className = "charts";
-            chartsDiv.appendChild(pieCanvas);
-            profileDiv.appendChild(chartsDiv);
-
+            chartDiv.appendChild(pieCanvas);
+            
+            // Ajout des deux colonnes dans le conteneur flex
+            containerDiv.appendChild(tableDiv);
+            containerDiv.appendChild(chartDiv);
+            
+            // Ajout du conteneur flex à la section profil
+            profileDiv.appendChild(containerDiv);
+            
+            chartsContainer.appendChild(profileDiv);
+            
+            // Initialisation du graphique (pie chart)
             const partUC = profileRow.part_uc ? parseFloat(profileRow.part_uc) : 50;
             const partFonds = profileRow.part_fonds ? parseFloat(profileRow.part_fonds) : (100 - partUC);
             new Chart(pieCanvas.getContext("2d"), {
@@ -630,18 +656,6 @@
               },
               options: { responsive: true }
             });
-
-            // Tableau des performances annuelles pour 2024 à 2016
-            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2020", "2018", "2017", "2016"];
-            let tableHTML = `<table class="perf-table"><thead><tr><th>Année</th><th>Performance (%)</th></tr></thead><tbody>`;
-            yearsArray.forEach(year => {
-              const perfValue = (profileRow[year] !== undefined && profileRow[year] !== "") ? profileRow[year] : "-";
-              tableHTML += `<tr><td>${year}</td><td>${perfValue}</td></tr>`;
-            });
-            tableHTML += `</tbody></table>`;
-            profileDiv.innerHTML += tableHTML;
-
-            chartsContainer.appendChild(profileDiv);
           });
         },
         error: function(err) {
