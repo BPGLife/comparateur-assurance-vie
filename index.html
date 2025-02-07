@@ -247,7 +247,7 @@
     .perf-table th {
       background-color: #f0f4f8;
     }
-    /* Section extra (dépliable) – disposition en deux colonnes */
+    /* Section extra (dépliable) – deux colonnes */
     .extra-container {
       display: flex;
       justify-content: space-between;
@@ -283,9 +283,7 @@
   <!-- Header -->
   <div class="header">Comparateur d'Assurance Vie</div>
   <!-- Sous-header -->
-  <div class="sub-header">
-    <p>&copy; Baptiste Plat Garnier</p>
-  </div>
+  <div class="sub-header"><p>&copy; Baptiste Plat Garnier</p></div>
   <div class="container">
     <!-- Zone des filtres -->
     <div class="filters">
@@ -310,7 +308,7 @@
         <input type="range" id="versement" value="10000" min="0" max="10000" step="100">
         <span id="versementValue">10000</span>
       </div>
-      <!-- Cases à cocher avec info-icons -->
+      <!-- Cases à cocher -->
       <div>
         <input type="checkbox" id="gestion" class="checkbox-filter" data-column="Gestion pilotée" data-value="Gestion pilotée">
         <label for="gestion">Gestion pilotée</label>
@@ -462,7 +460,7 @@
           }</td>
         `;
         tbody.appendChild(tr);
-        // Ligne dépliable avec deux colonnes
+        // Ligne dépliable en deux colonnes
         const extraRow = document.createElement("tr");
         extraRow.id = "extra_" + index;
         extraRow.className = "extra-info";
@@ -505,7 +503,7 @@
       }
     }
 
-    // Fonctions pour remplir les menus déroulants classiques
+    // Remplissage des menus déroulants classiques
     function remplirFiltreAssureur(donnees) {
       const select = document.getElementById("assureur");
       select.innerHTML = '<option value="">Tous</option>';
@@ -570,7 +568,6 @@
         header: true,
         complete: function(results) {
           const perfData = results.data;
-          // Comparaison avec .trim() pour éliminer d'éventuels espaces
           const contractPerfRows = perfData.filter(row =>
             row["Nom du contrat"] && row["Nom du contrat"].trim() === contract.nom.trim()
           );
@@ -603,7 +600,7 @@
               },
               options: { responsive: true }
             });
-            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2018", "2021", "2017", "2016"];
+            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016"];
             let tableHTML = `<table class="perf-table"><thead><tr><th>Année</th><th>Performance (%)</th></tr></thead><tbody>`;
             yearsArray.forEach(year => {
               const perfValue = (profileRow[year] !== undefined && profileRow[year] !== "") ? profileRow[year] : "-";
