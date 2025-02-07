@@ -243,6 +243,23 @@
     .perf-table th {
       background-color: #f0f4f8;
     }
+    /* Encarts financiers décomposés */
+    .investment-supports {
+      border: 1px solid #ddd;
+      background-color: #f0f4f8;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 4px;
+    }
+    .investment-supports h4 {
+      margin-bottom: 5px;
+      font-size: 1em;
+      color: #357ab8;
+    }
+    .investment-supports p {
+      margin: 0;
+      font-size: 0.9em;
+    }
     /* Ligne supplémentaire pour la section extra */
     .extra-info {
       background-color: #f9fafb;
@@ -319,7 +336,7 @@
       </div>
     </div>
 
-    <!-- Tableau principal (les colonnes "Année" et "Nature" transférées dans la section extra) -->
+    <!-- Tableau principal (les colonnes "Année" et "Nature" seront transférées dans la section dépliable) -->
     <table id="contrats">
       <thead>
         <tr>
@@ -419,7 +436,7 @@
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
       donnees.forEach((item, index) => {
-        // Ligne principale avec alternance de couleur (pair : #fff, impair : #EFEFEF)
+        // Ligne principale avec alternance de couleur (pair: #fff, impair: #EFEFEF)
         const tr = document.createElement("tr");
         tr.style.backgroundColor = (index % 2 === 0) ? "#fff" : "#EFEFEF";
         tr.innerHTML = `
@@ -438,7 +455,9 @@
         `;
         tbody.appendChild(tr);
 
-        // Ligne supplémentaire dépliable : décomposition en deux colonnes (texte à gauche et tableau financier à droite)
+        // Ligne supplémentaire dépliable pour afficher les informations supplémentaires
+        // On transfère ici : Année, Nature, Ticket, Architecture, Frais add. GP
+        // Et on ajoute le tableau financier décomposé, ainsi qu'un encart statique "Supports d'investissement en gestion libre"
         const extraRow = document.createElement("tr");
         extraRow.id = "extra_" + index;
         extraRow.className = "extra-info";
@@ -451,12 +470,17 @@
               <p><strong>Encours min. en gestion pilotée :</strong> ${item.ticket}</p>
               <p><strong>Architecture :</strong> ${item.architecture}</p>
               <p><strong>Frais additionnels de la gestion pilotée :</strong> ${item["frais add. GP"]}</p>
-              <div class="extra-content">Informations supplémentaires à venir.</div>
             </div>
             <div class="extra-right" style="width: 50%; text-align: right;">
+              <h4>Détails financiers</h4>
               ${buildFinancialTables(item)}
             </div>
           </div>
+          <div class="investment-supports">
+            <h4>Supports d'investissement en gestion libre</h4>
+            <p>ETF, Titres vifs, FCPR, OPCI, SCPI, SCI</p>
+          </div>
+          <div class="extra-content">Informations supplémentaires à venir.</div>
         </td>`;
         tbody.appendChild(extraRow);
       });
@@ -580,11 +604,10 @@
             });
 
             // Tableau des performances annuelles pour 2024 à 2016
-            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2020", "2018", "2021", "2017", "2016"];
-            // Correction : Utilisation de l'array souhaité (à adapter si nécessaire)
-            const correctYearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2020", "2018", "2017", "2016"];
+            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2020", "2018", "2017", "2016"];
+            // Correction : utilisez l'array souhaité ; ici, nous utilisons l'array tel quel.
             let tableHTML = `<table class="perf-table"><thead><tr><th>Année</th><th>Performance (%)</th></tr></thead><tbody>`;
-            correctYearsArray.forEach(year => {
+            yearsArray.forEach(year => {
               const perfValue = (profileRow[year] !== undefined && profileRow[year] !== "") ? profileRow[year] : "-";
               tableHTML += `<tr><td>${year}</td><td>${perfValue}</td></tr>`;
             });
