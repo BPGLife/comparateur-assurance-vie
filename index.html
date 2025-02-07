@@ -7,110 +7,113 @@
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    /* Styles de base */
+    /* Base & Réinitialisation */
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Roboto', sans-serif; background: #f7f9fc; color: #333; line-height: 1.6; }
-    /* Header et footer */
-    .header { background: linear-gradient(135deg, #4a90e2, #357ab8); color: #fff; padding: 30px 0; text-align: center; font-size: 2.2em; font-weight: 700; letter-spacing: 1px; margin-bottom: 10px; }
+    body { font-family: 'Roboto', sans-serif; background-color: #f7f9fc; color: #333; line-height: 1.6; }
+    a { text-decoration: none; color: inherit; }
+    /* Header et Sous-header */
+    .header {
+      background: linear-gradient(135deg, #4a90e2, #357ab8);
+      color: #fff;
+      padding: 30px 0;
+      text-align: center;
+      font-size: 2.2em;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
     .sub-header { text-align: center; font-size: 0.9em; color: #666; margin-bottom: 20px; }
-    .footer { text-align: center; font-size: 0.9em; color: #666; margin-top: 40px; padding: 10px 0; border-top: 1px solid #e2e8f0; }
     /* Conteneur principal */
-    .container { max-width: 1200px; margin: 0 auto 40px; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    .container {
+      max-width: 1200px; margin: 0 auto 40px; background-color: #fff; padding: 25px;
+      border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+    /* Footer */
+    .footer { text-align: center; font-size: 0.9em; color: #666; margin-top: 40px; padding: 10px 0; border-top: 1px solid #e2e8f0; }
     /* Zone des filtres */
     .filters { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-bottom: 25px; }
     .filters > div { margin: 5px; }
     .filters label { font-weight: 500; margin-right: 5px; }
-    .filters input[type="text"], .filters input[type="range"] { padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 1em; transition: all 0.3s ease; }
-    .filters input[type="text"]:focus { outline: none; border-color: #4a90e2; box-shadow: 0 0 5px rgba(74,144,226,0.3); }
+    .filters select, .filters input[type="text"], .filters input[type="range"] {
+      padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 1em; transition: all 0.3s ease;
+    }
+    .filters input[type="text"]:focus, .filters select:focus {
+      outline: none; border-color: #4a90e2; box-shadow: 0 0 5px rgba(74,144,226,0.3);
+    }
     .filters input[type="range"] { cursor: pointer; }
-    /* Menu déroulant multisélection */
-    .dropdown {
-      position: relative;
-      display: inline-block;
-      width: 200px;
-    }
-    .dropdown-toggle {
-      width: 100%;
-      padding: 8px 12px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      background: #fff;
-      text-align: left;
-      cursor: pointer;
-    }
-    .dropdown-options {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      max-height: 150px;
-      overflow-y: auto;
-      border: 1px solid #ccc;
-      background: #fff;
-      border-radius: 6px;
-      z-index: 10;
-      display: none;
-    }
-    .dropdown-options label {
-      display: block;
-      padding: 5px 10px;
-      cursor: pointer;
-    }
-    .dropdown-options label:hover { background: #f0f4f8; }
     /* Info-icons */
     .info-icon {
-      position: relative;
-      display: inline-block;
-      cursor: help;
-      margin-left: 5px;
-      color: #4a90e2;
-      font-size: 1em;
+      position: relative; display: inline-block; cursor: help; margin-left: 5px; color: #4a90e2; font-size: 1em;
     }
     .info-icon::after {
-      content: attr(data-tooltip);
-      position: absolute;
-      bottom: 125%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,0.7);
-      color: #fff;
-      padding: 5px 8px;
-      border-radius: 4px;
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-      z-index: 100;
+      content: attr(data-tooltip); position: absolute; bottom: 125%; left: 50%;
+      transform: translateX(-50%); background: rgba(0,0,0,0.7); color: #fff; padding: 5px 8px;
+      border-radius: 4px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; z-index: 100;
     }
     .info-icon:hover::after { opacity: 1; }
+    /* Cases à cocher */
+    .filters input[type="checkbox"] { transform: scale(1.2); margin-right: 5px; cursor: pointer; }
     /* Tableau principal */
     table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-    table thead { background: #f0f4f8; }
-    table th, table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #e2e8f0; }
-    table tbody tr:hover { background: #f9fafb; }
+    table thead { background-color: #f0f4f8; }
+    table th, table td {
+      padding: 12px 15px; text-align: left; border-bottom: 1px solid #e2e8f0;
+    }
+    table tbody tr:hover { background-color: #f9fafb; }
+    /* Renommage colonne Actions en Performances */
     table thead th:last-child { text-align: center; }
+    /* Bouton toggle (flèche) */
+    .toggle-arrow {
+      background: none; border: none; font-size: 1em; cursor: pointer; margin-right: 5px;
+    }
     /* Boutons d'action */
     .btn-performance {
-      background: #4a90e2; color: #fff; padding: 6px 12px; border: none; border-radius: 6px;
-      cursor: pointer; font-size: 0.9em; transition: background 0.3s ease;
+      background-color: #4a90e2; color: #fff; padding: 6px 12px; border: none; border-radius: 6px;
+      cursor: pointer; font-size: 0.9em; transition: background-color 0.3s ease;
     }
-    .btn-performance:hover { background: #357ab8; }
-    /* Modal */
-    .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background: rgba(0,0,0,0.5); padding: 20px; }
-    .modal-content { background: #fff; margin: 5% auto; padding: 20px; border-radius: 8px; width: 95%; max-width: 900px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-    .modal-close { position: absolute; top: 10px; right: 15px; font-size: 1.5em; cursor: pointer; color: #888; }
+    .btn-performance:hover { background-color: #357ab8; }
     /* Alternance de couleur des lignes */
-    tbody tr:nth-child(odd) { background: #fff; }
-    tbody tr:nth-child(even) { background: #EFEFEF; }
-    /* Section extra (dépliable) en deux colonnes */
+    tbody tr:nth-child(odd) { background-color: #fff; }
+    tbody tr:nth-child(even) { background-color: #EFEFEF; }
+    /* Section extra (dépliable) – disposition en deux colonnes */
     .extra-container { display: flex; justify-content: space-between; }
     .extra-left { width: 55%; text-align: left; }
     .extra-right { width: 40%; text-align: left; }
-    .extra-info { background: #f9fafb; }
-    /* Encart supports d'investissement */
+    .extra-info { background-color: #f9fafb; }
+    /* Encart Supports d'investissement en gestion libre */
     .investment-supports { margin-top: 10px; text-align: left; }
     .investment-supports h4 { margin-bottom: 5px; font-size: 1em; color: #357ab8; }
     .investment-supports p { margin: 2px 0; font-size: 0.9em; }
+    @media (max-width: 768px) {
+      .filters { flex-direction: column; align-items: center; }
+      table th, table td { padding: 10px; }
+    }
+    /* Modal */
+    .modal {
+      display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
+      overflow: auto; background-color: rgba(0,0,0,0.5); padding: 20px;
+    }
+    .modal-content {
+      background-color: #fff; margin: 5% auto; padding: 20px; border-radius: 8px;
+      width: 95%; max-width: 900px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .modal-close {
+      position: absolute; top: 10px; right: 15px; font-size: 1.5em; cursor: pointer; color: #888;
+    }
+    .profile-section { margin-bottom: 40px; border-bottom: 1px solid #e2e8f0; padding-bottom: 20px; }
+    .profile-section:last-child { border-bottom: none; }
+    .charts { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-bottom: 20px; }
+    .charts canvas {
+      background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px;
+    }
+    /* Tableau de performances */
+    .perf-table {
+      border-collapse: collapse; width: 100%; max-width: 400px; margin: 10px 0;
+    }
+    .perf-table th, .perf-table td {
+      border: 1px solid #e2e8f0; padding: 6px 8px; text-align: center; font-size: 0.9em;
+    }
+    .perf-table th { background-color: #f0f4f8; }
   </style>
 </head>
 <body>
@@ -119,23 +122,19 @@
   <!-- Sous-header -->
   <div class="sub-header"><p>&copy; Baptiste Plat Garnier</p></div>
   <div class="container">
-    <!-- Zone des filtres -->
+    <!-- Zone des filtres (menus déroulants simples) -->
     <div class="filters">
-      <!-- Menu déroulant multi-sélection pour Assureur -->
       <div>
-        <label>Assureur :</label>
-        <div class="dropdown" id="assureurDropdown">
-          <button type="button" class="dropdown-toggle" onclick="toggleDropdown('assureurDropdown')">Tous</button>
-          <div class="dropdown-options"></div>
-        </div>
+        <label for="assureur">Assureur :</label>
+        <select id="assureur">
+          <option value="">Tous</option>
+        </select>
       </div>
-      <!-- Menu déroulant multi-sélection pour Distributeur -->
       <div>
-        <label>Distributeur :</label>
-        <div class="dropdown" id="distributeurDropdown">
-          <button type="button" class="dropdown-toggle" onclick="toggleDropdown('distributeurDropdown')">Tous</button>
-          <div class="dropdown-options"></div>
-        </div>
+        <label for="distributeur">Distributeur :</label>
+        <select id="distributeur">
+          <option value="">Tous</option>
+        </select>
       </div>
       <div>
         <label for="nom">Nom du contrat :</label>
@@ -146,7 +145,7 @@
         <input type="range" id="versement" value="10000" min="0" max="10000" step="100">
         <span id="versementValue">10000</span>
       </div>
-      <!-- Autres cases à cocher -->
+      <!-- Autres cases à cocher avec info-icons -->
       <div>
         <input type="checkbox" id="gestion" class="checkbox-filter" data-column="Gestion pilotée" data-value="Gestion pilotée">
         <label for="gestion">Gestion pilotée</label>
@@ -219,37 +218,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    /* Fonctions pour le menu déroulant multi-sélection */
-    function toggleDropdown(dropdownId) {
-      const dropdown = document.getElementById(dropdownId);
-      const options = dropdown.querySelector('.dropdown-options');
-      options.style.display = (options.style.display === 'block') ? 'none' : 'block';
-    }
-    function updateDropdownText(dropdownId) {
-      const dropdown = document.getElementById(dropdownId);
-      const toggleBtn = dropdown.querySelector('.dropdown-toggle');
-      const checked = dropdown.querySelectorAll('input[type="checkbox"]:checked');
-      const values = Array.from(checked).map(cb => cb.value);
-      toggleBtn.textContent = (values.length > 0) ? values.join(', ') : 'Tous';
-      filtrerDonnees(window.globalData); // déclenche le filtrage après mise à jour
-    }
-    function populateDropdown(dropdownId, values) {
-      const container = document.getElementById(dropdownId).querySelector('.dropdown-options');
-      container.innerHTML = "";
-      values.forEach(val => {
-        const label = document.createElement("label");
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.value = val;
-        checkbox.addEventListener("change", () => updateDropdownText(dropdownId));
-        label.appendChild(checkbox);
-        label.appendChild(document.createTextNode(" " + val));
-        container.appendChild(label);
-      });
-    }
-    
-    /* Fonctions d'affichage et de filtrage principales */
-    
     // Fonction pour construire les tableaux financiers décomposés
     function buildFinancialTables(item) {
       let tableFraisFixes = `<h4>Frais fixes</h4>
@@ -306,11 +274,12 @@
       return tableFraisFixes + tableFraisRecurrents + tableFraisGestion;
     }
 
-    // Fonction pour afficher les données dans le tableau principal et le dépliant
+    // Fonction pour afficher les données dans le tableau principal et la section dépliable
     function afficherDonnees(donnees) {
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
       donnees.forEach((item, index) => {
+        // Ligne principale
         const tr = document.createElement("tr");
         tr.style.backgroundColor = (index % 2 === 0) ? "#fff" : "#EFEFEF";
         tr.innerHTML = `
@@ -328,6 +297,8 @@
           }</td>
         `;
         tbody.appendChild(tr);
+
+        // Ligne dépliable avec deux colonnes
         const extraRow = document.createElement("tr");
         extraRow.id = "extra_" + index;
         extraRow.className = "extra-info";
@@ -358,6 +329,7 @@
       });
     }
 
+    // Fonction de bascule pour afficher/cacher la ligne dépliable
     function toggleExtra(index, btn) {
       const extraRow = document.getElementById("extra_" + index);
       if (extraRow.style.display === "none" || extraRow.style.display === "") {
@@ -369,43 +341,34 @@
       }
     }
 
-    /* Fonctions pour les dropdowns multi-sélection */
-    function toggleDropdown(dropdownId) {
-      const dropdown = document.getElementById(dropdownId);
-      const options = dropdown.querySelector('.dropdown-options');
-      options.style.display = (options.style.display === 'block') ? 'none' : 'block';
+    // Remplissage des menus déroulants classiques pour Assureur et Distributeur
+    function remplirFiltreAssureur(donnees) {
+      const select = document.getElementById("assureur");
+      select.innerHTML = '<option value="">Tous</option>';
+      const assureurs = [...new Set(donnees.map(item => item.assureur))];
+      assureurs.forEach(assureur => {
+        const option = document.createElement("option");
+        option.value = assureur;
+        option.textContent = assureur;
+        select.appendChild(option);
+      });
     }
-    function updateDropdownText(dropdownId) {
-      const dropdown = document.getElementById(dropdownId);
-      const toggleBtn = dropdown.querySelector('.dropdown-toggle');
-      const checked = dropdown.querySelectorAll('input[type="checkbox"]:checked');
-      const values = Array.from(checked).map(cb => cb.value);
-      toggleBtn.textContent = values.length ? values.join(', ') : 'Tous';
-      filtrerDonnees(window.globalData);
-    }
-    function populateDropdown(dropdownId, values) {
-      const container = document.getElementById(dropdownId).querySelector('.dropdown-options');
-      container.innerHTML = "";
-      values.forEach(val => {
-        const label = document.createElement("label");
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.value = val;
-        checkbox.addEventListener("change", () => updateDropdownText(dropdownId));
-        label.appendChild(checkbox);
-        label.appendChild(document.createTextNode(" " + val));
-        container.appendChild(label);
+    function remplirFiltreDistributeur(donnees) {
+      const select = document.getElementById("distributeur");
+      select.innerHTML = '<option value="">Tous</option>';
+      const distributeurs = [...new Set(donnees.map(item => item.distributeur))];
+      distributeurs.forEach(distributeur => {
+        const option = document.createElement("option");
+        option.value = distributeur;
+        option.textContent = distributeur;
+        select.appendChild(option);
       });
     }
 
-    // Filtrage basé sur les sélections dans les dropdowns et autres filtres
+    // Fonction de filtrage basée sur les sélections dans les menus déroulants et autres filtres
     function filtrerDonnees(donnees) {
-      // Récupérer les valeurs sélectionnées dans les dropdowns
-      const assureurDropdown = document.getElementById("assureurDropdown");
-      const selectedAssureurs = Array.from(assureurDropdown.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
-      const distributeurDropdown = document.getElementById("distributeurDropdown");
-      const selectedDistributeurs = Array.from(distributeurDropdown.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
-      
+      const selectedAssureur = document.getElementById("assureur").value;
+      const selectedDistributeur = document.getElementById("distributeur").value;
       const filtreNom = document.getElementById("nom").value.toLowerCase();
       const maxVersement = parseFloat(document.getElementById("versement").value);
       const checkboxes = document.querySelectorAll(".checkbox-filter");
@@ -420,8 +383,8 @@
           }
         });
         return (
-          (selectedAssureurs.length === 0 || selectedAssureurs.includes(item.assureur)) &&
-          (selectedDistributeurs.length === 0 || selectedDistributeurs.includes(item.distributeur)) &&
+          (selectedAssureur === "" || item.assureur === selectedAssureur) &&
+          (selectedDistributeur === "" || item.distributeur === selectedDistributeur) &&
           (filtreNom === "" || item.nom.toLowerCase().includes(filtreNom)) &&
           (isNaN(maxVersement) || versement <= maxVersement) &&
           conditionsCheckbox
@@ -430,7 +393,7 @@
       afficherDonnees(donneesFiltrees);
     }
 
-    // Fonction pour ouvrir le modal
+    // Fonction pour ouvrir le modal et afficher les performances (données du second onglet)
     function viewPerformance(contract) {
       const modal = document.getElementById("performanceModal");
       modal.style.display = "block";
@@ -498,14 +461,10 @@
         header: true,
         complete: function(results) {
           const data = results.data;
-          window.globalData = data; // stocker globalement pour le filtrage des dropdowns
+          window.globalData = data; // Stockage global pour le filtrage
           afficherDonnees(data);
-          // Remplir les dropdowns multi-select
-          const assureurs = [...new Set(data.map(item => item.assureur))];
-          const distributeurs = [...new Set(data.map(item => item.distributeur))];
-          populateDropdown("assureurDropdown", assureurs);
-          populateDropdown("distributeurDropdown", distributeurs);
-          // Curseur
+          remplirFiltreAssureur(data);
+          remplirFiltreDistributeur(data);
           const slider = document.getElementById("versement");
           slider.min = 0; slider.max = 10000; slider.value = 10000;
           document.getElementById("versementValue").textContent = 10000;
@@ -517,9 +476,7 @@
           const checkboxFilters = document.querySelectorAll(".checkbox-filter");
           checkboxFilters.forEach(cb => cb.addEventListener("change", () => filtrerDonnees(data)));
         },
-        error: function(err) {
-          console.error("Erreur lors du chargement du CSV :", err);
-        }
+        error: function(err) { console.error("Erreur lors du chargement du CSV :", err); }
       });
     }
     window.addEventListener("DOMContentLoaded", init);
