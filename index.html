@@ -409,19 +409,21 @@
             </tr>
           </tbody>
         </table>`;
-      // Frais de gestion
+      // Frais de gestion avec intégration de la colonne "frais add. GP"
       let tableFraisGestion = `<h4>Frais de gestion</h4>
         <table class="perf-table">
           <thead>
             <tr>
               <th>Fonds en euro classique</th>
               <th>Frais de gestion UC</th>
+              <th>Frais add. GP</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>${item["Fonds en euro classique"] || "-"}</td>
               <td>${item["Frais de gestion UC"] || "-"}</td>
+              <td>${item["frais add. GP"] || "-"}</td>
             </tr>
           </tbody>
         </table>`;
@@ -479,7 +481,7 @@
 
         tbody.appendChild(tr);
 
-        // Ligne supplémentaire dépliable pour afficher les informations complémentaires
+        // Ligne supplémentaire dépliable pour afficher les informations complémentaires (suppression de la ligne sur les frais additionnels)
         const extraRow = document.createElement("tr");
         extraRow.id = "extra_" + index;
         extraRow.className = "extra-info";
@@ -490,7 +492,6 @@
           <p><strong>Nature du contrat :</strong> ${item.nature}</p>
           <p><strong>Encours min. en gestion pilotée :</strong> ${item.ticket}</p>
           <p><strong>Architecture :</strong> ${item.architecture}</p>
-          <p><strong>Frais additionnels de la gestion pilotée :</strong> ${item["frais add. GP"]}</p>
           <h4>Supports d'investissement en gestion libre</h4>
           <p><strong>ETF :</strong> ${item["ETF"] || "-"}</p>
           <p><strong>Titres vifs :</strong> ${item["Titres vifs"] || "-"}</p>
