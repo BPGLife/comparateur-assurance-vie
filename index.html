@@ -246,6 +246,7 @@
     /* Encart pour supports d'investissement */
     .investment-supports {
       margin-top: 10px;
+      text-align: left;
     }
     .investment-supports h4 {
       margin-bottom: 5px;
@@ -253,7 +254,7 @@
       color: #357ab8;
     }
     .investment-supports p {
-      margin: 0;
+      margin: 2px 0;
       font-size: 0.9em;
     }
     /* Ligne supplémentaire pour la section extra */
@@ -332,7 +333,7 @@
       </div>
     </div>
 
-    <!-- Tableau principal (les colonnes "Année" et "Nature" seront transférées dans la section dépliable) -->
+    <!-- Tableau principal (colonnes "Année" et "Nature" transférées dans la section dépliable) -->
     <table id="contrats">
       <thead>
         <tr>
@@ -451,7 +452,7 @@
         `;
         tbody.appendChild(tr);
 
-        // Ligne supplémentaire dépliable (affichage en continu, aligné à gauche)
+        // Ligne supplémentaire dépliable pour afficher toutes les informations complémentaires
         const extraRow = document.createElement("tr");
         extraRow.id = "extra_" + index;
         extraRow.className = "extra-info";
@@ -463,7 +464,12 @@
           <p><strong>Architecture :</strong> ${item.architecture}</p>
           <p><strong>Frais additionnels de la gestion pilotée :</strong> ${item["frais add. GP"]}</p>
           <h4>Supports d'investissement en gestion libre</h4>
-          <p>ETF, Titres vifs, FCPR, OPCI, SCPI, SCI</p>
+          <p><strong>ETF :</strong> ${item["ETF"] || "-"}</p>
+          <p><strong>Titres vifs :</strong> ${item["Titres vifs"] || "-"}</p>
+          <p><strong>FCPR :</strong> ${item["FCPR"] || "-"}</p>
+          <p><strong>OPCI :</strong> ${item["OPCI"] || "-"}</p>
+          <p><strong>SCPI :</strong> ${item["SCPI"] || "-"}</p>
+          <p><strong>SCI :</strong> ${item["SCI"] || "-"}</p>
           <h4>Détails financiers</h4>
           ${buildFinancialTables(item)}
           <div class="extra-content">Informations supplémentaires à venir.</div>
