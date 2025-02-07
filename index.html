@@ -151,6 +151,10 @@
     table tbody tr:hover {
       background-color: #f9fafb;
     }
+    /* Renommage de la colonne Actions en Performances */
+    table thead th:last-child {
+      text-align: center;
+    }
     /* Boutons d'action */
     .btn-performance {
       background-color: #4a90e2;
@@ -333,16 +337,16 @@
       </div>
     </div>
 
-    <!-- Tableau principal (colonnes "Année" et "Nature" transférées dans la section dépliable) -->
+    <!-- Tableau principal -->
     <table id="contrats">
       <thead>
         <tr>
-          <!-- La première colonne intègre la flèche toggle à gauche du nom du contrat -->
+          <!-- La première colonne inclut la flèche toggle avant le nom du contrat -->
           <th data-key="nom">Nom du contrat</th>
           <th data-key="assureur">Assureur</th>
           <th data-key="distributeur">Distributeur</th>
           <th data-key="versement">Versement initial</th>
-          <th>Actions</th>
+          <th>Performances</th>
         </tr>
       </thead>
       <tbody>
@@ -452,27 +456,34 @@
         `;
         tbody.appendChild(tr);
 
-        // Ligne supplémentaire dépliable pour afficher toutes les informations complémentaires
+        // Ligne supplémentaire dépliable affichant toutes les informations complémentaires
         const extraRow = document.createElement("tr");
         extraRow.id = "extra_" + index;
         extraRow.className = "extra-info";
         extraRow.style.display = "none";
         extraRow.innerHTML = `<td colspan="5">
-          <p><strong>Année de lancement :</strong> ${item.annee}</p>
-          <p><strong>Nature du contrat :</strong> ${item.nature}</p>
-          <p><strong>Encours min. en gestion pilotée :</strong> ${item.ticket}</p>
-          <p><strong>Architecture :</strong> ${item.architecture}</p>
-          <p><strong>Frais additionnels de la gestion pilotée :</strong> ${item["frais add. GP"]}</p>
-          <h4>Supports d'investissement en gestion libre</h4>
-          <p><strong>ETF :</strong> ${item["ETF"] || "-"}</p>
-          <p><strong>Titres vifs :</strong> ${item["Titres vifs"] || "-"}</p>
-          <p><strong>FCPR :</strong> ${item["FCPR"] || "-"}</p>
-          <p><strong>OPCI :</strong> ${item["OPCI"] || "-"}</p>
-          <p><strong>SCPI :</strong> ${item["SCPI"] || "-"}</p>
-          <p><strong>SCI :</strong> ${item["SCI"] || "-"}</p>
-          <h4>Détails financiers</h4>
-          ${buildFinancialTables(item)}
-          <div class="extra-content">Informations supplémentaires à venir.</div>
+          <div style="display: flex; justify-content: space-between;">
+            <div class="extra-left" style="width: 45%; text-align: left;">
+              <p><strong>Année de lancement :</strong> ${item.annee}</p>
+              <p><strong>Type de contrat :</strong> ${item["Type de contrat"] || "-"}</p>
+              <p><strong>Nature du contrat :</strong> ${item.nature}</p>
+              <p><strong>Encours min. en gestion pilotée :</strong> ${item.ticket}</p>
+              <p><strong>Architecture :</strong> ${item.architecture}</p>
+              <p><strong>Frais additionnels de la gestion pilotée :</strong> ${item["frais add. GP"]}</p>
+            </div>
+            <div class="extra-right" style="width: 50%; text-align: right;">
+              ${buildFinancialTables(item)}
+              <div class="investment-supports">
+                <h4>Supports d'investissement en gestion libre</h4>
+                <p><strong>ETF :</strong> ${item["ETF"] || "-"}</p>
+                <p><strong>Titres vifs :</strong> ${item["Titres vifs"] || "-"}</p>
+                <p><strong>FCPR :</strong> ${item["FCPR"] || "-"}</p>
+                <p><strong>OPCI :</strong> ${item["OPCI"] || "-"}</p>
+                <p><strong>SCPI :</strong> ${item["SCPI"] || "-"}</p>
+                <p><strong>SCI :</strong> ${item["SCI"] || "-"}</p>
+              </div>
+            </div>
+          </div>
         </td>`;
         tbody.appendChild(extraRow);
       });
