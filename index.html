@@ -231,7 +231,7 @@
       border-collapse: collapse;
       width: 100%;
       max-width: 400px;
-      margin: 10px auto;
+      margin: 10px 0;
     }
     .perf-table th,
     .perf-table td {
@@ -243,12 +243,12 @@
     .perf-table th {
       background-color: #f0f4f8;
     }
-    /* Encarts financiers décomposés */
+    /* Encart supports d'investissement en gestion libre */
     .investment-supports {
       border: 1px solid #ddd;
       background-color: #f0f4f8;
       padding: 10px;
-      margin-top: 10px;
+      margin: 10px 0;
       border-radius: 4px;
     }
     .investment-supports h4 {
@@ -336,7 +336,7 @@
       </div>
     </div>
 
-    <!-- Tableau principal (les colonnes "Année" et "Nature" seront transférées dans la section dépliable) -->
+    <!-- Tableau principal (les colonnes "Année" et "Nature" sont transférées dans la section dépliable) -->
     <table id="contrats">
       <thead>
         <tr>
@@ -372,7 +372,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // Fonction pour construire les trois tableaux financiers
+    // Fonction pour construire le tableau financier décomposé en trois parties
     function buildFinancialTables(item) {
       // Frais fixes
       let tableFraisFixes = `<h4>Frais fixes</h4>
@@ -436,7 +436,7 @@
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
       donnees.forEach((item, index) => {
-        // Ligne principale avec alternance de couleur (pair: #fff, impair: #EFEFEF)
+        // Ligne principale avec alternance de couleur
         const tr = document.createElement("tr");
         tr.style.backgroundColor = (index % 2 === 0) ? "#fff" : "#EFEFEF";
         tr.innerHTML = `
@@ -455,38 +455,28 @@
         `;
         tbody.appendChild(tr);
 
-        // Ligne supplémentaire dépliable pour afficher les informations supplémentaires
-        // On transfère ici : Année, Nature, Ticket, Architecture, Frais add. GP
-        // Et on ajoute le tableau financier décomposé, ainsi qu'un encart statique "Supports d'investissement en gestion libre"
+        // Ligne supplémentaire dépliable (toutes les informations en continu dans une seule colonne, alignées à gauche)
         const extraRow = document.createElement("tr");
         extraRow.id = "extra_" + index;
         extraRow.className = "extra-info";
         extraRow.style.display = "none";
         extraRow.innerHTML = `<td colspan="5">
-          <div style="display: flex; justify-content: space-between;">
-            <div class="extra-left" style="width: 45%; text-align: left;">
-              <p><strong>Année de lancement :</strong> ${item.annee}</p>
-              <p><strong>Nature du contrat :</strong> ${item.nature}</p>
-              <p><strong>Encours min. en gestion pilotée :</strong> ${item.ticket}</p>
-              <p><strong>Architecture :</strong> ${item.architecture}</p>
-              <p><strong>Frais additionnels de la gestion pilotée :</strong> ${item["frais add. GP"]}</p>
-            </div>
-            <div class="extra-right" style="width: 50%; text-align: right;">
-              <h4>Détails financiers</h4>
-              ${buildFinancialTables(item)}
-            </div>
-          </div>
-          <div class="investment-supports">
-            <h4>Supports d'investissement en gestion libre</h4>
-            <p>ETF, Titres vifs, FCPR, OPCI, SCPI, SCI</p>
-          </div>
+          <p><strong>Année de lancement :</strong> ${item.annee}</p>
+          <p><strong>Nature du contrat :</strong> ${item.nature}</p>
+          <p><strong>Encours min. en gestion pilotée :</strong> ${item.ticket}</p>
+          <p><strong>Architecture :</strong> ${item.architecture}</p>
+          <p><strong>Frais additionnels de la gestion pilotée :</strong> ${item["frais add. GP"]}</p>
+          <p><strong>Supports d'investissement en gestion libre :</strong></p>
+          <p>ETF, Titres vifs, FCPR, OPCI, SCPI, SCI</p>
+          <h4>Détails financiers</h4>
+          ${buildFinancialTables(item)}
           <div class="extra-content">Informations supplémentaires à venir.</div>
         </td>`;
         tbody.appendChild(extraRow);
       });
     }
 
-    // Fonction de bascule pour la ligne supplémentaire et changement de l'icône de la flèche
+    // Fonction de bascule pour la ligne supplémentaire et changement de la flèche
     function toggleExtra(index, btn) {
       const extraRow = document.getElementById("extra_" + index);
       if (extraRow.style.display === "none" || extraRow.style.display === "") {
@@ -605,7 +595,6 @@
 
             // Tableau des performances annuelles pour 2024 à 2016
             const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2020", "2018", "2017", "2016"];
-            // Correction : utilisez l'array souhaité ; ici, nous utilisons l'array tel quel.
             let tableHTML = `<table class="perf-table"><thead><tr><th>Année</th><th>Performance (%)</th></tr></thead><tbody>`;
             yearsArray.forEach(year => {
               const perfValue = (profileRow[year] !== undefined && profileRow[year] !== "") ? profileRow[year] : "-";
