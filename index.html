@@ -74,7 +74,6 @@
       font-weight: 500;
       margin-right: 5px;
     }
-    .filters select,
     .filters input[type="text"],
     .filters input[type="range"] {
       padding: 8px 12px;
@@ -83,13 +82,23 @@
       font-size: 1em;
       transition: all 0.3s ease;
     }
-    .filters input[type="text"]:focus,
-    .filters select:focus {
+    .filters input[type="text"]:focus {
       outline: none;
       border-color: #4a90e2;
       box-shadow: 0 0 5px rgba(74,144,226,0.3);
     }
     .filters input[type="range"] {
+      cursor: pointer;
+    }
+    /* Conteneurs pour les filtres à cases à cocher */
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .checkbox-group label {
+      font-size: 0.9em;
+      margin-right: 10px;
       cursor: pointer;
     }
     /* Bouton toggle (flèche) */
@@ -128,7 +137,7 @@
     .info-icon:hover::after {
       opacity: 1;
     }
-    /* Cases à cocher */
+    /* Cases à cocher simples */
     .filters input[type="checkbox"] {
       transform: scale(1.2);
       margin-right: 5px;
@@ -151,10 +160,9 @@
     table tbody tr:hover {
       background-color: #f9fafb;
     }
-    /* Renommage de la colonne Actions en Performances */
+    /* Renommage de la colonne "Actions" en "Performances" */
     table thead th:last-child {
       text-align: center;
-      /* Vous pouvez ajouter ici d'autres styles si nécessaire */
     }
     /* Boutons d'action */
     .btn-performance {
@@ -262,7 +270,7 @@
       margin: 2px 0;
       font-size: 0.9em;
     }
-    /* Section extra (dépliable) : disposition en deux colonnes */
+    /* Disposition de la section extra dépliable en deux colonnes */
     .extra-container {
       display: flex;
       justify-content: space-between;
@@ -291,17 +299,14 @@
   <div class="container">
     <!-- Zone des filtres -->
     <div class="filters">
+      <!-- Remplacement des listes déroulantes par des conteneurs de cases à cocher pour Assureur et Distributeur -->
       <div>
-        <label for="assureur">Assureur :</label>
-        <select id="assureur">
-          <option value="">Tous</option>
-        </select>
+        <label>Assureur :</label>
+        <div id="assureurContainer" class="checkbox-group"></div>
       </div>
       <div>
-        <label for="distributeur">Distributeur :</label>
-        <select id="distributeur">
-          <option value="">Tous</option>
-        </select>
+        <label>Distributeur :</label>
+        <div id="distributeurContainer" class="checkbox-group"></div>
       </div>
       <div>
         <label for="nom">Nom du contrat :</label>
@@ -313,7 +318,7 @@
         <input type="range" id="versement" value="10000" min="0" max="10000" step="100">
         <span id="versementValue">10000</span>
       </div>
-      <!-- Cases à cocher avec info-icons -->
+      <!-- Autres cases à cocher avec info-icons -->
       <div>
         <input type="checkbox" id="gestion" class="checkbox-filter" data-column="Gestion pilotée" data-value="Gestion pilotée">
         <label for="gestion">Gestion pilotée</label>
@@ -355,7 +360,7 @@
     <table id="contrats">
       <thead>
         <tr>
-          <!-- La première colonne inclut la flèche toggle avant le nom du contrat -->
+          <!-- La première colonne intègre la flèche toggle à gauche du nom du contrat -->
           <th data-key="nom">Nom du contrat</th>
           <th data-key="assureur">Assureur</th>
           <th data-key="distributeur">Distributeur</th>
@@ -387,6 +392,44 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
+    // Fonction pour générer dynamiquement les cases à cocher pour les assureurs
+    function remplirFiltreAssureur(donnees) {
+      const container = document.getElementById("assureurContainer");
+      container.innerHTML = "";
+      const assureurs = [...new Set(donnees.map(item => item.assureur))];
+      assureurs.forEach(assureur => {
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = assureur;
+        checkbox.className = "assureur-checkbox";
+        // Ajout d'un écouteur pour déclencher le filtrage lors du changement
+        checkbox.addEventListener("change", () => filtrerDonnees(donnees));
+        const label = document.createElement("label");
+        label.style.marginRight = "10px";
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(" " + assureur));
+        container.appendChild(label);
+      });
+    }
+    // Fonction pour générer dynamiquement les cases à cocher pour les distributeurs
+    function remplirFiltreDistributeur(donnees) {
+      const container = document.getElementById("distributeurContainer");
+      container.innerHTML = "";
+      const distributeurs = [...new Set(donnees.map(item => item.distributeur))];
+      distributeurs.forEach(distributeur => {
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = distributeur;
+        checkbox.className = "distributeur-checkbox";
+        checkbox.addEventListener("change", () => filtrerDonnees(donnees));
+        const label = document.createElement("label");
+        label.style.marginRight = "10px";
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(" " + distributeur));
+        container.appendChild(label);
+      });
+    }
+
     // Fonction pour construire les trois tableaux financiers décomposés
     function buildFinancialTables(item) {
       // Frais fixes
@@ -446,7 +489,7 @@
       return tableFraisFixes + tableFraisRecurrents + tableFraisGestion;
     }
 
-    // Fonction pour afficher le tableau principal avec flèche toggle intégrée et alternance de couleur
+    // Fonction pour afficher le tableau principal avec flèche toggle et alternance de couleur
     function afficherDonnees(donnees) {
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
@@ -470,7 +513,7 @@
         `;
         tbody.appendChild(tr);
 
-        // Ligne supplémentaire dépliable affichant toutes les informations complémentaires dans deux colonnes
+        // Ligne supplémentaire dépliable (contenu en deux colonnes)
         const extraRow = document.createElement("tr");
         extraRow.id = "extra_" + index;
         extraRow.className = "extra-info";
@@ -501,7 +544,7 @@
       });
     }
 
-    // Fonction de bascule pour la ligne supplémentaire et changement de l'icône de la flèche
+    // Fonction de bascule pour la ligne supplémentaire
     function toggleExtra(index, btn) {
       const extraRow = document.getElementById("extra_" + index);
       if (extraRow.style.display === "none" || extraRow.style.display === "") {
@@ -513,36 +556,53 @@
       }
     }
 
-    // Remplissage des menus déroulants
-    function remplirFiltreAssureur(donnees) {
-      const select = document.getElementById("assureur");
+    // Fonction pour générer les cases à cocher pour les assureurs
+    function remplirFiltreAssureurCheckboxes(donnees) {
+      const container = document.getElementById("assureurContainer");
+      container.innerHTML = "";
       const assureurs = [...new Set(donnees.map(item => item.assureur))];
       assureurs.forEach(assureur => {
-        const option = document.createElement("option");
-        option.value = assureur;
-        option.textContent = assureur;
-        select.appendChild(option);
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = assureur;
+        checkbox.className = "assureur-checkbox";
+        checkbox.addEventListener("change", () => filtrerDonnees(donnees));
+        const label = document.createElement("label");
+        label.style.marginRight = "10px";
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(" " + assureur));
+        container.appendChild(label);
       });
     }
-    function remplirFiltreDistributeur(donnees) {
-      const select = document.getElementById("distributeur");
+    // Fonction pour générer les cases à cocher pour les distributeurs
+    function remplirFiltreDistributeurCheckboxes(donnees) {
+      const container = document.getElementById("distributeurContainer");
+      container.innerHTML = "";
       const distributeurs = [...new Set(donnees.map(item => item.distributeur))];
       distributeurs.forEach(distributeur => {
-        const option = document.createElement("option");
-        option.value = distributeur;
-        option.textContent = distributeur;
-        select.appendChild(option);
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = distributeur;
+        checkbox.className = "distributeur-checkbox";
+        checkbox.addEventListener("change", () => filtrerDonnees(donnees));
+        const label = document.createElement("label");
+        label.style.marginRight = "10px";
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(" " + distributeur));
+        container.appendChild(label);
       });
     }
 
-    // Fonction de filtrage combiné, avec nettoyage du versement
+    // Fonction de filtrage combiné avec sélection multiple pour assureur et distributeur
     function filtrerDonnees(donnees) {
-      const filtreAssureur = document.getElementById("assureur").value;
-      const filtreDistributeur = document.getElementById("distributeur").value;
+      // Récupération des assureurs sélectionnés
+      const selectedAssureurs = Array.from(document.querySelectorAll(".assureur-checkbox:checked")).map(cb => cb.value);
+      // Récupération des distributeurs sélectionnés
+      const selectedDistributeurs = Array.from(document.querySelectorAll(".distributeur-checkbox:checked")).map(cb => cb.value);
       const filtreNom = document.getElementById("nom").value.toLowerCase();
       const maxVersement = parseFloat(document.getElementById("versement").value);
       const checkboxes = document.querySelectorAll(".checkbox-filter");
-
+      
       const donneesFiltrees = donnees.filter(item => {
         let versement = parseFloat(item.versement.replace(/[^\d.]/g, '')) || 0;
         let conditionsCheckbox = true;
@@ -555,8 +615,8 @@
           }
         });
         return (
-          (filtreAssureur === "" || item.assureur === filtreAssureur) &&
-          (filtreDistributeur === "" || item.distributeur === filtreDistributeur) &&
+          (selectedAssureurs.length === 0 || selectedAssureurs.includes(item.assureur)) &&
+          (selectedDistributeurs.length === 0 || selectedDistributeurs.includes(item.distributeur)) &&
           (filtreNom === "" || item.nom.toLowerCase().includes(filtreNom)) &&
           (isNaN(maxVersement) || versement <= maxVersement) &&
           conditionsCheckbox
@@ -570,31 +630,23 @@
       const modal = document.getElementById("performanceModal");
       modal.style.display = "block";
       document.getElementById("modalTitle").textContent = `Performances de ${contract.nom}`;
-
       const chartsContainer = document.getElementById("profileChartsContainer");
       chartsContainer.innerHTML = "";
-
-      // URL du second onglet contenant les données de performance
-      const performanceCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?gid=1183800682&single=true&output=csv';
-
+      const performanceCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?output=csv&gid=1183800682&single=true';
       Papa.parse(performanceCsvUrl, {
         download: true,
         header: true,
         complete: function(results) {
           const perfData = results.data;
           const contractPerfRows = perfData.filter(row => row["Nom du contrat"] === contract.nom);
-
           if (contractPerfRows.length === 0) {
             chartsContainer.innerHTML = "<p>Aucune donnée de performance trouvée pour ce contrat.</p>";
             return;
           }
-
           contractPerfRows.forEach((profileRow, index) => {
             const profileDiv = document.createElement("div");
             profileDiv.className = "profile-section";
             profileDiv.innerHTML = `<h3>Profil : ${profileRow["Profil"] || "Non défini"} - Gestionnaire : ${profileRow["Gestionnaire d'actif"] || "Non défini"}</h3>`;
-
-            // Camembert pour la répartition UC / Fonds en euros (200x200)
             const pieCanvas = document.createElement("canvas");
             pieCanvas.id = `pieChart_${index}`;
             pieCanvas.width = 200;
@@ -603,7 +655,6 @@
             chartsDiv.className = "charts";
             chartsDiv.appendChild(pieCanvas);
             profileDiv.appendChild(chartsDiv);
-
             const partUC = profileRow.part_uc ? parseFloat(profileRow.part_uc) : 50;
             const partFonds = profileRow.part_fonds ? parseFloat(profileRow.part_fonds) : (100 - partUC);
             new Chart(pieCanvas.getContext("2d"), {
@@ -617,10 +668,7 @@
               },
               options: { responsive: true }
             });
-
-            // Tableau des performances annuelles pour 2024 à 2016
-            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2021", "2019", "2020", "2018", "2017", "2016"];
-            // Correction de l'array selon vos besoins – ici, nous utilisons l'array tel quel (à ajuster si nécessaire)
+            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2020", "2018", "2017", "2016"];
             let tableHTML = `<table class="perf-table"><thead><tr><th>Année</th><th>Performance (%)</th></tr></thead><tbody>`;
             yearsArray.forEach(year => {
               const perfValue = (profileRow[year] !== undefined && profileRow[year] !== "") ? profileRow[year] : "-";
@@ -628,7 +676,6 @@
             });
             tableHTML += `</tbody></table>`;
             profileDiv.innerHTML += tableHTML;
-
             chartsContainer.appendChild(profileDiv);
           });
         },
@@ -637,17 +684,6 @@
         }
       });
     }
-
-    // Fermeture du modal
-    document.getElementById("modalClose").addEventListener("click", function() {
-      document.getElementById("performanceModal").style.display = "none";
-    });
-    window.addEventListener("click", function(event) {
-      const modal = document.getElementById("performanceModal");
-      if (event.target === modal) {
-        modal.style.display = "none";
-      }
-    });
 
     // Initialisation du comparateur principal
     function init() {
@@ -659,19 +695,13 @@
           const data = results.data;
           console.log("Données chargées :", data);
           afficherDonnees(data);
-          remplirFiltreAssureur(data);
-          remplirFiltreDistributeur(data);
-
-          // Configuration fixe du curseur : échelle de 0 à 10 000
+          remplirFiltreAssureurCheckboxes(data);
+          remplirFiltreDistributeurCheckboxes(data);
           const slider = document.getElementById("versement");
           slider.min = 0;
           slider.max = 10000;
           slider.value = 10000;
           document.getElementById("versementValue").textContent = 10000;
-
-          // Écouteurs d'événements pour les filtres
-          document.getElementById("assureur").addEventListener("change", () => filtrerDonnees(data));
-          document.getElementById("distributeur").addEventListener("change", () => filtrerDonnees(data));
           document.getElementById("nom").addEventListener("input", () => filtrerDonnees(data));
           document.getElementById("versement").addEventListener("input", function() {
             document.getElementById("versementValue").textContent = this.value;
@@ -685,6 +715,42 @@
         error: function(err) {
           console.error("Erreur lors du chargement du CSV :", err);
         }
+      });
+    }
+
+    // Fonctions pour remplir dynamiquement les conteneurs de cases à cocher pour Assureur et Distributeur
+    function remplirFiltreAssureurCheckboxes(donnees) {
+      const container = document.getElementById("assureurContainer");
+      container.innerHTML = "";
+      const assureurs = [...new Set(donnees.map(item => item.assureur))];
+      assureurs.forEach(assureur => {
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = assureur;
+        checkbox.className = "assureur-checkbox";
+        checkbox.addEventListener("change", () => filtrerDonnees(donnees));
+        const label = document.createElement("label");
+        label.style.marginRight = "10px";
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(" " + assureur));
+        container.appendChild(label);
+      });
+    }
+    function remplirFiltreDistributeurCheckboxes(donnees) {
+      const container = document.getElementById("distributeurContainer");
+      container.innerHTML = "";
+      const distributeurs = [...new Set(donnees.map(item => item.distributeur))];
+      distributeurs.forEach(distributeur => {
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = distributeur;
+        checkbox.className = "distributeur-checkbox";
+        checkbox.addEventListener("change", () => filtrerDonnees(donnees));
+        const label = document.createElement("label");
+        label.style.marginRight = "10px";
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(" " + distributeur));
+        container.appendChild(label);
       });
     }
 
