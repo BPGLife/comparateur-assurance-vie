@@ -154,6 +154,7 @@
     /* Renommage de la colonne Actions en Performances */
     table thead th:last-child {
       text-align: center;
+      /* Vous pouvez ajouter ici d'autres styles si nécessaire */
     }
     /* Boutons d'action */
     .btn-performance {
@@ -247,7 +248,7 @@
     .perf-table th {
       background-color: #f0f4f8;
     }
-    /* Encart pour supports d'investissement */
+    /* Encart pour supports d'investissement en gestion libre */
     .investment-supports {
       margin-top: 10px;
       text-align: left;
@@ -260,6 +261,19 @@
     .investment-supports p {
       margin: 2px 0;
       font-size: 0.9em;
+    }
+    /* Section extra (dépliable) : disposition en deux colonnes */
+    .extra-container {
+      display: flex;
+      justify-content: space-between;
+    }
+    .extra-left {
+      width: 55%;
+      text-align: left;
+    }
+    .extra-right {
+      width: 40%;
+      text-align: left;
     }
     /* Ligne supplémentaire pour la section extra */
     .extra-info {
@@ -456,32 +470,30 @@
         `;
         tbody.appendChild(tr);
 
-        // Ligne supplémentaire dépliable affichant toutes les informations complémentaires
+        // Ligne supplémentaire dépliable affichant toutes les informations complémentaires dans deux colonnes
         const extraRow = document.createElement("tr");
         extraRow.id = "extra_" + index;
         extraRow.className = "extra-info";
         extraRow.style.display = "none";
         extraRow.innerHTML = `<td colspan="5">
-          <div style="display: flex; justify-content: space-between;">
-            <div class="extra-left" style="width: 45%; text-align: left;">
+          <div class="extra-container">
+            <div class="extra-left">
               <p><strong>Année de lancement :</strong> ${item.annee}</p>
               <p><strong>Type de contrat :</strong> ${item["Type de contrat"] || "-"}</p>
               <p><strong>Nature du contrat :</strong> ${item.nature}</p>
               <p><strong>Encours min. en gestion pilotée :</strong> ${item.ticket}</p>
               <p><strong>Architecture :</strong> ${item.architecture}</p>
               <p><strong>Frais additionnels de la gestion pilotée :</strong> ${item["frais add. GP"]}</p>
+              <h4>Supports d'investissement en gestion libre</h4>
+              <p><strong>ETF :</strong> ${item["ETF"] || "-"}</p>
+              <p><strong>Titres vifs :</strong> ${item["Titres vifs"] || "-"}</p>
+              <p><strong>FCPR :</strong> ${item["FCPR"] || "-"}</p>
+              <p><strong>OPCI :</strong> ${item["OPCI"] || "-"}</p>
+              <p><strong>SCPI :</strong> ${item["SCPI"] || "-"}</p>
+              <p><strong>SCI :</strong> ${item["SCI"] || "-"}</p>
             </div>
-            <div class="extra-right" style="width: 50%; text-align: right;">
+            <div class="extra-right">
               ${buildFinancialTables(item)}
-              <div class="investment-supports">
-                <h4>Supports d'investissement en gestion libre</h4>
-                <p><strong>ETF :</strong> ${item["ETF"] || "-"}</p>
-                <p><strong>Titres vifs :</strong> ${item["Titres vifs"] || "-"}</p>
-                <p><strong>FCPR :</strong> ${item["FCPR"] || "-"}</p>
-                <p><strong>OPCI :</strong> ${item["OPCI"] || "-"}</p>
-                <p><strong>SCPI :</strong> ${item["SCPI"] || "-"}</p>
-                <p><strong>SCI :</strong> ${item["SCI"] || "-"}</p>
-              </div>
             </div>
           </div>
         </td>`;
@@ -607,7 +619,8 @@
             });
 
             // Tableau des performances annuelles pour 2024 à 2016
-            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2020", "2018", "2017", "2016"];
+            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2021", "2019", "2020", "2018", "2017", "2016"];
+            // Correction de l'array selon vos besoins – ici, nous utilisons l'array tel quel (à ajuster si nécessaire)
             let tableHTML = `<table class="perf-table"><thead><tr><th>Année</th><th>Performance (%)</th></tr></thead><tbody>`;
             yearsArray.forEach(year => {
               const perfValue = (profileRow[year] !== undefined && profileRow[year] !== "") ? profileRow[year] : "-";
