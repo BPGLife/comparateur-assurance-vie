@@ -47,8 +47,9 @@
     }
     .info-icon::after {
       content: attr(data-tooltip); position: absolute; bottom: 125%; left: 50%;
-      transform: translateX(-50%); background: rgba(0,0,0,0.7); color: #fff; padding: 5px 8px;
-      border-radius: 4px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; z-index: 100;
+      transform: translateX(-50%); background: rgba(0,0,0,0.7); color: #fff;
+      padding: 5px 8px; border-radius: 4px; white-space: nowrap; opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease; z-index: 100;
     }
     .info-icon:hover::after { opacity: 1; }
     /* Cases à cocher */
@@ -56,26 +57,21 @@
     /* Tableau principal */
     table { width: 100%; border-collapse: collapse; margin-top: 15px; }
     table thead { background-color: #f0f4f8; }
-    table th, table td {
-      padding: 12px 15px; text-align: left; border-bottom: 1px solid #e2e8f0;
-    }
+    table th, table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #e2e8f0; }
     table tbody tr:hover { background-color: #f9fafb; }
-    /* Renommage colonne Actions en Performances */
+    /* Renommage de la colonne Actions en Performances */
     table thead th:last-child { text-align: center; }
-    /* Bouton toggle (flèche) */
-    .toggle-arrow {
-      background: none; border: none; font-size: 1em; cursor: pointer; margin-right: 5px;
-    }
     /* Boutons d'action */
     .btn-performance {
       background-color: #4a90e2; color: #fff; padding: 6px 12px; border: none; border-radius: 6px;
       cursor: pointer; font-size: 0.9em; transition: background-color 0.3s ease;
     }
     .btn-performance:hover { background-color: #357ab8; }
-    /* Alternance de couleur des lignes */
-    tbody tr:nth-child(odd) { background-color: #fff; }
-    tbody tr:nth-child(even) { background-color: #EFEFEF; }
-    /* Section extra (dépliable) – disposition en deux colonnes */
+    @media (max-width: 768px) {
+      .filters { flex-direction: column; align-items: center; }
+      table th, table td { padding: 10px; }
+    }
+    /* Section extra (dépliable) en deux colonnes */
     .extra-container { display: flex; justify-content: space-between; }
     .extra-left { width: 55%; text-align: left; }
     .extra-right { width: 40%; text-align: left; }
@@ -84,10 +80,6 @@
     .investment-supports { margin-top: 10px; text-align: left; }
     .investment-supports h4 { margin-bottom: 5px; font-size: 1em; color: #357ab8; }
     .investment-supports p { margin: 2px 0; font-size: 0.9em; }
-    @media (max-width: 768px) {
-      .filters { flex-direction: column; align-items: center; }
-      table th, table td { padding: 10px; }
-    }
     /* Modal */
     .modal {
       display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
@@ -97,15 +89,7 @@
       background-color: #fff; margin: 5% auto; padding: 20px; border-radius: 8px;
       width: 95%; max-width: 900px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
-    .modal-close {
-      position: absolute; top: 10px; right: 15px; font-size: 1.5em; cursor: pointer; color: #888;
-    }
-    .profile-section { margin-bottom: 40px; border-bottom: 1px solid #e2e8f0; padding-bottom: 20px; }
-    .profile-section:last-child { border-bottom: none; }
-    .charts { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-bottom: 20px; }
-    .charts canvas {
-      background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px;
-    }
+    .modal-close { position: absolute; top: 10px; right: 15px; font-size: 1.5em; cursor: pointer; color: #888; }
     /* Tableau de performances */
     .perf-table {
       border-collapse: collapse; width: 100%; max-width: 400px; margin: 10px 0;
@@ -122,7 +106,7 @@
   <!-- Sous-header -->
   <div class="sub-header"><p>&copy; Baptiste Plat Garnier</p></div>
   <div class="container">
-    <!-- Zone des filtres (menus déroulants simples) -->
+    <!-- Zone des filtres (menus déroulants classiques) -->
     <div class="filters">
       <div>
         <label for="assureur">Assureur :</label>
@@ -145,7 +129,7 @@
         <input type="range" id="versement" value="10000" min="0" max="10000" step="100">
         <span id="versementValue">10000</span>
       </div>
-      <!-- Autres cases à cocher avec info-icons -->
+      <!-- Autres cases à cocher -->
       <div>
         <input type="checkbox" id="gestion" class="checkbox-filter" data-column="Gestion pilotée" data-value="Gestion pilotée">
         <label for="gestion">Gestion pilotée</label>
@@ -201,9 +185,7 @@
   </div>
 
   <!-- Footer -->
-  <footer class="footer">
-    <p>&copy; Baptiste Plat Garnier</p>
-  </footer>
+  <footer class="footer"><p>&copy; Baptiste Plat Garnier</p></footer>
 
   <!-- Modal de performance -->
   <div id="performanceModal" class="modal">
@@ -279,7 +261,6 @@
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
       donnees.forEach((item, index) => {
-        // Ligne principale
         const tr = document.createElement("tr");
         tr.style.backgroundColor = (index % 2 === 0) ? "#fff" : "#EFEFEF";
         tr.innerHTML = `
@@ -297,8 +278,6 @@
           }</td>
         `;
         tbody.appendChild(tr);
-
-        // Ligne dépliable avec deux colonnes
         const extraRow = document.createElement("tr");
         extraRow.id = "extra_" + index;
         extraRow.className = "extra-info";
@@ -329,7 +308,6 @@
       });
     }
 
-    // Fonction de bascule pour afficher/cacher la ligne dépliable
     function toggleExtra(index, btn) {
       const extraRow = document.getElementById("extra_" + index);
       if (extraRow.style.display === "none" || extraRow.style.display === "") {
@@ -341,7 +319,7 @@
       }
     }
 
-    // Remplissage des menus déroulants classiques pour Assureur et Distributeur
+    // Fonctions pour remplir les menus déroulants classiques
     function remplirFiltreAssureur(donnees) {
       const select = document.getElementById("assureur");
       select.innerHTML = '<option value="">Tous</option>';
@@ -365,7 +343,7 @@
       });
     }
 
-    // Fonction de filtrage basée sur les sélections dans les menus déroulants et autres filtres
+    // Filtrage
     function filtrerDonnees(donnees) {
       const selectedAssureur = document.getElementById("assureur").value;
       const selectedDistributeur = document.getElementById("distributeur").value;
@@ -393,7 +371,7 @@
       afficherDonnees(donneesFiltrees);
     }
 
-    // Fonction pour ouvrir le modal et afficher les performances (données du second onglet)
+    // Fonction de performance
     function viewPerformance(contract) {
       const modal = document.getElementById("performanceModal");
       modal.style.display = "block";
@@ -406,7 +384,8 @@
         header: true,
         complete: function(results) {
           const perfData = results.data;
-          const contractPerfRows = perfData.filter(row => row["Nom du contrat"] === contract.nom);
+          // Comparaison en utilisant .trim()
+          const contractPerfRows = perfData.filter(row => row["Nom du contrat"] && row["Nom du contrat"].trim() === contract.nom.trim());
           if (contractPerfRows.length === 0) {
             chartsContainer.innerHTML = "<p>Aucune donnée de performance trouvée pour ce contrat.</p>";
             return;
@@ -447,9 +426,7 @@
             chartsContainer.appendChild(profileDiv);
           });
         },
-        error: function(err) {
-          console.error("Erreur lors du chargement du CSV de performance :", err);
-        }
+        error: function(err) { console.error("Erreur lors du chargement du CSV de performance :", err); }
       });
     }
 
@@ -461,7 +438,7 @@
         header: true,
         complete: function(results) {
           const data = results.data;
-          window.globalData = data; // Stockage global pour le filtrage
+          window.globalData = data; 
           afficherDonnees(data);
           remplirFiltreAssureur(data);
           remplirFiltreDistributeur(data);
