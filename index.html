@@ -7,109 +7,57 @@
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    /* Base & Réinitialisation */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    body {
-      font-family: 'Roboto', sans-serif;
-      background-color: #f7f9fc;
-      color: #333;
-      line-height: 1.6;
-    }
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-    /* Header moderne */
-    .header {
-      background: linear-gradient(135deg, #4a90e2, #357ab8);
-      color: #fff;
-      padding: 30px 0;
-      text-align: center;
-      font-size: 2.2em;
-      font-weight: 700;
-      letter-spacing: 1px;
-      margin-bottom: 10px;
-    }
-    /* Sous-header */
-    .sub-header {
-      text-align: center;
-      font-size: 0.9em;
-      color: #666;
-      margin-bottom: 20px;
-    }
+    /* Styles de base */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Roboto', sans-serif; background: #f7f9fc; color: #333; line-height: 1.6; }
+    /* Header et footer */
+    .header { background: linear-gradient(135deg, #4a90e2, #357ab8); color: #fff; padding: 30px 0; text-align: center; font-size: 2.2em; font-weight: 700; letter-spacing: 1px; margin-bottom: 10px; }
+    .sub-header { text-align: center; font-size: 0.9em; color: #666; margin-bottom: 20px; }
+    .footer { text-align: center; font-size: 0.9em; color: #666; margin-top: 40px; padding: 10px 0; border-top: 1px solid #e2e8f0; }
     /* Conteneur principal */
-    .container {
-      max-width: 1200px;
-      margin: 0 auto 40px;
-      background-color: #fff;
-      padding: 25px;
-      border-radius: 8px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    }
-    /* Footer */
-    .footer {
-      text-align: center;
-      font-size: 0.9em;
-      color: #666;
-      margin-top: 40px;
-      padding: 10px 0;
-      border-top: 1px solid #e2e8f0;
-    }
+    .container { max-width: 1200px; margin: 0 auto 40px; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
     /* Zone des filtres */
-    .filters {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 15px;
-      margin-bottom: 25px;
+    .filters { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-bottom: 25px; }
+    .filters > div { margin: 5px; }
+    .filters label { font-weight: 500; margin-right: 5px; }
+    .filters input[type="text"], .filters input[type="range"] { padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 1em; transition: all 0.3s ease; }
+    .filters input[type="text"]:focus { outline: none; border-color: #4a90e2; box-shadow: 0 0 5px rgba(74,144,226,0.3); }
+    .filters input[type="range"] { cursor: pointer; }
+    /* Menu déroulant multisélection */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+      width: 200px;
     }
-    .filters > div {
-      margin: 5px;
-    }
-    .filters label {
-      font-weight: 500;
-      margin-right: 5px;
-    }
-    .filters input[type="text"],
-    .filters input[type="range"] {
+    .dropdown-toggle {
+      width: 100%;
       padding: 8px 12px;
       border: 1px solid #ccc;
       border-radius: 6px;
-      font-size: 1em;
-      transition: all 0.3s ease;
-    }
-    .filters input[type="text"]:focus {
-      outline: none;
-      border-color: #4a90e2;
-      box-shadow: 0 0 5px rgba(74,144,226,0.3);
-    }
-    .filters input[type="range"] {
+      background: #fff;
+      text-align: left;
       cursor: pointer;
     }
-    /* Conteneurs pour les filtres à cases à cocher */
-    .checkbox-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+    .dropdown-options {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      max-height: 150px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      background: #fff;
+      border-radius: 6px;
+      z-index: 10;
+      display: none;
     }
-    .checkbox-group label {
-      font-size: 0.9em;
-      margin-right: 10px;
+    .dropdown-options label {
+      display: block;
+      padding: 5px 10px;
       cursor: pointer;
     }
-    /* Bouton toggle (flèche) */
-    .toggle-arrow {
-      background: none;
-      border: none;
-      font-size: 1em;
-      cursor: pointer;
-      margin-right: 5px;
-    }
-    /* Info-icons avec tooltip */
+    .dropdown-options label:hover { background: #f0f4f8; }
+    /* Info-icons */
     .info-icon {
       position: relative;
       display: inline-block;
@@ -124,7 +72,7 @@
       bottom: 125%;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0,0,0,0.7);
       color: #fff;
       padding: 5px 8px;
       border-radius: 4px;
@@ -134,179 +82,60 @@
       transition: opacity 0.3s ease;
       z-index: 100;
     }
-    .info-icon:hover::after {
-      opacity: 1;
-    }
-    /* Cases à cocher simples */
-    .filters input[type="checkbox"] {
-      transform: scale(1.2);
-      margin-right: 5px;
-      cursor: pointer;
-    }
-    /* Tableau principal avec alternance de couleur */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-    }
-    table thead {
-      background-color: #f0f4f8;
-    }
-    table th, table td {
-      padding: 12px 15px;
-      text-align: left;
-      border-bottom: 1px solid #e2e8f0;
-    }
-    table tbody tr:hover {
-      background-color: #f9fafb;
-    }
-    /* Renommage de la colonne "Actions" en "Performances" */
-    table thead th:last-child {
-      text-align: center;
-    }
+    .info-icon:hover::after { opacity: 1; }
+    /* Tableau principal */
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    table thead { background: #f0f4f8; }
+    table th, table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+    table tbody tr:hover { background: #f9fafb; }
+    table thead th:last-child { text-align: center; }
     /* Boutons d'action */
     .btn-performance {
-      background-color: #4a90e2;
-      color: #fff;
-      padding: 6px 12px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.9em;
-      transition: background-color 0.3s ease;
+      background: #4a90e2; color: #fff; padding: 6px 12px; border: none; border-radius: 6px;
+      cursor: pointer; font-size: 0.9em; transition: background 0.3s ease;
     }
-    .btn-performance:hover {
-      background-color: #357ab8;
-    }
-    @media (max-width: 768px) {
-      .filters {
-        flex-direction: column;
-        align-items: center;
-      }
-      table th, table td {
-        padding: 10px;
-      }
-    }
+    .btn-performance:hover { background: #357ab8; }
     /* Modal */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.5);
-      padding: 20px;
-    }
-    .modal-content {
-      background-color: #fff;
-      margin: 5% auto;
-      padding: 20px;
-      border-radius: 8px;
-      width: 95%;
-      max-width: 900px;
-      position: relative;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
-    .modal-close {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 1.5em;
-      cursor: pointer;
-      color: #888;
-    }
-    .profile-section {
-      margin-bottom: 40px;
-      border-bottom: 1px solid #e2e8f0;
-      padding-bottom: 20px;
-    }
-    .profile-section:last-child {
-      border-bottom: none;
-    }
-    .charts {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-    .charts canvas {
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      border-radius: 6px;
-      padding: 10px;
-    }
-    /* Tableau de performances */
-    .perf-table {
-      border-collapse: collapse;
-      width: 100%;
-      max-width: 400px;
-      margin: 10px 0;
-    }
-    .perf-table th,
-    .perf-table td {
-      border: 1px solid #e2e8f0;
-      padding: 6px 8px;
-      text-align: center;
-      font-size: 0.9em;
-    }
-    .perf-table th {
-      background-color: #f0f4f8;
-    }
-    /* Encart pour supports d'investissement en gestion libre */
-    .investment-supports {
-      margin-top: 10px;
-      text-align: left;
-    }
-    .investment-supports h4 {
-      margin-bottom: 5px;
-      font-size: 1em;
-      color: #357ab8;
-    }
-    .investment-supports p {
-      margin: 2px 0;
-      font-size: 0.9em;
-    }
-    /* Disposition de la section extra dépliable en deux colonnes */
-    .extra-container {
-      display: flex;
-      justify-content: space-between;
-    }
-    .extra-left {
-      width: 55%;
-      text-align: left;
-    }
-    .extra-right {
-      width: 40%;
-      text-align: left;
-    }
-    /* Ligne supplémentaire pour la section extra */
-    .extra-info {
-      background-color: #f9fafb;
-    }
+    .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background: rgba(0,0,0,0.5); padding: 20px; }
+    .modal-content { background: #fff; margin: 5% auto; padding: 20px; border-radius: 8px; width: 95%; max-width: 900px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+    .modal-close { position: absolute; top: 10px; right: 15px; font-size: 1.5em; cursor: pointer; color: #888; }
+    /* Alternance de couleur des lignes */
+    tbody tr:nth-child(odd) { background: #fff; }
+    tbody tr:nth-child(even) { background: #EFEFEF; }
+    /* Section extra (dépliable) en deux colonnes */
+    .extra-container { display: flex; justify-content: space-between; }
+    .extra-left { width: 55%; text-align: left; }
+    .extra-right { width: 40%; text-align: left; }
+    .extra-info { background: #f9fafb; }
+    /* Encart supports d'investissement */
+    .investment-supports { margin-top: 10px; text-align: left; }
+    .investment-supports h4 { margin-bottom: 5px; font-size: 1em; color: #357ab8; }
+    .investment-supports p { margin: 2px 0; font-size: 0.9em; }
   </style>
 </head>
 <body>
   <!-- Header -->
   <div class="header">Comparateur d'Assurance Vie</div>
   <!-- Sous-header -->
-  <div class="sub-header">
-    <p>&copy; Baptiste Plat Garnier</p>
-  </div>
+  <div class="sub-header"><p>&copy; Baptiste Plat Garnier</p></div>
   <div class="container">
     <!-- Zone des filtres -->
     <div class="filters">
-      <!-- Remplacement des listes déroulantes par des conteneurs de cases à cocher pour Assureur et Distributeur -->
+      <!-- Menu déroulant multi-sélection pour Assureur -->
       <div>
         <label>Assureur :</label>
-        <div id="assureurContainer" class="checkbox-group"></div>
+        <div class="dropdown" id="assureurDropdown">
+          <button type="button" class="dropdown-toggle" onclick="toggleDropdown('assureurDropdown')">Tous</button>
+          <div class="dropdown-options"></div>
+        </div>
       </div>
+      <!-- Menu déroulant multi-sélection pour Distributeur -->
       <div>
         <label>Distributeur :</label>
-        <div id="distributeurContainer" class="checkbox-group"></div>
+        <div class="dropdown" id="distributeurDropdown">
+          <button type="button" class="dropdown-toggle" onclick="toggleDropdown('distributeurDropdown')">Tous</button>
+          <div class="dropdown-options"></div>
+        </div>
       </div>
       <div>
         <label for="nom">Nom du contrat :</label>
@@ -314,11 +143,10 @@
       </div>
       <div>
         <label for="versement">Versement initial (max) :</label>
-        <!-- Échelle fixe de 0 à 10 000 -->
         <input type="range" id="versement" value="10000" min="0" max="10000" step="100">
         <span id="versementValue">10000</span>
       </div>
-      <!-- Autres cases à cocher avec info-icons -->
+      <!-- Autres cases à cocher -->
       <div>
         <input type="checkbox" id="gestion" class="checkbox-filter" data-column="Gestion pilotée" data-value="Gestion pilotée">
         <label for="gestion">Gestion pilotée</label>
@@ -360,7 +188,6 @@
     <table id="contrats">
       <thead>
         <tr>
-          <!-- La première colonne intègre la flèche toggle à gauche du nom du contrat -->
           <th data-key="nom">Nom du contrat</th>
           <th data-key="assureur">Assureur</th>
           <th data-key="distributeur">Distributeur</th>
@@ -392,47 +219,39 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // Fonction pour générer dynamiquement les cases à cocher pour les assureurs
-    function remplirFiltreAssureur(donnees) {
-      const container = document.getElementById("assureurContainer");
+    /* Fonctions pour le menu déroulant multi-sélection */
+    function toggleDropdown(dropdownId) {
+      const dropdown = document.getElementById(dropdownId);
+      const options = dropdown.querySelector('.dropdown-options');
+      options.style.display = (options.style.display === 'block') ? 'none' : 'block';
+    }
+    function updateDropdownText(dropdownId) {
+      const dropdown = document.getElementById(dropdownId);
+      const toggleBtn = dropdown.querySelector('.dropdown-toggle');
+      const checked = dropdown.querySelectorAll('input[type="checkbox"]:checked');
+      const values = Array.from(checked).map(cb => cb.value);
+      toggleBtn.textContent = (values.length > 0) ? values.join(', ') : 'Tous';
+      filtrerDonnees(window.globalData); // déclenche le filtrage après mise à jour
+    }
+    function populateDropdown(dropdownId, values) {
+      const container = document.getElementById(dropdownId).querySelector('.dropdown-options');
       container.innerHTML = "";
-      const assureurs = [...new Set(donnees.map(item => item.assureur))];
-      assureurs.forEach(assureur => {
+      values.forEach(val => {
+        const label = document.createElement("label");
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
-        checkbox.value = assureur;
-        checkbox.className = "assureur-checkbox";
-        // Ajout d'un écouteur pour déclencher le filtrage lors du changement
-        checkbox.addEventListener("change", () => filtrerDonnees(donnees));
-        const label = document.createElement("label");
-        label.style.marginRight = "10px";
+        checkbox.value = val;
+        checkbox.addEventListener("change", () => updateDropdownText(dropdownId));
         label.appendChild(checkbox);
-        label.appendChild(document.createTextNode(" " + assureur));
+        label.appendChild(document.createTextNode(" " + val));
         container.appendChild(label);
       });
     }
-    // Fonction pour générer dynamiquement les cases à cocher pour les distributeurs
-    function remplirFiltreDistributeur(donnees) {
-      const container = document.getElementById("distributeurContainer");
-      container.innerHTML = "";
-      const distributeurs = [...new Set(donnees.map(item => item.distributeur))];
-      distributeurs.forEach(distributeur => {
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.value = distributeur;
-        checkbox.className = "distributeur-checkbox";
-        checkbox.addEventListener("change", () => filtrerDonnees(donnees));
-        const label = document.createElement("label");
-        label.style.marginRight = "10px";
-        label.appendChild(checkbox);
-        label.appendChild(document.createTextNode(" " + distributeur));
-        container.appendChild(label);
-      });
-    }
-
-    // Fonction pour construire les trois tableaux financiers décomposés
+    
+    /* Fonctions d'affichage et de filtrage principales */
+    
+    // Fonction pour construire les tableaux financiers décomposés
     function buildFinancialTables(item) {
-      // Frais fixes
       let tableFraisFixes = `<h4>Frais fixes</h4>
         <table class="perf-table">
           <thead>
@@ -450,7 +269,6 @@
             </tr>
           </tbody>
         </table>`;
-      // Frais récurrents
       let tableFraisRecurrents = `<h4>Frais récurrents</h4>
         <table class="perf-table">
           <thead>
@@ -470,7 +288,6 @@
             </tr>
           </tbody>
         </table>`;
-      // Frais de gestion
       let tableFraisGestion = `<h4>Frais de gestion</h4>
         <table class="perf-table">
           <thead>
@@ -489,12 +306,11 @@
       return tableFraisFixes + tableFraisRecurrents + tableFraisGestion;
     }
 
-    // Fonction pour afficher le tableau principal avec flèche toggle et alternance de couleur
+    // Fonction pour afficher les données dans le tableau principal et le dépliant
     function afficherDonnees(donnees) {
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
       donnees.forEach((item, index) => {
-        // Ligne principale avec alternance de couleur (pair: #fff, impair: #EFEFEF)
         const tr = document.createElement("tr");
         tr.style.backgroundColor = (index % 2 === 0) ? "#fff" : "#EFEFEF";
         tr.innerHTML = `
@@ -512,8 +328,6 @@
           }</td>
         `;
         tbody.appendChild(tr);
-
-        // Ligne supplémentaire dépliable (contenu en deux colonnes)
         const extraRow = document.createElement("tr");
         extraRow.id = "extra_" + index;
         extraRow.className = "extra-info";
@@ -544,7 +358,6 @@
       });
     }
 
-    // Fonction de bascule pour la ligne supplémentaire
     function toggleExtra(index, btn) {
       const extraRow = document.getElementById("extra_" + index);
       if (extraRow.style.display === "none" || extraRow.style.display === "") {
@@ -556,62 +369,54 @@
       }
     }
 
-    // Fonction pour générer les cases à cocher pour les assureurs
-    function remplirFiltreAssureurCheckboxes(donnees) {
-      const container = document.getElementById("assureurContainer");
-      container.innerHTML = "";
-      const assureurs = [...new Set(donnees.map(item => item.assureur))];
-      assureurs.forEach(assureur => {
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.value = assureur;
-        checkbox.className = "assureur-checkbox";
-        checkbox.addEventListener("change", () => filtrerDonnees(donnees));
-        const label = document.createElement("label");
-        label.style.marginRight = "10px";
-        label.appendChild(checkbox);
-        label.appendChild(document.createTextNode(" " + assureur));
-        container.appendChild(label);
-      });
+    /* Fonctions pour les dropdowns multi-sélection */
+    function toggleDropdown(dropdownId) {
+      const dropdown = document.getElementById(dropdownId);
+      const options = dropdown.querySelector('.dropdown-options');
+      options.style.display = (options.style.display === 'block') ? 'none' : 'block';
     }
-    // Fonction pour générer les cases à cocher pour les distributeurs
-    function remplirFiltreDistributeurCheckboxes(donnees) {
-      const container = document.getElementById("distributeurContainer");
+    function updateDropdownText(dropdownId) {
+      const dropdown = document.getElementById(dropdownId);
+      const toggleBtn = dropdown.querySelector('.dropdown-toggle');
+      const checked = dropdown.querySelectorAll('input[type="checkbox"]:checked');
+      const values = Array.from(checked).map(cb => cb.value);
+      toggleBtn.textContent = values.length ? values.join(', ') : 'Tous';
+      filtrerDonnees(window.globalData);
+    }
+    function populateDropdown(dropdownId, values) {
+      const container = document.getElementById(dropdownId).querySelector('.dropdown-options');
       container.innerHTML = "";
-      const distributeurs = [...new Set(donnees.map(item => item.distributeur))];
-      distributeurs.forEach(distributeur => {
+      values.forEach(val => {
+        const label = document.createElement("label");
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
-        checkbox.value = distributeur;
-        checkbox.className = "distributeur-checkbox";
-        checkbox.addEventListener("change", () => filtrerDonnees(donnees));
-        const label = document.createElement("label");
-        label.style.marginRight = "10px";
+        checkbox.value = val;
+        checkbox.addEventListener("change", () => updateDropdownText(dropdownId));
         label.appendChild(checkbox);
-        label.appendChild(document.createTextNode(" " + distributeur));
+        label.appendChild(document.createTextNode(" " + val));
         container.appendChild(label);
       });
     }
 
-    // Fonction de filtrage combiné avec sélection multiple pour assureur et distributeur
+    // Filtrage basé sur les sélections dans les dropdowns et autres filtres
     function filtrerDonnees(donnees) {
-      // Récupération des assureurs sélectionnés
-      const selectedAssureurs = Array.from(document.querySelectorAll(".assureur-checkbox:checked")).map(cb => cb.value);
-      // Récupération des distributeurs sélectionnés
-      const selectedDistributeurs = Array.from(document.querySelectorAll(".distributeur-checkbox:checked")).map(cb => cb.value);
+      // Récupérer les valeurs sélectionnées dans les dropdowns
+      const assureurDropdown = document.getElementById("assureurDropdown");
+      const selectedAssureurs = Array.from(assureurDropdown.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+      const distributeurDropdown = document.getElementById("distributeurDropdown");
+      const selectedDistributeurs = Array.from(distributeurDropdown.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+      
       const filtreNom = document.getElementById("nom").value.toLowerCase();
       const maxVersement = parseFloat(document.getElementById("versement").value);
       const checkboxes = document.querySelectorAll(".checkbox-filter");
-      
       const donneesFiltrees = donnees.filter(item => {
         let versement = parseFloat(item.versement.replace(/[^\d.]/g, '')) || 0;
         let conditionsCheckbox = true;
-        checkboxes.forEach(checkbox => {
-          if (checkbox.checked) {
-            const col = checkbox.dataset.column;
-            const val = checkbox.dataset.value;
-            conditionsCheckbox = conditionsCheckbox &&
-              (item[col] && item[col].toLowerCase().trim() === val.toLowerCase().trim());
+        checkboxes.forEach(cb => {
+          if (cb.checked) {
+            const col = cb.dataset.column;
+            const val = cb.dataset.value;
+            conditionsCheckbox = conditionsCheckbox && (item[col] && item[col].toLowerCase().trim() === val.toLowerCase().trim());
           }
         });
         return (
@@ -625,7 +430,7 @@
       afficherDonnees(donneesFiltrees);
     }
 
-    // Fonction pour ouvrir le modal et afficher les performances pour chaque profil (données du second onglet)
+    // Fonction pour ouvrir le modal
     function viewPerformance(contract) {
       const modal = document.getElementById("performanceModal");
       modal.style.display = "block";
@@ -685,7 +490,7 @@
       });
     }
 
-    // Initialisation du comparateur principal
+    // Initialisation
     function init() {
       const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?output=csv';
       Papa.parse(csvUrl, {
@@ -693,14 +498,16 @@
         header: true,
         complete: function(results) {
           const data = results.data;
-          console.log("Données chargées :", data);
+          window.globalData = data; // stocker globalement pour le filtrage des dropdowns
           afficherDonnees(data);
-          remplirFiltreAssureurCheckboxes(data);
-          remplirFiltreDistributeurCheckboxes(data);
+          // Remplir les dropdowns multi-select
+          const assureurs = [...new Set(data.map(item => item.assureur))];
+          const distributeurs = [...new Set(data.map(item => item.distributeur))];
+          populateDropdown("assureurDropdown", assureurs);
+          populateDropdown("distributeurDropdown", distributeurs);
+          // Curseur
           const slider = document.getElementById("versement");
-          slider.min = 0;
-          slider.max = 10000;
-          slider.value = 10000;
+          slider.min = 0; slider.max = 10000; slider.value = 10000;
           document.getElementById("versementValue").textContent = 10000;
           document.getElementById("nom").addEventListener("input", () => filtrerDonnees(data));
           document.getElementById("versement").addEventListener("input", function() {
@@ -708,52 +515,13 @@
             filtrerDonnees(data);
           });
           const checkboxFilters = document.querySelectorAll(".checkbox-filter");
-          checkboxFilters.forEach(checkbox => {
-            checkbox.addEventListener("change", () => filtrerDonnees(data));
-          });
+          checkboxFilters.forEach(cb => cb.addEventListener("change", () => filtrerDonnees(data)));
         },
         error: function(err) {
           console.error("Erreur lors du chargement du CSV :", err);
         }
       });
     }
-
-    // Fonctions pour remplir dynamiquement les conteneurs de cases à cocher pour Assureur et Distributeur
-    function remplirFiltreAssureurCheckboxes(donnees) {
-      const container = document.getElementById("assureurContainer");
-      container.innerHTML = "";
-      const assureurs = [...new Set(donnees.map(item => item.assureur))];
-      assureurs.forEach(assureur => {
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.value = assureur;
-        checkbox.className = "assureur-checkbox";
-        checkbox.addEventListener("change", () => filtrerDonnees(donnees));
-        const label = document.createElement("label");
-        label.style.marginRight = "10px";
-        label.appendChild(checkbox);
-        label.appendChild(document.createTextNode(" " + assureur));
-        container.appendChild(label);
-      });
-    }
-    function remplirFiltreDistributeurCheckboxes(donnees) {
-      const container = document.getElementById("distributeurContainer");
-      container.innerHTML = "";
-      const distributeurs = [...new Set(donnees.map(item => item.distributeur))];
-      distributeurs.forEach(distributeur => {
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.value = distributeur;
-        checkbox.className = "distributeur-checkbox";
-        checkbox.addEventListener("change", () => filtrerDonnees(donnees));
-        const label = document.createElement("label");
-        label.style.marginRight = "10px";
-        label.appendChild(checkbox);
-        label.appendChild(document.createTextNode(" " + distributeur));
-        container.appendChild(label);
-      });
-    }
-
     window.addEventListener("DOMContentLoaded", init);
   </script>
 </body>
