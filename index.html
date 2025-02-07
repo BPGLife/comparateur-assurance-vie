@@ -433,32 +433,60 @@
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
       donnees.forEach((item, index) => {
-        // Ligne principale avec alternance de couleur (pair: #fff, impair: #EFEFEF)
+        // Création de la ligne principale
         const tr = document.createElement("tr");
         tr.style.backgroundColor = (index % 2 === 0) ? "#fff" : "#EFEFEF";
-        tr.innerHTML = `
-          <td>
-            <button class="toggle-arrow" onclick="toggleExtra(${index}, this)">▼</button>
-            ${item.nom}
-          </td>
-          <td>${item.assureur}</td>
-          <td>${item.distributeur}</td>
-          <td>${item.versement}</td>
-          <td>${
-            (item["Gestion pilotée"] && item["Gestion pilotée"].toLowerCase().trim() === "gestion pilotée")
-              ? `<button class="btn-performance" onclick='viewPerformance(${JSON.stringify(item)})'>Accéder aux performances</button>`
-              : ''
-          }</td>
-        `;
+
+        // Colonne "Nom du contrat" avec bouton toggle
+        const tdNom = document.createElement("td");
+        const toggleBtn = document.createElement("button");
+        toggleBtn.className = "toggle-arrow";
+        toggleBtn.textContent = "▼";
+        toggleBtn.addEventListener("click", function() {
+          toggleExtra(index, this);
+        });
+        tdNom.appendChild(toggleBtn);
+        tdNom.insertAdjacentText("beforeend", " " + item.nom);
+        tr.appendChild(tdNom);
+
+        // Colonne Assureur
+        const tdAssureur = document.createElement("td");
+        tdAssureur.textContent = item.assureur;
+        tr.appendChild(tdAssureur);
+
+        // Colonne Distributeur
+        const tdDistributeur = document.createElement("td");
+        tdDistributeur.textContent = item.distributeur;
+        tr.appendChild(tdDistributeur);
+
+        // Colonne Versement initial
+        const tdVersement = document.createElement("td");
+        tdVersement.textContent = item.versement;
+        tr.appendChild(tdVersement);
+
+        // Colonne Actions
+        const tdActions = document.createElement("td");
+        if (item["Gestion pilotée"] && item["Gestion pilotée"].toLowerCase().trim() === "gestion pilotée") {
+          const btnPerformance = document.createElement("button");
+          btnPerformance.className = "btn-performance";
+          btnPerformance.textContent = "Accéder aux performances";
+          btnPerformance.addEventListener("click", function() {
+            viewPerformance(item);
+          });
+          tdActions.appendChild(btnPerformance);
+        }
+        tr.appendChild(tdActions);
+
         tbody.appendChild(tr);
 
-        // Ligne supplémentaire dépliable pour afficher toutes les informations complémentaires
+        // Ligne supplémentaire dépliable pour afficher les informations complémentaires
         const extraRow = document.createElement("tr");
         extraRow.id = "extra_" + index;
         extraRow.className = "extra-info";
         extraRow.style.display = "none";
-        extraRow.innerHTML = `<td colspan="5">
-          <p><strong>Année de lancement :</strong> ${item.annee}</p>
+        const tdExtra = document.createElement("td");
+        tdExtra.colSpan = 5;
+        tdExtra.innerHTML = `<p><strong>Année de lancement :</strong> ${item.annee}</p>
           <p><strong>Nature du contrat :</strong> ${item.nature}</p>
           <p><strong>Encours min. en gestion pilotée :</strong> ${item.ticket}</p>
           <p><strong>Architecture :</strong> ${item.architecture}</p>
@@ -472,8 +500,8 @@
           <p><strong>SCI :</strong> ${item["SCI"] || "-"}</p>
           <h4>Détails financiers</h4>
           ${buildFinancialTables(item)}
-          <div class="extra-content">Informations supplémentaires à venir.</div>
-        </td>`;
+          <div class="extra-content">Informations supplémentaires à venir.</div>`;
+        extraRow.appendChild(tdExtra);
         tbody.appendChild(extraRow);
       });
     }
