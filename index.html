@@ -154,7 +154,6 @@
     /* Renommage de la colonne Actions en Performances */
     table thead th:last-child {
       text-align: center;
-      /* Vous pouvez ajouter ici d'autres styles si nécessaire */
     }
     /* Boutons d'action */
     .btn-performance {
@@ -248,6 +247,22 @@
     .perf-table th {
       background-color: #f0f4f8;
     }
+    /* Section extra (dépliable) – disposition en deux colonnes */
+    .extra-container {
+      display: flex;
+      justify-content: space-between;
+    }
+    .extra-left {
+      width: 55%;
+      text-align: left;
+    }
+    .extra-right {
+      width: 40%;
+      text-align: left;
+    }
+    .extra-info {
+      background-color: #f9fafb;
+    }
     /* Encart pour supports d'investissement en gestion libre */
     .investment-supports {
       margin-top: 10px;
@@ -261,23 +276,6 @@
     .investment-supports p {
       margin: 2px 0;
       font-size: 0.9em;
-    }
-    /* Section extra (dépliable) : disposition en deux colonnes */
-    .extra-container {
-      display: flex;
-      justify-content: space-between;
-    }
-    .extra-left {
-      width: 55%;
-      text-align: left;
-    }
-    .extra-right {
-      width: 40%;
-      text-align: left;
-    }
-    /* Ligne supplémentaire pour la section extra */
-    .extra-info {
-      background-color: #f9fafb;
     }
   </style>
 </head>
@@ -309,7 +307,6 @@
       </div>
       <div>
         <label for="versement">Versement initial (max) :</label>
-        <!-- Échelle fixe de 0 à 10 000 -->
         <input type="range" id="versement" value="10000" min="0" max="10000" step="100">
         <span id="versementValue">10000</span>
       </div>
@@ -355,7 +352,6 @@
     <table id="contrats">
       <thead>
         <tr>
-          <!-- La première colonne inclut la flèche toggle avant le nom du contrat -->
           <th data-key="nom">Nom du contrat</th>
           <th data-key="assureur">Assureur</th>
           <th data-key="distributeur">Distributeur</th>
@@ -387,9 +383,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // Fonction pour construire les trois tableaux financiers décomposés
+    // Fonction pour construire les tableaux financiers décomposés
     function buildFinancialTables(item) {
-      // Frais fixes
       let tableFraisFixes = `<h4>Frais fixes</h4>
         <table class="perf-table">
           <thead>
@@ -407,7 +402,6 @@
             </tr>
           </tbody>
         </table>`;
-      // Frais récurrents
       let tableFraisRecurrents = `<h4>Frais récurrents</h4>
         <table class="perf-table">
           <thead>
@@ -427,7 +421,6 @@
             </tr>
           </tbody>
         </table>`;
-      // Frais de gestion
       let tableFraisGestion = `<h4>Frais de gestion</h4>
         <table class="perf-table">
           <thead>
@@ -446,12 +439,12 @@
       return tableFraisFixes + tableFraisRecurrents + tableFraisGestion;
     }
 
-    // Fonction pour afficher le tableau principal avec flèche toggle intégrée et alternance de couleur
+    // Fonction pour afficher les données dans le tableau principal et la section dépliable
     function afficherDonnees(donnees) {
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
       donnees.forEach((item, index) => {
-        // Ligne principale avec alternance de couleur (pair: #fff, impair: #EFEFEF)
+        // Ligne principale
         const tr = document.createElement("tr");
         tr.style.backgroundColor = (index % 2 === 0) ? "#fff" : "#EFEFEF";
         tr.innerHTML = `
@@ -469,8 +462,7 @@
           }</td>
         `;
         tbody.appendChild(tr);
-
-        // Ligne supplémentaire dépliable affichant toutes les informations complémentaires dans deux colonnes
+        // Ligne dépliable avec deux colonnes
         const extraRow = document.createElement("tr");
         extraRow.id = "extra_" + index;
         extraRow.className = "extra-info";
@@ -501,7 +493,7 @@
       });
     }
 
-    // Fonction de bascule pour la ligne supplémentaire et changement de l'icône de la flèche
+    // Fonction de bascule pour la ligne dépliable
     function toggleExtra(index, btn) {
       const extraRow = document.getElementById("extra_" + index);
       if (extraRow.style.display === "none" || extraRow.style.display === "") {
@@ -513,9 +505,10 @@
       }
     }
 
-    // Remplissage des menus déroulants
+    // Fonctions pour remplir les menus déroulants classiques
     function remplirFiltreAssureur(donnees) {
       const select = document.getElementById("assureur");
+      select.innerHTML = '<option value="">Tous</option>';
       const assureurs = [...new Set(donnees.map(item => item.assureur))];
       assureurs.forEach(assureur => {
         const option = document.createElement("option");
@@ -526,6 +519,7 @@
     }
     function remplirFiltreDistributeur(donnees) {
       const select = document.getElementById("distributeur");
+      select.innerHTML = '<option value="">Tous</option>';
       const distributeurs = [...new Set(donnees.map(item => item.distributeur))];
       distributeurs.forEach(distributeur => {
         const option = document.createElement("option");
@@ -535,23 +529,21 @@
       });
     }
 
-    // Fonction de filtrage combiné, avec nettoyage du versement
+    // Fonction de filtrage combiné
     function filtrerDonnees(donnees) {
       const filtreAssureur = document.getElementById("assureur").value;
       const filtreDistributeur = document.getElementById("distributeur").value;
       const filtreNom = document.getElementById("nom").value.toLowerCase();
       const maxVersement = parseFloat(document.getElementById("versement").value);
       const checkboxes = document.querySelectorAll(".checkbox-filter");
-
       const donneesFiltrees = donnees.filter(item => {
         let versement = parseFloat(item.versement.replace(/[^\d.]/g, '')) || 0;
         let conditionsCheckbox = true;
-        checkboxes.forEach(checkbox => {
-          if (checkbox.checked) {
-            const col = checkbox.dataset.column;
-            const val = checkbox.dataset.value;
-            conditionsCheckbox = conditionsCheckbox &&
-              (item[col] && item[col].toLowerCase().trim() === val.toLowerCase().trim());
+        checkboxes.forEach(cb => {
+          if (cb.checked) {
+            const col = cb.dataset.column;
+            const val = cb.dataset.value;
+            conditionsCheckbox = conditionsCheckbox && (item[col] && item[col].toLowerCase().trim() === val.toLowerCase().trim());
           }
         });
         return (
@@ -565,36 +557,31 @@
       afficherDonnees(donneesFiltrees);
     }
 
-    // Fonction pour ouvrir le modal et afficher les performances pour chaque profil (données du second onglet)
+    // Fonction de performance (corrigée)
     function viewPerformance(contract) {
       const modal = document.getElementById("performanceModal");
       modal.style.display = "block";
       document.getElementById("modalTitle").textContent = `Performances de ${contract.nom}`;
-
       const chartsContainer = document.getElementById("profileChartsContainer");
       chartsContainer.innerHTML = "";
-
-      // URL du second onglet contenant les données de performance
-      const performanceCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?gid=1183800682&single=true&output=csv';
-
+      const performanceCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?output=csv&gid=1183800682&single=true';
       Papa.parse(performanceCsvUrl, {
         download: true,
         header: true,
         complete: function(results) {
           const perfData = results.data;
-          const contractPerfRows = perfData.filter(row => row["Nom du contrat"] === contract.nom);
-
+          // Comparaison avec .trim() pour éliminer d'éventuels espaces
+          const contractPerfRows = perfData.filter(row =>
+            row["Nom du contrat"] && row["Nom du contrat"].trim() === contract.nom.trim()
+          );
           if (contractPerfRows.length === 0) {
             chartsContainer.innerHTML = "<p>Aucune donnée de performance trouvée pour ce contrat.</p>";
             return;
           }
-
           contractPerfRows.forEach((profileRow, index) => {
             const profileDiv = document.createElement("div");
             profileDiv.className = "profile-section";
             profileDiv.innerHTML = `<h3>Profil : ${profileRow["Profil"] || "Non défini"} - Gestionnaire : ${profileRow["Gestionnaire d'actif"] || "Non défini"}</h3>`;
-
-            // Camembert pour la répartition UC / Fonds en euros (200x200)
             const pieCanvas = document.createElement("canvas");
             pieCanvas.id = `pieChart_${index}`;
             pieCanvas.width = 200;
@@ -603,7 +590,6 @@
             chartsDiv.className = "charts";
             chartsDiv.appendChild(pieCanvas);
             profileDiv.appendChild(chartsDiv);
-
             const partUC = profileRow.part_uc ? parseFloat(profileRow.part_uc) : 50;
             const partFonds = profileRow.part_fonds ? parseFloat(profileRow.part_fonds) : (100 - partUC);
             new Chart(pieCanvas.getContext("2d"), {
@@ -617,10 +603,7 @@
               },
               options: { responsive: true }
             });
-
-            // Tableau des performances annuelles pour 2024 à 2016
-            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2021", "2019", "2020", "2018", "2017", "2016"];
-            // Correction de l'array selon vos besoins – ici, nous utilisons l'array tel quel (à ajuster si nécessaire)
+            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2018", "2021", "2017", "2016"];
             let tableHTML = `<table class="perf-table"><thead><tr><th>Année</th><th>Performance (%)</th></tr></thead><tbody>`;
             yearsArray.forEach(year => {
               const perfValue = (profileRow[year] !== undefined && profileRow[year] !== "") ? profileRow[year] : "-";
@@ -628,7 +611,6 @@
             });
             tableHTML += `</tbody></table>`;
             profileDiv.innerHTML += tableHTML;
-
             chartsContainer.appendChild(profileDiv);
           });
         },
@@ -638,17 +620,6 @@
       });
     }
 
-    // Fermeture du modal
-    document.getElementById("modalClose").addEventListener("click", function() {
-      document.getElementById("performanceModal").style.display = "none";
-    });
-    window.addEventListener("click", function(event) {
-      const modal = document.getElementById("performanceModal");
-      if (event.target === modal) {
-        modal.style.display = "none";
-      }
-    });
-
     // Initialisation du comparateur principal
     function init() {
       const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?output=csv';
@@ -657,37 +628,28 @@
         header: true,
         complete: function(results) {
           const data = results.data;
-          console.log("Données chargées :", data);
+          window.globalData = data;
           afficherDonnees(data);
           remplirFiltreAssureur(data);
           remplirFiltreDistributeur(data);
-
-          // Configuration fixe du curseur : échelle de 0 à 10 000
           const slider = document.getElementById("versement");
           slider.min = 0;
           slider.max = 10000;
           slider.value = 10000;
           document.getElementById("versementValue").textContent = 10000;
-
-          // Écouteurs d'événements pour les filtres
-          document.getElementById("assureur").addEventListener("change", () => filtrerDonnees(data));
-          document.getElementById("distributeur").addEventListener("change", () => filtrerDonnees(data));
           document.getElementById("nom").addEventListener("input", () => filtrerDonnees(data));
           document.getElementById("versement").addEventListener("input", function() {
             document.getElementById("versementValue").textContent = this.value;
             filtrerDonnees(data);
           });
           const checkboxFilters = document.querySelectorAll(".checkbox-filter");
-          checkboxFilters.forEach(checkbox => {
-            checkbox.addEventListener("change", () => filtrerDonnees(data));
-          });
+          checkboxFilters.forEach(cb => cb.addEventListener("change", () => filtrerDonnees(data)));
         },
         error: function(err) {
           console.error("Erreur lors du chargement du CSV :", err);
         }
       });
     }
-
     window.addEventListener("DOMContentLoaded", init);
   </script>
 </body>
