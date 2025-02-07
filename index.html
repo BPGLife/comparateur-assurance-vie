@@ -34,7 +34,7 @@
       letter-spacing: 1px;
       margin-bottom: 10px;
     }
-    /* Sous-header pour le copyright */
+    /* Sous-header */
     .sub-header {
       text-align: center;
       font-size: 0.9em;
@@ -92,7 +92,7 @@
     .filters input[type="range"] {
       cursor: pointer;
     }
-    /* Bouton toggle (flèche) pour déplier la section extra */
+    /* Bouton toggle (flèche) */
     .toggle-arrow {
       background: none;
       border: none;
@@ -319,7 +319,7 @@
       </div>
     </div>
 
-    <!-- Tableau principal (les colonnes "Année" et "Nature" sont transférées dans la section extra) -->
+    <!-- Tableau principal (les colonnes "Année" et "Nature" transférées dans la section extra) -->
     <table id="contrats">
       <thead>
         <tr>
@@ -355,38 +355,71 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // Fonction pour construire le tableau des informations financières supplémentaires
-    function buildFinancialTable(item) {
-      const headers = [
-        "Frais de dossier",
-        "Droits d'entrée",
-        "FV€",
-        "Frais de rachat",
-        "Fonds en euro classique",
-        "Frais de gestion UC",
-        "Frais forfaitaires annuels",
-        "FVUC",
-        "FVGSM",
-        "Arbitrages gratuits/an"
-      ];
-      let tableHTML = `<table class="perf-table"><thead><tr>`;
-      headers.forEach(header => {
-        tableHTML += `<th>${header}</th>`;
-      });
-      tableHTML += `</tr></thead><tbody><tr>`;
-      headers.forEach(header => {
-        tableHTML += `<td>${item[header] || "-"}</td>`;
-      });
-      tableHTML += `</tr></tbody></table>`;
-      return tableHTML;
+    // Fonction pour construire les trois tableaux financiers
+    function buildFinancialTables(item) {
+      // Frais fixes
+      let tableFraisFixes = `<h4>Frais fixes</h4>
+        <table class="perf-table">
+          <thead>
+            <tr>
+              <th>Frais de dossier</th>
+              <th>Droits d'entrée</th>
+              <th>Frais de rachat</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>${item["Frais de dossier"] || "-"}</td>
+              <td>${item["Droits d'entrée"] || "-"}</td>
+              <td>${item["Frais de rachat"] || "-"}</td>
+            </tr>
+          </tbody>
+        </table>`;
+      // Frais récurrents
+      let tableFraisRecurrents = `<h4>Frais récurrents</h4>
+        <table class="perf-table">
+          <thead>
+            <tr>
+              <th>FV€</th>
+              <th>FVUC</th>
+              <th>FVGSM</th>
+              <th>Arbitrages gratuits/an</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>${item["FV€"] || "-"}</td>
+              <td>${item["FVUC"] || "-"}</td>
+              <td>${item["FVGSM"] || "-"}</td>
+              <td>${item["Arbitrages gratuits/an"] || "-"}</td>
+            </tr>
+          </tbody>
+        </table>`;
+      // Frais de gestion
+      let tableFraisGestion = `<h4>Frais de gestion</h4>
+        <table class="perf-table">
+          <thead>
+            <tr>
+              <th>Fonds en euro classique</th>
+              <th>Frais de gestion UC</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>${item["Fonds en euro classique"] || "-"}</td>
+              <td>${item["Frais de gestion UC"] || "-"}</td>
+            </tr>
+          </tbody>
+        </table>`;
+      return tableFraisFixes + tableFraisRecurrents + tableFraisGestion;
     }
 
-    // Fonction pour afficher le tableau principal avec flèche toggle intégrée
+    // Fonction pour afficher le tableau principal avec flèche toggle intégrée et alternance de couleur
     function afficherDonnees(donnees) {
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
       donnees.forEach((item, index) => {
-        // Création de la ligne principale avec alternance de couleur
+        // Ligne principale avec alternance de couleur (pair : #fff, impair : #EFEFEF)
         const tr = document.createElement("tr");
         tr.style.backgroundColor = (index % 2 === 0) ? "#fff" : "#EFEFEF";
         tr.innerHTML = `
@@ -405,21 +438,25 @@
         `;
         tbody.appendChild(tr);
 
-        // Ligne supplémentaire dépliable pour afficher les informations supplémentaires
-        // Transfert des informations "Année", "Nature", "Ticket", "Architecture", "Frais add. GP" et le nouveau tableau financier
+        // Ligne supplémentaire dépliable : décomposition en deux colonnes (texte à gauche et tableau financier à droite)
         const extraRow = document.createElement("tr");
         extraRow.id = "extra_" + index;
         extraRow.className = "extra-info";
         extraRow.style.display = "none";
         extraRow.innerHTML = `<td colspan="5">
-          <p><strong>Année de lancement :</strong> ${item.annee}</p>
-          <p><strong>Nature du contrat :</strong> ${item.nature}</p>
-          <p><strong>Encours min. en gestion pilotée :</strong> ${item.ticket}</p>
-          <p><strong>Architecture :</strong> ${item.architecture}</p>
-          <p><strong>Frais additionnels de la gestion pilotée :</strong> ${item["frais add. GP"]}</p>
-          <h4>Détails financiers</h4>
-          ${buildFinancialTable(item)}
-          <div class="extra-content">Informations supplémentaires à venir.</div>
+          <div style="display: flex; justify-content: space-between;">
+            <div class="extra-left" style="width: 45%; text-align: left;">
+              <p><strong>Année de lancement :</strong> ${item.annee}</p>
+              <p><strong>Nature du contrat :</strong> ${item.nature}</p>
+              <p><strong>Encours min. en gestion pilotée :</strong> ${item.ticket}</p>
+              <p><strong>Architecture :</strong> ${item.architecture}</p>
+              <p><strong>Frais additionnels de la gestion pilotée :</strong> ${item["frais add. GP"]}</p>
+              <div class="extra-content">Informations supplémentaires à venir.</div>
+            </div>
+            <div class="extra-right" style="width: 50%; text-align: right;">
+              ${buildFinancialTables(item)}
+            </div>
+          </div>
         </td>`;
         tbody.appendChild(extraRow);
       });
@@ -543,7 +580,8 @@
             });
 
             // Tableau des performances annuelles pour 2024 à 2016
-            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2020", "2018", "2017", "2016"];
+            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2020", "2018", "2021", "2017", "2016"];
+            // Correction : Utilisation de l'array souhaité (à adapter si nécessaire)
             const correctYearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2020", "2018", "2017", "2016"];
             let tableHTML = `<table class="perf-table"><thead><tr><th>Année</th><th>Performance (%)</th></tr></thead><tbody>`;
             correctYearsArray.forEach(year => {
@@ -573,7 +611,7 @@
       }
     });
 
-    // Fonction pour initialiser le comparateur principal
+    // Initialisation du comparateur principal
     function init() {
       const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?output=csv';
       Papa.parse(csvUrl, {
