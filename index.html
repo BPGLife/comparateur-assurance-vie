@@ -151,10 +151,6 @@
     table tbody tr:hover {
       background-color: #f9fafb;
     }
-    /* Renommage de la colonne Actions en Performances */
-    table thead th:last-child {
-      text-align: center;
-    }
     /* Boutons d'action */
     .btn-performance {
       background-color: #4a90e2;
@@ -247,23 +243,7 @@
     .perf-table th {
       background-color: #f0f4f8;
     }
-    /* Section extra (dépliable) – disposition en deux colonnes */
-    .extra-container {
-      display: flex;
-      justify-content: space-between;
-    }
-    .extra-left {
-      width: 55%;
-      text-align: left;
-    }
-    .extra-right {
-      width: 40%;
-      text-align: left;
-    }
-    .extra-info {
-      background-color: #f9fafb;
-    }
-    /* Encart pour supports d'investissement en gestion libre */
+    /* Encart pour supports d'investissement */
     .investment-supports {
       margin-top: 10px;
       text-align: left;
@@ -276,6 +256,10 @@
     .investment-supports p {
       margin: 2px 0;
       font-size: 0.9em;
+    }
+    /* Ligne supplémentaire pour la section extra */
+    .extra-info {
+      background-color: #f9fafb;
     }
   </style>
 </head>
@@ -307,6 +291,7 @@
       </div>
       <div>
         <label for="versement">Versement initial (max) :</label>
+        <!-- Échelle fixe de 0 à 10 000 -->
         <input type="range" id="versement" value="10000" min="0" max="10000" step="100">
         <span id="versementValue">10000</span>
       </div>
@@ -348,15 +333,16 @@
       </div>
     </div>
 
-    <!-- Tableau principal -->
+    <!-- Tableau principal (colonnes "Année" et "Nature" transférées dans la section dépliable) -->
     <table id="contrats">
       <thead>
         <tr>
+          <!-- La première colonne intègre la flèche toggle à gauche du nom du contrat -->
           <th data-key="nom">Nom du contrat</th>
           <th data-key="assureur">Assureur</th>
           <th data-key="distributeur">Distributeur</th>
           <th data-key="versement">Versement initial</th>
-          <th>Performances</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -383,8 +369,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // Fonction pour construire les tableaux financiers décomposés
+    // Fonction pour construire les trois tableaux financiers décomposés
     function buildFinancialTables(item) {
+      // Frais fixes
       let tableFraisFixes = `<h4>Frais fixes</h4>
         <table class="perf-table">
           <thead>
@@ -402,6 +389,7 @@
             </tr>
           </tbody>
         </table>`;
+      // Frais récurrents
       let tableFraisRecurrents = `<h4>Frais récurrents</h4>
         <table class="perf-table">
           <thead>
@@ -421,6 +409,7 @@
             </tr>
           </tbody>
         </table>`;
+      // Frais de gestion
       let tableFraisGestion = `<h4>Frais de gestion</h4>
         <table class="perf-table">
           <thead>
@@ -439,12 +428,12 @@
       return tableFraisFixes + tableFraisRecurrents + tableFraisGestion;
     }
 
-    // Fonction pour afficher les données dans le tableau principal et la section dépliable
+    // Fonction pour afficher le tableau principal avec flèche toggle intégrée et alternance de couleur
     function afficherDonnees(donnees) {
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
       donnees.forEach((item, index) => {
-        // Ligne principale
+        // Ligne principale avec alternance de couleur (pair: #fff, impair: #EFEFEF)
         const tr = document.createElement("tr");
         tr.style.backgroundColor = (index % 2 === 0) ? "#fff" : "#EFEFEF";
         tr.innerHTML = `
@@ -457,45 +446,39 @@
           <td>${item.versement}</td>
           <td>${
             (item["Gestion pilotée"] && item["Gestion pilotée"].toLowerCase().trim() === "gestion pilotée")
-              ? `<button class="btn-performance" data-index="${index}" onclick="viewPerformanceByIndex(this.dataset.index)">Accéder aux performances</button>`
+              ? `<button class="btn-performance" onclick='viewPerformance(${JSON.stringify(item)})'>Accéder aux performances</button>`
               : ''
           }</td>
         `;
         tbody.appendChild(tr);
-        // Ligne dépliable en deux colonnes
+
+        // Ligne supplémentaire dépliable pour afficher toutes les informations complémentaires
         const extraRow = document.createElement("tr");
         extraRow.id = "extra_" + index;
         extraRow.className = "extra-info";
         extraRow.style.display = "none";
         extraRow.innerHTML = `<td colspan="5">
-          <div class="extra-container">
-            <div class="extra-left">
-              <p><strong>Année de lancement :</strong> ${item.annee}</p>
-              <p><strong>Type de contrat :</strong> ${item["Type de contrat"] || "-"}</p>
-              <p><strong>Nature du contrat :</strong> ${item.nature}</p>
-              <p><strong>Encours min. en gestion pilotée :</strong> ${item.ticket}</p>
-              <p><strong>Architecture :</strong> ${item.architecture}</p>
-              <p><strong>Frais additionnels de la gestion pilotée :</strong> ${item["frais add. GP"]}</p>
-              <h4>Supports d'investissement en gestion libre</h4>
-              <p><strong>ETF :</strong> ${item["ETF"] || "-"}</p>
-              <p><strong>Titres vifs :</strong> ${item["Titres vifs"] || "-"}</p>
-              <p><strong>FCPR :</strong> ${item["FCPR"] || "-"}</p>
-              <p><strong>OPCI :</strong> ${item["OPCI"] || "-"}</p>
-              <p><strong>SCPI :</strong> ${item["SCPI"] || "-"}</p>
-              <p><strong>SCI :</strong> ${item["SCI"] || "-"}</p>
-            </div>
-            <div class="extra-right">
-              ${buildFinancialTables(item)}
-            </div>
-          </div>
+          <p><strong>Année de lancement :</strong> ${item.annee}</p>
+          <p><strong>Nature du contrat :</strong> ${item.nature}</p>
+          <p><strong>Encours min. en gestion pilotée :</strong> ${item.ticket}</p>
+          <p><strong>Architecture :</strong> ${item.architecture}</p>
+          <p><strong>Frais additionnels de la gestion pilotée :</strong> ${item["frais add. GP"]}</p>
+          <h4>Supports d'investissement en gestion libre</h4>
+          <p><strong>ETF :</strong> ${item["ETF"] || "-"}</p>
+          <p><strong>Titres vifs :</strong> ${item["Titres vifs"] || "-"}</p>
+          <p><strong>FCPR :</strong> ${item["FCPR"] || "-"}</p>
+          <p><strong>OPCI :</strong> ${item["OPCI"] || "-"}</p>
+          <p><strong>SCPI :</strong> ${item["SCPI"] || "-"}</p>
+          <p><strong>SCI :</strong> ${item["SCI"] || "-"}</p>
+          <h4>Détails financiers</h4>
+          ${buildFinancialTables(item)}
+          <div class="extra-content">Informations supplémentaires à venir.</div>
         </td>`;
         tbody.appendChild(extraRow);
       });
-      // Stockage des données filtrées pour la fonction viewPerformanceByIndex
-      window.filteredData = donnees;
     }
 
-    // Fonction de bascule pour la ligne dépliable
+    // Fonction de bascule pour la ligne supplémentaire et changement de l'icône de la flèche
     function toggleExtra(index, btn) {
       const extraRow = document.getElementById("extra_" + index);
       if (extraRow.style.display === "none" || extraRow.style.display === "") {
@@ -507,10 +490,9 @@
       }
     }
 
-    // Fonctions pour remplir les menus déroulants classiques
+    // Remplissage des menus déroulants
     function remplirFiltreAssureur(donnees) {
       const select = document.getElementById("assureur");
-      select.innerHTML = '<option value="">Tous</option>';
       const assureurs = [...new Set(donnees.map(item => item.assureur))];
       assureurs.forEach(assureur => {
         const option = document.createElement("option");
@@ -521,7 +503,6 @@
     }
     function remplirFiltreDistributeur(donnees) {
       const select = document.getElementById("distributeur");
-      select.innerHTML = '<option value="">Tous</option>';
       const distributeurs = [...new Set(donnees.map(item => item.distributeur))];
       distributeurs.forEach(distributeur => {
         const option = document.createElement("option");
@@ -531,7 +512,7 @@
       });
     }
 
-    // Fonction de filtrage combiné
+    // Fonction de filtrage combiné, avec nettoyage du versement
     function filtrerDonnees(donnees) {
       const filtreAssureur = document.getElementById("assureur").value;
       const filtreDistributeur = document.getElementById("distributeur").value;
@@ -542,11 +523,12 @@
       const donneesFiltrees = donnees.filter(item => {
         let versement = parseFloat(item.versement.replace(/[^\d.]/g, '')) || 0;
         let conditionsCheckbox = true;
-        checkboxes.forEach(cb => {
-          if (cb.checked) {
-            const col = cb.dataset.column;
-            const val = cb.dataset.value;
-            conditionsCheckbox = conditionsCheckbox && (item[col] && item[col].toLowerCase().trim() === val.toLowerCase().trim());
+        checkboxes.forEach(checkbox => {
+          if (checkbox.checked) {
+            const col = checkbox.dataset.column;
+            const val = checkbox.dataset.value;
+            conditionsCheckbox = conditionsCheckbox &&
+              (item[col] && item[col].toLowerCase().trim() === val.toLowerCase().trim());
           }
         });
         return (
@@ -560,36 +542,36 @@
       afficherDonnees(donneesFiltrees);
     }
 
-    // Fonction qui récupère le contrat filtré par index et appelle viewPerformance
-    function viewPerformanceByIndex(index) {
-      const contract = window.filteredData[index];
-      viewPerformance(contract);
-    }
-
-    // Fonction de performance (corrigée)
+    // Fonction pour ouvrir le modal et afficher les performances pour chaque profil (données du second onglet)
     function viewPerformance(contract) {
       const modal = document.getElementById("performanceModal");
       modal.style.display = "block";
       document.getElementById("modalTitle").textContent = `Performances de ${contract.nom}`;
+
       const chartsContainer = document.getElementById("profileChartsContainer");
       chartsContainer.innerHTML = "";
-      const performanceCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?output=csv&gid=1183800682&single=true';
+
+      // URL du second onglet contenant les données de performance
+      const performanceCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?gid=1183800682&single=true&output=csv';
+
       Papa.parse(performanceCsvUrl, {
         download: true,
         header: true,
         complete: function(results) {
           const perfData = results.data;
-          const contractPerfRows = perfData.filter(row =>
-            row["Nom du contrat"] && row["Nom du contrat"].trim() === contract.nom.trim()
-          );
+          const contractPerfRows = perfData.filter(row => row["Nom du contrat"] === contract.nom);
+
           if (contractPerfRows.length === 0) {
             chartsContainer.innerHTML = "<p>Aucune donnée de performance trouvée pour ce contrat.</p>";
             return;
           }
+
           contractPerfRows.forEach((profileRow, index) => {
             const profileDiv = document.createElement("div");
             profileDiv.className = "profile-section";
             profileDiv.innerHTML = `<h3>Profil : ${profileRow["Profil"] || "Non défini"} - Gestionnaire : ${profileRow["Gestionnaire d'actif"] || "Non défini"}</h3>`;
+
+            // Camembert pour la répartition UC / Fonds en euros (200x200)
             const pieCanvas = document.createElement("canvas");
             pieCanvas.id = `pieChart_${index}`;
             pieCanvas.width = 200;
@@ -598,6 +580,7 @@
             chartsDiv.className = "charts";
             chartsDiv.appendChild(pieCanvas);
             profileDiv.appendChild(chartsDiv);
+
             const partUC = profileRow.part_uc ? parseFloat(profileRow.part_uc) : 50;
             const partFonds = profileRow.part_fonds ? parseFloat(profileRow.part_fonds) : (100 - partUC);
             new Chart(pieCanvas.getContext("2d"), {
@@ -611,7 +594,9 @@
               },
               options: { responsive: true }
             });
-            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016"];
+
+            // Tableau des performances annuelles pour 2024 à 2016
+            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2020", "2018", "2017", "2016"];
             let tableHTML = `<table class="perf-table"><thead><tr><th>Année</th><th>Performance (%)</th></tr></thead><tbody>`;
             yearsArray.forEach(year => {
               const perfValue = (profileRow[year] !== undefined && profileRow[year] !== "") ? profileRow[year] : "-";
@@ -619,6 +604,7 @@
             });
             tableHTML += `</tbody></table>`;
             profileDiv.innerHTML += tableHTML;
+
             chartsContainer.appendChild(profileDiv);
           });
         },
@@ -628,6 +614,17 @@
       });
     }
 
+    // Fermeture du modal
+    document.getElementById("modalClose").addEventListener("click", function() {
+      document.getElementById("performanceModal").style.display = "none";
+    });
+    window.addEventListener("click", function(event) {
+      const modal = document.getElementById("performanceModal");
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
+    });
+
     // Initialisation du comparateur principal
     function init() {
       const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?output=csv';
@@ -636,23 +633,29 @@
         header: true,
         complete: function(results) {
           const data = results.data;
-          window.globalData = data;
+          console.log("Données chargées :", data);
           afficherDonnees(data);
           remplirFiltreAssureur(data);
           remplirFiltreDistributeur(data);
+
+          // Configuration fixe du curseur : échelle de 0 à 10 000
           const slider = document.getElementById("versement");
           slider.min = 0;
           slider.max = 10000;
           slider.value = 10000;
           document.getElementById("versementValue").textContent = 10000;
+
+          // Écouteurs d'événements pour les filtres
+          document.getElementById("assureur").addEventListener("change", () => filtrerDonnees(data));
+          document.getElementById("distributeur").addEventListener("change", () => filtrerDonnees(data));
           document.getElementById("nom").addEventListener("input", () => filtrerDonnees(data));
           document.getElementById("versement").addEventListener("input", function() {
             document.getElementById("versementValue").textContent = this.value;
             filtrerDonnees(data);
           });
           const checkboxFilters = document.querySelectorAll(".checkbox-filter");
-          checkboxFilters.forEach(cb => {
-            cb.addEventListener("change", () => filtrerDonnees(data));
+          checkboxFilters.forEach(checkbox => {
+            checkbox.addEventListener("change", () => filtrerDonnees(data));
           });
         },
         error: function(err) {
@@ -660,8 +663,8 @@
         }
       });
     }
+
     window.addEventListener("DOMContentLoaded", init);
   </script>
 </body>
 </html>
-
