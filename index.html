@@ -295,7 +295,7 @@
         <input type="range" id="versement" value="10000" min="0" max="10000" step="100">
         <span id="versementValue">10000</span>
       </div>
-      <!-- Cases à cocher avec info-icons -->
+      <!-- Checkboxes existantes -->
       <div>
         <input type="checkbox" id="gestion" class="checkbox-filter" data-column="Gestion pilotée" data-value="Gestion pilotée">
         <label for="gestion">Gestion pilotée</label>
@@ -331,9 +331,15 @@
         <label for="reequilibrage">Réequilibrage auitomatique</label>
         <span class="info-icon" data-tooltip="Ce contrat offre un rééquilibrage automatique de votre portefeuille.">ℹ</span>
       </div>
+      <!-- Nouvelle checkbox "Multipoches" -->
+      <div>
+        <input type="checkbox" id="multipoches" class="checkbox-filter" data-column="Multipoches" data-value="Multipoches">
+        <label for="multipoches">Multipoches</label>
+        <span class="info-icon" data-tooltip="Ce contrat propose l'option Multipoches.">ℹ</span>
+      </div>
     </div>
 
-    <!-- Tableau principal (colonnes "Année" et "Nature" transférées dans la section dépliable) -->
+    <!-- Tableau principal -->
     <table id="contrats">
       <thead>
         <tr>
@@ -607,12 +613,12 @@
             profileDiv.className = "profile-section";
             profileDiv.innerHTML = `<h3>Profil : ${profileRow["Profil"] || "Non défini"} - Gestionnaire : ${profileRow["Gestionnaire d'actif"] || "Non défini"}</h3>`;
             
-            // Création d'un conteneur flex pour disposer le tableau et le graphique côte à côte
+            // Conteneur flex pour disposer le tableau et le graphique côte à côte
             const containerDiv = document.createElement("div");
             containerDiv.style.display = "flex";
             containerDiv.style.gap = "20px";
             
-            // Création de la div pour le tableau des performances
+            // Div pour le tableau des performances
             const tableDiv = document.createElement("div");
             tableDiv.style.flex = "1";
             const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2020", "2018", "2017", "2016"];
@@ -624,7 +630,7 @@
             tableHTML += `</tbody></table>`;
             tableDiv.innerHTML = tableHTML;
             
-            // Création de la div pour le graphique (pie chart)
+            // Div pour le graphique (pie chart)
             const chartDiv = document.createElement("div");
             chartDiv.style.flex = "1";
             const pieCanvas = document.createElement("canvas");
@@ -639,7 +645,6 @@
             
             // Ajout du conteneur flex à la section profil
             profileDiv.appendChild(containerDiv);
-            
             chartsContainer.appendChild(profileDiv);
             
             // Initialisation du graphique (pie chart)
