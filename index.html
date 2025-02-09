@@ -127,7 +127,7 @@
       padding: 5px 8px;
       border-radius: 4px;
       white-space: normal;
-      max-width: 750px; /* Triplié par rapport à 250px */
+      max-width: 1000px; /* Augmentation de la largeur maximale */
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.3s ease;
@@ -548,7 +548,7 @@
       return tableFraisFixes + tableFraisRecurrents + tableFraisGestion;
     }
     
-    // Fonction pour afficher les données dans le tableau principal
+    // Affichage des données dans le tableau principal
     function afficherDonnees(donnees) {
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
@@ -715,7 +715,7 @@
       document.getElementById("modalTitle").textContent = `Performances de ${contract.nom}`;
       const chartsContainer = document.getElementById("profileChartsContainer");
       chartsContainer.innerHTML = "";
-      const performanceCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?gid=1183800682&single=true&output=csv';
+      const performanceCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?output=csv';
       
       Papa.parse(performanceCsvUrl, {
         download: true,
@@ -799,6 +799,7 @@
           afficherDonnees(data);
           remplirFiltreAssureur(data);
           remplirFiltreDistributeur(data);
+          
           const sliderIds = [
             "versement", "versement_libre", "versement_mensuel",
             "versement_trimestriel", "versement_semestre", "versement_annuel"
@@ -830,6 +831,7 @@
               });
             }
           });
+          
           document.getElementById("assureur").addEventListener("change", () => filtrerDonnees(data));
           document.getElementById("distributeur").addEventListener("change", () => filtrerDonnees(data));
           document.getElementById("nom").addEventListener("input", () => filtrerDonnees(data));
