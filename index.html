@@ -134,6 +134,17 @@
       margin-right: 5px;
       cursor: pointer;
     }
+    /* Groupe de checkbox */
+    .checkbox-group {
+      border: 1px solid #ccc;
+      padding: 8px;
+      border-radius: 6px;
+      background: #f0f4f8;
+    }
+    .checkbox-group h4 {
+      font-size: 1em;
+      margin-bottom: 8px;
+    }
     /* Tableau principal avec alternance de couleur */
     table {
       width: 100%;
@@ -295,7 +306,7 @@
         <input type="range" id="versement" value="10000" min="0" max="10000" step="100">
         <span id="versementValue">10000</span>
       </div>
-      <!-- Checkboxes existantes -->
+      <!-- Checkboxes indépendantes -->
       <div>
         <input type="checkbox" id="gestion" class="checkbox-filter" data-column="Gestion pilotée" data-value="Gestion pilotée">
         <label for="gestion">Gestion pilotée</label>
@@ -306,32 +317,36 @@
         <label for="versements_programmes">Versements programmés</label>
         <span class="info-icon" data-tooltip="Ce contrat permet des versements programmés réguliers.">ℹ</span>
       </div>
-      <div>
-        <input type="checkbox" id="securisation" class="checkbox-filter" data-column="Sécurisation des plus-values" data-value="Sécurisation des plus-values">
-        <label for="securisation">Sécurisation des plus-values</label>
-        <span class="info-icon" data-tooltip="Ce contrat offre une sécurisation optimisée de vos plus-values.">ℹ</span>
+      <!-- Regroupement des options financières en gestion libre -->
+      <div class="checkbox-group">
+        <h4>Options financières en gestion libre</h4>
+        <div>
+          <input type="checkbox" id="securisation" class="checkbox-filter" data-column="Sécurisation des plus-values" data-value="Sécurisation des plus-values">
+          <label for="securisation">Sécurisation des plus-values</label>
+          <span class="info-icon" data-tooltip="Ce contrat offre une sécurisation optimisée de vos plus-values.">ℹ</span>
+        </div>
+        <div>
+          <input type="checkbox" id="dynamisation" class="checkbox-filter" data-column="Dynamisation des plus-values" data-value="Dynamisation des plus-values">
+          <label for="dynamisation">Dynamisation des plus-values</label>
+          <span class="info-icon" data-tooltip="Ce contrat permet une dynamisation active de vos plus-values.">ℹ</span>
+        </div>
+        <div>
+          <input type="checkbox" id="investissement" class="checkbox-filter" data-column="Investissement progressif" data-value="Investissement progressif">
+          <label for="investissement">Investissement progressif</label>
+          <span class="info-icon" data-tooltip="Ce contrat propose un investissement progressif adapté.">ℹ</span>
+        </div>
+        <div>
+          <input type="checkbox" id="stoploss" class="checkbox-filter" data-column="Stop/Loss" data-value="Stop/Loss">
+          <label for="stoploss">Stop/Loss</label>
+          <span class="info-icon" data-tooltip="Ce contrat inclut un mécanisme de stop/loss pour limiter les pertes.">ℹ</span>
+        </div>
+        <div>
+          <input type="checkbox" id="reequilibrage" class="checkbox-filter" data-column="Réequilibrage auitomatique" data-value="Réequilibrage auitomatique">
+          <label for="reequilibrage">Réequilibrage auitomatique</label>
+          <span class="info-icon" data-tooltip="Ce contrat offre un rééquilibrage automatique de votre portefeuille.">ℹ</span>
+        </div>
       </div>
-      <div>
-        <input type="checkbox" id="dynamisation" class="checkbox-filter" data-column="Dynamisation des plus-values" data-value="Dynamisation des plus-values">
-        <label for="dynamisation">Dynamisation des plus-values</label>
-        <span class="info-icon" data-tooltip="Ce contrat permet une dynamisation active de vos plus-values.">ℹ</span>
-      </div>
-      <div>
-        <input type="checkbox" id="investissement" class="checkbox-filter" data-column="Investissement progressif" data-value="Investissement progressif">
-        <label for="investissement">Investissement progressif</label>
-        <span class="info-icon" data-tooltip="Ce contrat propose un investissement progressif adapté.">ℹ</span>
-      </div>
-      <div>
-        <input type="checkbox" id="stoploss" class="checkbox-filter" data-column="Stop/Loss" data-value="Stop/Loss">
-        <label for="stoploss">Stop/Loss</label>
-        <span class="info-icon" data-tooltip="Ce contrat inclut un mécanisme de stop/loss pour limiter les pertes.">ℹ</span>
-      </div>
-      <div>
-        <input type="checkbox" id="reequilibrage" class="checkbox-filter" data-column="Réequilibrage auitomatique" data-value="Réequilibrage auitomatique">
-        <label for="reequilibrage">Réequilibrage auitomatique</label>
-        <span class="info-icon" data-tooltip="Ce contrat offre un rééquilibrage automatique de votre portefeuille.">ℹ</span>
-      </div>
-      <!-- Nouvelle checkbox "Multipoches" -->
+      <!-- Nouvelle checkbox "Multipoches" (hors groupe) -->
       <div>
         <input type="checkbox" id="multipoches" class="checkbox-filter" data-column="Multipoches" data-value="Multipoches">
         <label for="multipoches">Multipoches</label>
