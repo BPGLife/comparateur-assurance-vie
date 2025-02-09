@@ -127,7 +127,7 @@
       padding: 5px 8px;
       border-radius: 4px;
       white-space: normal;
-      /* Largeur minimale fixée à 500px pour le reste du site */
+      /* Pour le reste du site, une largeur minimale de 500px */
       min-width: 500px;
       pointer-events: none;
       opacity: 0;
@@ -137,9 +137,9 @@
     .info-icon:hover::after {
       opacity: 1;
     }
-    /* Pour les info-icons dans le modal, on annule la largeur minimale */
+    /* Désactivation des tooltips dans le modal */
     .modal .info-icon::after {
-      min-width: 0 !important;
+      content: none !important;
     }
     /* Cases à cocher */
     .filters input[type="checkbox"] {
@@ -727,7 +727,7 @@
         header: true,
         complete: function(results) {
           const perfData = results.data;
-          // Comparaison insensible à la casse et suppression des espaces inutiles
+          // Comparaison insensible à la casse et suppression des espaces en trop
           const contractPerfRows = perfData.filter(row => 
             row["Nom du contrat"] &&
             row["Nom du contrat"].toLowerCase().trim() === contract.nom.toLowerCase().trim()
