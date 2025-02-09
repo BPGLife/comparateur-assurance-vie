@@ -146,7 +146,7 @@
       border: 1px solid #ccc;
       padding: 8px;
       border-radius: 6px;
-      background: #D1E3FF; /* Ton léger inspiré du Bleu de Prusse */
+      background: #D1E3FF;
     }
     .checkbox-group h4 {
       font-size: 1em;
@@ -157,7 +157,7 @@
       border: 1px solid #ccc;
       padding: 8px;
       border-radius: 6px;
-      background: #FFF4CC; /* Ton léger inspiré du Jaune */
+      background: #FFF4CC;
       width: max-content;
       margin: auto;
     }
@@ -347,33 +347,33 @@
           <h4>Options de versement</h4>
           <div>
             <label for="versement">Versement initial (max) :</label>
-            <input type="range" id="versement" value="50" min="0" max="5000" step="50">
-            <input type="number" id="versement_number" value="50" min="0" max="5000" step="50"> €
+            <input type="range" id="versement" value="5000" min="0" max="5000" step="50">
+            <input type="number" id="versement_number" value="5000" min="0" max="5000" step="50"> €
           </div>
           <div>
             <label for="versement_libre">Versement libre min. :</label>
-            <input type="range" id="versement_libre" value="50" min="0" max="5000" step="50">
-            <input type="number" id="versement_libre_number" value="50" min="0" max="5000" step="50"> €
+            <input type="range" id="versement_libre" value="5000" min="0" max="5000" step="50">
+            <input type="number" id="versement_libre_number" value="5000" min="0" max="5000" step="50"> €
           </div>
           <div>
             <label for="versement_mensuel">Versement mensuel prog min. :</label>
-            <input type="range" id="versement_mensuel" value="50" min="0" max="5000" step="50">
-            <input type="number" id="versement_mensuel_number" value="50" min="0" max="5000" step="50"> €
+            <input type="range" id="versement_mensuel" value="5000" min="0" max="5000" step="50">
+            <input type="number" id="versement_mensuel_number" value="5000" min="0" max="5000" step="50"> €
           </div>
           <div>
             <label for="versement_trimestriel">Versement trimestriel prog min. :</label>
-            <input type="range" id="versement_trimestriel" value="50" min="0" max="5000" step="50">
-            <input type="number" id="versement_trimestriel_number" value="50" min="0" max="5000" step="50"> €
+            <input type="range" id="versement_trimestriel" value="5000" min="0" max="5000" step="50">
+            <input type="number" id="versement_trimestriel_number" value="5000" min="0" max="5000" step="50"> €
           </div>
           <div>
             <label for="versement_semestre">Versement semestre prog min. :</label>
-            <input type="range" id="versement_semestre" value="50" min="0" max="5000" step="50">
-            <input type="number" id="versement_semestre_number" value="50" min="0" max="5000" step="50"> €
+            <input type="range" id="versement_semestre" value="5000" min="0" max="5000" step="50">
+            <input type="number" id="versement_semestre_number" value="5000" min="0" max="5000" step="50"> €
           </div>
           <div>
             <label for="versement_annuel">Versement annuel prog min. :</label>
-            <input type="range" id="versement_annuel" value="50" min="0" max="5000" step="50">
-            <input type="number" id="versement_annuel_number" value="50" min="0" max="5000" step="50"> €
+            <input type="range" id="versement_annuel" value="5000" min="0" max="5000" step="50">
+            <input type="number" id="versement_annuel_number" value="5000" min="0" max="5000" step="50"> €
           </div>
         </div>
         <div class="checkbox-group">
@@ -572,7 +572,7 @@
         tr.appendChild(tdActions);
         tbody.appendChild(tr);
         
-        // Ligne supplémentaire
+        // Ligne supplémentaire pour afficher les informations complémentaires
         const extraRow = document.createElement("tr");
         extraRow.id = "extra_" + index;
         extraRow.className = "extra-info";
@@ -605,7 +605,7 @@
       });
     }
     
-    // Basculement des lignes supplémentaires
+    // Fonction de bascule pour les lignes supplémentaires
     function toggleExtra(index, btn) {
       const extraRow = document.getElementById("extra_" + index);
       if (extraRow.style.display === "none" || extraRow.style.display === "") {
@@ -639,7 +639,7 @@
       });
     }
     
-    // Filtrage des données
+    // Fonction de filtrage des données
     function filtrerDonnees(donnees) {
       const filtreAssureur = document.getElementById("assureur").value;
       const filtreDistributeur = document.getElementById("distributeur").value;
@@ -686,7 +686,7 @@
       afficherDonnees(donneesFiltrees);
     }
     
-    // Affichage du modal de performance
+    // Fonction pour afficher le modal de performance
     function viewPerformance(contract) {
       const modal = document.getElementById("performanceModal");
       modal.style.display = "block";
@@ -785,13 +785,14 @@
             slider.min = 0;
             slider.max = 5000;
             slider.step = 50;
-            slider.value = 50;
+            // Désormais, la valeur par défaut est le maximum
+            slider.value = 5000;
             const numberInput = document.getElementById(id + "_number");
             if (numberInput) {
               numberInput.min = 0;
               numberInput.max = 5000;
               numberInput.step = 50;
-              numberInput.value = 50;
+              numberInput.value = 5000;
               slider.addEventListener("input", function() {
                 numberInput.value = this.value;
                 filtrerDonnees(data);
