@@ -127,7 +127,8 @@
       padding: 5px 8px;
       border-radius: 4px;
       white-space: normal;
-      min-width: 750px;
+      /* Largeur minimale ajustée à 500px */
+      min-width: 500px;
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.3s ease;
@@ -719,14 +720,14 @@
       document.getElementById("modalTitle").textContent = `Performances de ${contract.nom}`;
       const chartsContainer = document.getElementById("profileChartsContainer");
       chartsContainer.innerHTML = "";
-      const performanceCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?gid=1183800682&single=true&output=csv';
+      const performanceCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?output=csv';
       
       Papa.parse(performanceCsvUrl, {
         download: true,
         header: true,
         complete: function(results) {
           const perfData = results.data;
-          // Comparaison insensible à la casse et suppression des espaces inutiles
+          // Comparaison insensible à la casse et en supprimant les espaces en trop
           const contractPerfRows = perfData.filter(row => 
             row["Nom du contrat"] &&
             row["Nom du contrat"].toLowerCase().trim() === contract.nom.toLowerCase().trim()
@@ -858,4 +859,3 @@
   </script>
 </body>
 </html>
-
