@@ -152,7 +152,9 @@
       padding: 8px;
       border-radius: 6px;
       background: #f0f4f8;
-      width: 100%;
+      /* Au lieu de 100% on réduit la largeur au maximum du contenu */
+      width: max-content;
+      margin: auto;
     }
     .range-group h4 {
       font-size: 1em;
