@@ -126,9 +126,8 @@
       color: #fff;
       padding: 5px 8px;
       border-radius: 4px;
-      /* Permettre le retour à la ligne */
       white-space: normal;
-      max-width: 250px;
+      max-width: 750px; /* Triplié par rapport à 250px */
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.3s ease;
@@ -435,17 +434,20 @@
             <span class="info-icon" data-tooltip="Le FCPR est un véhicule de placement conçu pour investir dans des titres de sociétés non cotées.">ℹ</span>
           </div>
           <div>
-            <input type="checkbox" id="scpi" class="checkbox-filter" data-column="SCPI" data-value="SCPI">
+            <input type="checkbox" id="scpi" class="checkbox-filter" data-column="SCPI" data-value="SCPI"
+              data-tooltip="SCPI">
             <label for="scpi">SCPI</label>
             <span class="info-icon" data-tooltip="SCPI">ℹ</span>
           </div>
           <div>
-            <input type="checkbox" id="opci" class="checkbox-filter" data-column="OPCI" data-value="OPCI">
+            <input type="checkbox" id="opci" class="checkbox-filter" data-column="OPCI" data-value="OPCI"
+              data-tooltip="OPCI">
             <label for="opci">OPCI</label>
             <span class="info-icon" data-tooltip="OPCI">ℹ</span>
           </div>
           <div>
-            <input type="checkbox" id="sci" class="checkbox-filter" data-column="SCI" data-value="SCI">
+            <input type="checkbox" id="sci" class="checkbox-filter" data-column="SCI" data-value="SCI"
+              data-tooltip="SCI">
             <label for="sci">SCI</label>
             <span class="info-icon" data-tooltip="SCI">ℹ</span>
           </div>
@@ -546,7 +548,7 @@
       return tableFraisFixes + tableFraisRecurrents + tableFraisGestion;
     }
     
-    // Affichage des données dans le tableau principal
+    // Fonction pour afficher les données dans le tableau principal
     function afficherDonnees(donnees) {
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
@@ -622,7 +624,7 @@
       });
     }
     
-    // Basculement des lignes supplémentaires
+    // Fonction de bascule pour afficher/cacher les lignes supplémentaires
     function toggleExtra(index, btn) {
       const extraRow = document.getElementById("extra_" + index);
       if (extraRow.style.display === "none" || extraRow.style.display === "") {
@@ -656,7 +658,7 @@
       });
     }
     
-    // Filtrage des données
+    // Fonction de filtrage combiné
     function filtrerDonnees(donnees) {
       const filtreAssureur = document.getElementById("assureur").value;
       const filtreDistributeur = document.getElementById("distributeur").value;
@@ -688,6 +690,7 @@
               (item[col] && item[col].toLowerCase().trim() === val.toLowerCase().trim());
           }
         });
+        
         return (
           (filtreAssureur === "" || item.assureur === filtreAssureur) &&
           (filtreDistributeur === "" || item.distributeur === filtreDistributeur) &&
@@ -701,6 +704,7 @@
           conditionsCheckbox
         );
       });
+      
       afficherDonnees(donneesFiltrees);
     }
     
@@ -712,6 +716,7 @@
       const chartsContainer = document.getElementById("profileChartsContainer");
       chartsContainer.innerHTML = "";
       const performanceCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?gid=1183800682&single=true&output=csv';
+      
       Papa.parse(performanceCsvUrl, {
         download: true,
         header: true,
@@ -794,7 +799,6 @@
           afficherDonnees(data);
           remplirFiltreAssureur(data);
           remplirFiltreDistributeur(data);
-          
           const sliderIds = [
             "versement", "versement_libre", "versement_mensuel",
             "versement_trimestriel", "versement_semestre", "versement_annuel"
@@ -844,4 +848,3 @@
   </script>
 </body>
 </html>
-
