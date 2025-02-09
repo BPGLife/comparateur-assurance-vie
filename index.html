@@ -306,6 +306,32 @@
         <input type="range" id="versement" value="10000" min="0" max="10000" step="100">
         <span id="versementValue">10000</span>
       </div>
+      <!-- Nouveaux curseurs pour les versements min. -->
+      <div>
+        <label for="versement_libre">Versement libre min. :</label>
+        <input type="range" id="versement_libre" value="10000" min="0" max="10000" step="100">
+        <span id="versementLibreValue">10000</span>
+      </div>
+      <div>
+        <label for="versement_mensuel">Versement mensuel prog min. :</label>
+        <input type="range" id="versement_mensuel" value="10000" min="0" max="10000" step="100">
+        <span id="versementMensuelValue">10000</span>
+      </div>
+      <div>
+        <label for="versement_trimestriel">Versement trimestriel prog min. :</label>
+        <input type="range" id="versement_trimestriel" value="10000" min="0" max="10000" step="100">
+        <span id="versementTrimestrielValue">10000</span>
+      </div>
+      <div>
+        <label for="versement_semestre">Versement semestre prog min. :</label>
+        <input type="range" id="versement_semestre" value="10000" min="0" max="10000" step="100">
+        <span id="versementSemestreValue">10000</span>
+      </div>
+      <div>
+        <label for="versement_annuel">Versement annuel prog min. :</label>
+        <input type="range" id="versement_annuel" value="10000" min="0" max="10000" step="100">
+        <span id="versementAnnuelValue">10000</span>
+      </div>
       <!-- Checkboxes indépendantes -->
       <div>
         <input type="checkbox" id="gestion" class="checkbox-filter" data-column="Gestion pilotée" data-value="Gestion pilotée">
@@ -603,16 +629,29 @@
       });
     }
 
-    // Fonction de filtrage combiné, avec nettoyage du versement
+    // Fonction de filtrage combiné, avec nettoyage du versement et des nouveaux curseurs
     function filtrerDonnees(donnees) {
       const filtreAssureur = document.getElementById("assureur").value;
       const filtreDistributeur = document.getElementById("distributeur").value;
       const filtreNom = document.getElementById("nom").value.toLowerCase();
       const maxVersement = parseFloat(document.getElementById("versement").value);
+      const maxVersementLibre = parseFloat(document.getElementById("versement_libre").value);
+      const maxVersementMensuel = parseFloat(document.getElementById("versement_mensuel").value);
+      const maxVersementTrimestriel = parseFloat(document.getElementById("versement_trimestriel").value);
+      const maxVersementSemestre = parseFloat(document.getElementById("versement_semestre").value);
+      const maxVersementAnnuel = parseFloat(document.getElementById("versement_annuel").value);
       const checkboxes = document.querySelectorAll(".checkbox-filter");
 
       const donneesFiltrees = donnees.filter(item => {
-        let versement = parseFloat(item.versement.replace(/[^\d.]/g, '')) || 0;
+        // Versement initial
+        let versementInitial = parseFloat(item.versement.replace(/[^\d.]/g, '')) || 0;
+        // Nouveaux versements (les colonnes doivent être exactement nommées comme dans le sheet)
+        let versementLibre = parseFloat((item["Versement libre min."] || "0").replace(/[^\d.]/g, '')) || 0;
+        let versementMensuel = parseFloat((item["Versement mensuel prog min."] || "0").replace(/[^\d.]/g, '')) || 0;
+        let versementTrimestriel = parseFloat((item["Versement trimestriel prog min."] || "0").replace(/[^\d.]/g, '')) || 0;
+        let versementSemestre = parseFloat((item["Versement semestre prog min."] || "0").replace(/[^\d.]/g, '')) || 0;
+        let versementAnnuel = parseFloat((item["Versement annuel prog min."] || "0").replace(/[^\d.]/g, '')) || 0;
+
         let conditionsCheckbox = true;
         checkboxes.forEach(checkbox => {
           if (checkbox.checked) {
@@ -626,7 +665,12 @@
           (filtreAssureur === "" || item.assureur === filtreAssureur) &&
           (filtreDistributeur === "" || item.distributeur === filtreDistributeur) &&
           (filtreNom === "" || item.nom.toLowerCase().includes(filtreNom)) &&
-          (isNaN(maxVersement) || versement <= maxVersement) &&
+          (isNaN(maxVersement) || versementInitial <= maxVersement) &&
+          (isNaN(maxVersementLibre) || versementLibre <= maxVersementLibre) &&
+          (isNaN(maxVersementMensuel) || versementMensuel <= maxVersementMensuel) &&
+          (isNaN(maxVersementTrimestriel) || versementTrimestriel <= maxVersementTrimestriel) &&
+          (isNaN(maxVersementSemestre) || versementSemestre <= maxVersementSemestre) &&
+          (isNaN(maxVersementAnnuel) || versementAnnuel <= maxVersementAnnuel) &&
           conditionsCheckbox
         );
       });
@@ -742,21 +786,54 @@
           remplirFiltreAssureur(data);
           remplirFiltreDistributeur(data);
 
-          // Configuration fixe du curseur : échelle de 0 à 10 000
-          const slider = document.getElementById("versement");
-          slider.min = 0;
-          slider.max = 10000;
-          slider.value = 10000;
+          // Configuration fixe des curseurs : échelle de 0 à 10 000
+          const sliderIds = [
+            "versement", "versement_libre", "versement_mensuel",
+            "versement_trimestriel", "versement_semestre", "versement_annuel"
+          ];
+          sliderIds.forEach(id => {
+            const slider = document.getElementById(id);
+            slider.min = 0;
+            slider.max = 10000;
+            slider.value = 10000;
+          });
           document.getElementById("versementValue").textContent = 10000;
+          document.getElementById("versementLibreValue").textContent = 10000;
+          document.getElementById("versementMensuelValue").textContent = 10000;
+          document.getElementById("versementTrimestrielValue").textContent = 10000;
+          document.getElementById("versementSemestreValue").textContent = 10000;
+          document.getElementById("versementAnnuelValue").textContent = 10000;
 
-          // Écouteurs d'événements pour les filtres
-          document.getElementById("assureur").addEventListener("change", () => filtrerDonnees(data));
-          document.getElementById("distributeur").addEventListener("change", () => filtrerDonnees(data));
-          document.getElementById("nom").addEventListener("input", () => filtrerDonnees(data));
+          // Écouteurs d'événements pour les curseurs
           document.getElementById("versement").addEventListener("input", function() {
             document.getElementById("versementValue").textContent = this.value;
             filtrerDonnees(data);
           });
+          document.getElementById("versement_libre").addEventListener("input", function() {
+            document.getElementById("versementLibreValue").textContent = this.value;
+            filtrerDonnees(data);
+          });
+          document.getElementById("versement_mensuel").addEventListener("input", function() {
+            document.getElementById("versementMensuelValue").textContent = this.value;
+            filtrerDonnees(data);
+          });
+          document.getElementById("versement_trimestriel").addEventListener("input", function() {
+            document.getElementById("versementTrimestrielValue").textContent = this.value;
+            filtrerDonnees(data);
+          });
+          document.getElementById("versement_semestre").addEventListener("input", function() {
+            document.getElementById("versementSemestreValue").textContent = this.value;
+            filtrerDonnees(data);
+          });
+          document.getElementById("versement_annuel").addEventListener("input", function() {
+            document.getElementById("versementAnnuelValue").textContent = this.value;
+            filtrerDonnees(data);
+          });
+
+          // Écouteurs d'événements pour les autres filtres
+          document.getElementById("assureur").addEventListener("change", () => filtrerDonnees(data));
+          document.getElementById("distributeur").addEventListener("change", () => filtrerDonnees(data));
+          document.getElementById("nom").addEventListener("input", () => filtrerDonnees(data));
           const checkboxFilters = document.querySelectorAll(".checkbox-filter");
           checkboxFilters.forEach(checkbox => {
             checkbox.addEventListener("change", () => filtrerDonnees(data));
