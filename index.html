@@ -318,33 +318,33 @@
         <h4>Options de versement</h4>
         <div>
           <label for="versement">Versement initial (max) :</label>
-          <input type="range" id="versement" value="5000" min="0" max="5000" step="50">
-          <input type="number" id="versement_number" value="5000" min="0" max="5000" step="50">
+          <input type="range" id="versement" value="50" min="0" max="5000" step="50">
+          <input type="number" id="versement_number" value="50" min="0" max="5000" step="50"> €
         </div>
         <div>
           <label for="versement_libre">Versement libre min. :</label>
-          <input type="range" id="versement_libre" value="5000" min="0" max="5000" step="50">
-          <input type="number" id="versement_libre_number" value="5000" min="0" max="5000" step="50">
+          <input type="range" id="versement_libre" value="50" min="0" max="5000" step="50">
+          <input type="number" id="versement_libre_number" value="50" min="0" max="5000" step="50"> €
         </div>
         <div>
           <label for="versement_mensuel">Versement mensuel prog min. :</label>
-          <input type="range" id="versement_mensuel" value="5000" min="0" max="5000" step="50">
-          <input type="number" id="versement_mensuel_number" value="5000" min="0" max="5000" step="50">
+          <input type="range" id="versement_mensuel" value="50" min="0" max="5000" step="50">
+          <input type="number" id="versement_mensuel_number" value="50" min="0" max="5000" step="50"> €
         </div>
         <div>
           <label for="versement_trimestriel">Versement trimestriel prog min. :</label>
-          <input type="range" id="versement_trimestriel" value="5000" min="0" max="5000" step="50">
-          <input type="number" id="versement_trimestriel_number" value="5000" min="0" max="5000" step="50">
+          <input type="range" id="versement_trimestriel" value="50" min="0" max="5000" step="50">
+          <input type="number" id="versement_trimestriel_number" value="50" min="0" max="5000" step="50"> €
         </div>
         <div>
           <label for="versement_semestre">Versement semestre prog min. :</label>
-          <input type="range" id="versement_semestre" value="5000" min="0" max="5000" step="50">
-          <input type="number" id="versement_semestre_number" value="5000" min="0" max="5000" step="50">
+          <input type="range" id="versement_semestre" value="50" min="0" max="5000" step="50">
+          <input type="number" id="versement_semestre_number" value="50" min="0" max="5000" step="50"> €
         </div>
         <div>
           <label for="versement_annuel">Versement annuel prog min. :</label>
-          <input type="range" id="versement_annuel" value="5000" min="0" max="5000" step="50">
-          <input type="number" id="versement_annuel_number" value="5000" min="0" max="5000" step="50">
+          <input type="range" id="versement_annuel" value="50" min="0" max="5000" step="50">
+          <input type="number" id="versement_annuel_number" value="50" min="0" max="5000" step="50"> €
         </div>
       </div>
       <!-- Checkboxes indépendantes -->
@@ -803,7 +803,7 @@
           remplirFiltreAssureur(data);
           remplirFiltreDistributeur(data);
 
-          // Configuration des curseurs de versement (min=0, max=5000, step=50)
+          // Configuration des curseurs de versement (min=0, max=5000, step=50, valeur par défaut = 50)
           const sliderIds = [
             "versement", "versement_libre", "versement_mensuel",
             "versement_trimestriel", "versement_semestre", "versement_annuel"
@@ -813,13 +813,13 @@
             slider.min = 0;
             slider.max = 5000;
             slider.step = 50;
-            slider.value = 5000;
+            slider.value = 50;
             const numberInput = document.getElementById(id + "_number");
             if(numberInput){
               numberInput.min = 0;
               numberInput.max = 5000;
               numberInput.step = 50;
-              numberInput.value = 5000;
+              numberInput.value = 50;
               slider.addEventListener("input", function() {
                 numberInput.value = this.value;
                 filtrerDonnees(data);
@@ -829,7 +829,6 @@
                 filtrerDonnees(data);
               });
             } else {
-              // Pour le cas où il n'y a pas de champ numérique (optionnel)
               slider.addEventListener("input", function() {
                 filtrerDonnees(data);
               });
