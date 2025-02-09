@@ -23,9 +23,9 @@
       text-decoration: none;
       color: inherit;
     }
-    /* Header moderne */
+    /* En-tête moderne */
     .header {
-      background: linear-gradient(135deg, #4a90e2, #357ab8);
+      background: linear-gradient(135deg, #31EC56, #EF036C);
       color: #fff;
       padding: 30px 0;
       text-align: center;
@@ -34,7 +34,7 @@
       letter-spacing: 1px;
       margin-bottom: 10px;
     }
-    /* Sous-header */
+    /* Sous-en-tête */
     .sub-header {
       text-align: center;
       font-size: 0.9em;
@@ -66,7 +66,6 @@
       gap: 15px;
       margin-bottom: 25px;
     }
-    /* Chaque ligne de filtre */
     .filter-row {
       display: flex;
       flex-wrap: wrap;
@@ -93,8 +92,8 @@
     .filters input[type="text"]:focus,
     .filters select:focus {
       outline: none;
-      border-color: #4a90e2;
-      box-shadow: 0 0 5px rgba(74,144,226,0.3);
+      border-color: #31EC56;
+      box-shadow: 0 0 5px rgba(49,236,86,0.3);
     }
     .filters input[type="range"] {
       cursor: pointer;
@@ -107,13 +106,13 @@
       cursor: pointer;
       margin-right: 5px;
     }
-    /* Info-icons avec tooltip */
+    /* Info-icons */
     .info-icon {
       position: relative;
       display: inline-block;
       cursor: help;
       margin-left: 5px;
-      color: #4a90e2;
+      color: #EF036C;
       font-size: 1em;
     }
     .info-icon::after {
@@ -141,7 +140,7 @@
       margin-right: 5px;
       cursor: pointer;
     }
-    /* Groupe de checkbox */
+    /* Groupe de checkboxes */
     .checkbox-group {
       border: 1px solid #ccc;
       padding: 8px;
@@ -152,12 +151,12 @@
       font-size: 1em;
       margin-bottom: 8px;
     }
-    /* Nouveau groupe pour les curseurs de versement */
+    /* Groupe de curseurs de versement */
     .range-group {
       border: 1px solid #ccc;
       padding: 8px;
       border-radius: 6px;
-      background: #f0f4f8;
+      background: #E0FCE3; /* Un léger vert pour rappeler le vert malachite */
       width: max-content;
       margin: auto;
     }
@@ -165,7 +164,7 @@
       font-size: 1em;
       margin-bottom: 8px;
     }
-    /* Tableau principal avec alternance de couleur */
+    /* Tableau principal */
     table {
       width: 100%;
       border-collapse: collapse;
@@ -184,7 +183,7 @@
     }
     /* Boutons d'action */
     .btn-performance {
-      background-color: #4a90e2;
+      background-color: #EE72F8;
       color: #fff;
       padding: 6px 12px;
       border: none;
@@ -194,7 +193,7 @@
       transition: background-color 0.3s ease;
     }
     .btn-performance:hover {
-      background-color: #357ab8;
+      background-color: #D95BE3;
     }
     @media (max-width: 768px) {
       .filter-row {
@@ -288,16 +287,16 @@
       margin: 2px 0;
       font-size: 0.9em;
     }
-    /* Ligne supplémentaire pour la section extra */
+    /* Ligne supplémentaire */
     .extra-info {
       background-color: #f9fafb;
     }
   </style>
 </head>
 <body>
-  <!-- Header -->
+  <!-- En-tête -->
   <div class="header">Comparateur d'Assurance Vie</div>
-  <!-- Sous-header -->
+  <!-- Sous-en-tête -->
   <div class="sub-header">
     <p>&copy; Baptiste Plat Garnier</p>
   </div>
@@ -444,7 +443,6 @@
     <table id="contrats">
       <thead>
         <tr>
-          <!-- La première colonne intègre la flèche toggle à gauche du nom du contrat -->
           <th data-key="nom">Nom du contrat</th>
           <th data-key="assureur">Assureur</th>
           <th data-key="distributeur">Distributeur</th>
@@ -476,9 +474,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // Fonction pour construire les trois tableaux financiers décomposés
+    // Fonction pour construire les tableaux financiers décomposés
     function buildFinancialTables(item) {
-      // Frais fixes
       let tableFraisFixes = `<h4>Frais fixes</h4>
         <table class="perf-table">
           <thead>
@@ -496,7 +493,6 @@
             </tr>
           </tbody>
         </table>`;
-      // Frais récurrents
       let tableFraisRecurrents = `<h4>Frais récurrents</h4>
         <table class="perf-table">
           <thead>
@@ -516,7 +512,6 @@
             </tr>
           </tbody>
         </table>`;
-      // Frais de gestion avec intégration de la colonne "frais add. GP"
       let tableFraisGestion = `<h4>Frais de gestion</h4>
         <table class="perf-table">
           <thead>
@@ -537,16 +532,13 @@
       return tableFraisFixes + tableFraisRecurrents + tableFraisGestion;
     }
 
-    // Fonction pour afficher le tableau principal avec flèche toggle intégrée et alternance de couleur
+    // Fonction pour afficher les données dans le tableau principal
     function afficherDonnees(donnees) {
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
       donnees.forEach((item, index) => {
-        // Création de la ligne principale
         const tr = document.createElement("tr");
         tr.style.backgroundColor = (index % 2 === 0) ? "#fff" : "#EFEFEF";
-
-        // Colonne "Nom du contrat" avec bouton toggle
         const tdNom = document.createElement("td");
         const toggleBtn = document.createElement("button");
         toggleBtn.className = "toggle-arrow";
@@ -557,23 +549,15 @@
         tdNom.appendChild(toggleBtn);
         tdNom.insertAdjacentText("beforeend", " " + item.nom);
         tr.appendChild(tdNom);
-
-        // Colonne Assureur
         const tdAssureur = document.createElement("td");
         tdAssureur.textContent = item.assureur;
         tr.appendChild(tdAssureur);
-
-        // Colonne Distributeur
         const tdDistributeur = document.createElement("td");
         tdDistributeur.textContent = item.distributeur;
         tr.appendChild(tdDistributeur);
-
-        // Colonne Versement initial
         const tdVersement = document.createElement("td");
         tdVersement.textContent = item.versement;
         tr.appendChild(tdVersement);
-
-        // Colonne Actions
         const tdActions = document.createElement("td");
         if (item["Gestion pilotée"] && item["Gestion pilotée"].toLowerCase().trim() === "gestion pilotée") {
           const btnPerformance = document.createElement("button");
@@ -585,10 +569,7 @@
           tdActions.appendChild(btnPerformance);
         }
         tr.appendChild(tdActions);
-
         tbody.appendChild(tr);
-
-        // Ligne supplémentaire dépliable pour afficher les informations complémentaires
         const extraRow = document.createElement("tr");
         extraRow.id = "extra_" + index;
         extraRow.className = "extra-info";
@@ -621,7 +602,7 @@
       });
     }
 
-    // Fonction de bascule pour la ligne supplémentaire et changement de l'icône de la flèche
+    // Fonction de bascule pour les lignes supplémentaires
     function toggleExtra(index, btn) {
       const extraRow = document.getElementById("extra_" + index);
       if (extraRow.style.display === "none" || extraRow.style.display === "") {
@@ -655,31 +636,25 @@
       });
     }
 
-    // Fonction de filtrage combiné, avec prise en compte des valeurs des curseurs
+    // Fonction de filtrage combiné
     function filtrerDonnees(donnees) {
       const filtreAssureur = document.getElementById("assureur").value;
       const filtreDistributeur = document.getElementById("distributeur").value;
       const filtreNom = document.getElementById("nom").value.toLowerCase();
-
       const maxVersement = parseFloat(document.getElementById("versement").value);
       const maxVersementLibre = parseFloat(document.getElementById("versement_libre").value);
       const maxVersementMensuel = parseFloat(document.getElementById("versement_mensuel").value);
       const maxVersementTrimestriel = parseFloat(document.getElementById("versement_trimestriel").value);
       const maxVersementSemestre = parseFloat(document.getElementById("versement_semestre").value);
       const maxVersementAnnuel = parseFloat(document.getElementById("versement_annuel").value);
-
       const checkboxes = document.querySelectorAll(".checkbox-filter");
-
       const donneesFiltrees = donnees.filter(item => {
-        // Versement initial
         let versementInitial = parseFloat(item.versement.replace(/[^\d.]/g, '')) || 0;
-        // Nouveaux versements (les colonnes doivent être exactement nommées comme dans le sheet)
         let versementLibre = parseFloat((item["Versement libre min."] || "0").replace(/[^\d.]/g, '')) || 0;
         let versementMensuel = parseFloat((item["Versement mensuel prog min."] || "0").replace(/[^\d.]/g, '')) || 0;
         let versementTrimestriel = parseFloat((item["Versement trimestriel prog min."] || "0").replace(/[^\d.]/g, '')) || 0;
         let versementSemestre = parseFloat((item["Versement semestre prog min."] || "0").replace(/[^\d.]/g, '')) || 0;
         let versementAnnuel = parseFloat((item["Versement annuel prog min."] || "0").replace(/[^\d.]/g, '')) || 0;
-
         let conditionsCheckbox = true;
         checkboxes.forEach(checkbox => {
           if (checkbox.checked) {
@@ -705,41 +680,31 @@
       afficherDonnees(donneesFiltrees);
     }
 
-    // Fonction pour ouvrir le modal et afficher les performances pour chaque profil (données du second onglet)
+    // Fonction pour ouvrir le modal de performance
     function viewPerformance(contract) {
       const modal = document.getElementById("performanceModal");
       modal.style.display = "block";
       document.getElementById("modalTitle").textContent = `Performances de ${contract.nom}`;
-
       const chartsContainer = document.getElementById("profileChartsContainer");
       chartsContainer.innerHTML = "";
-
-      // URL du second onglet contenant les données de performance
       const performanceCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?gid=1183800682&single=true&output=csv';
-
       Papa.parse(performanceCsvUrl, {
         download: true,
         header: true,
         complete: function(results) {
           const perfData = results.data;
           const contractPerfRows = perfData.filter(row => row["Nom du contrat"] === contract.nom);
-
           if (contractPerfRows.length === 0) {
             chartsContainer.innerHTML = "<p>Aucune donnée de performance trouvée pour ce contrat.</p>";
             return;
           }
-
           contractPerfRows.forEach((profileRow, index) => {
             const profileDiv = document.createElement("div");
             profileDiv.className = "profile-section";
             profileDiv.innerHTML = `<h3>Profil : ${profileRow["Profil"] || "Non défini"} - Gestionnaire : ${profileRow["Gestionnaire d'actif"] || "Non défini"}</h3>`;
-            
-            // Conteneur flex pour disposer le tableau et le graphique côte à côte
             const containerDiv = document.createElement("div");
             containerDiv.style.display = "flex";
             containerDiv.style.gap = "20px";
-            
-            // Div pour le tableau des performances
             const tableDiv = document.createElement("div");
             tableDiv.style.flex = "1";
             const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2020", "2018", "2017", "2016"];
@@ -750,8 +715,6 @@
             });
             tableHTML += `</tbody></table>`;
             tableDiv.innerHTML = tableHTML;
-            
-            // Div pour le graphique (pie chart)
             const chartDiv = document.createElement("div");
             chartDiv.style.flex = "1";
             const pieCanvas = document.createElement("canvas");
@@ -759,16 +722,10 @@
             pieCanvas.width = 200;
             pieCanvas.height = 200;
             chartDiv.appendChild(pieCanvas);
-            
-            // Ajout des deux colonnes dans le conteneur flex
             containerDiv.appendChild(tableDiv);
             containerDiv.appendChild(chartDiv);
-            
-            // Ajout du conteneur flex à la section profil
             profileDiv.appendChild(containerDiv);
             chartsContainer.appendChild(profileDiv);
-            
-            // Initialisation du graphique (pie chart)
             const partUC = profileRow.part_uc ? parseFloat(profileRow.part_uc) : 50;
             const partFonds = profileRow.part_fonds ? parseFloat(profileRow.part_fonds) : (100 - partUC);
             new Chart(pieCanvas.getContext("2d"), {
@@ -813,8 +770,6 @@
           afficherDonnees(data);
           remplirFiltreAssureur(data);
           remplirFiltreDistributeur(data);
-
-          // Configuration des curseurs de versement (min=0, max=5000, step=50, valeur par défaut = 50)
           const sliderIds = [
             "versement", "versement_libre", "versement_mensuel",
             "versement_trimestriel", "versement_semestre", "versement_annuel"
@@ -845,8 +800,6 @@
               });
             }
           });
-
-          // Écouteurs d'événements pour les autres filtres
           document.getElementById("assureur").addEventListener("change", () => filtrerDonnees(data));
           document.getElementById("distributeur").addEventListener("change", () => filtrerDonnees(data));
           document.getElementById("nom").addEventListener("input", () => filtrerDonnees(data));
