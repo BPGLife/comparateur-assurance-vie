@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Comparateur d'Assurance Vie</title>
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Google Fonts : Nunito, une police moderne et arrondie -->
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     /* Base & Réinitialisation */
     * {
@@ -14,7 +14,7 @@
       padding: 0;
     }
     body {
-      font-family: 'Roboto', sans-serif;
+      font-family: 'Nunito', sans-serif;
       background-color: #f7f9fc;
       color: #333;
       line-height: 1.6;
@@ -23,9 +23,9 @@
       text-decoration: none;
       color: inherit;
     }
-    /* En-tête moderne */
+    /* En-tête */
     .header {
-      background: linear-gradient(135deg, #31EC56, #EF036C);
+      background: linear-gradient(135deg, #FFCE32, #1D63FF);
       color: #fff;
       padding: 30px 0;
       text-align: center;
@@ -66,6 +66,7 @@
       gap: 15px;
       margin-bottom: 25px;
     }
+    /* Chaque ligne de filtres */
     .filter-row {
       display: flex;
       flex-wrap: wrap;
@@ -76,7 +77,7 @@
       margin: 5px;
     }
     .filters label {
-      font-weight: 500;
+      font-weight: 600;
       margin-right: 5px;
     }
     .filters select,
@@ -92,8 +93,8 @@
     .filters input[type="text"]:focus,
     .filters select:focus {
       outline: none;
-      border-color: #31EC56;
-      box-shadow: 0 0 5px rgba(49,236,86,0.3);
+      border-color: #1D63FF;
+      box-shadow: 0 0 5px rgba(29,99,255,0.3);
     }
     .filters input[type="range"] {
       cursor: pointer;
@@ -112,7 +113,7 @@
       display: inline-block;
       cursor: help;
       margin-left: 5px;
-      color: #EF036C;
+      color: #1D63FF;
       font-size: 1em;
     }
     .info-icon::after {
@@ -145,7 +146,7 @@
       border: 1px solid #ccc;
       padding: 8px;
       border-radius: 6px;
-      background: #f0f4f8;
+      background: #D1E3FF; /* Ton léger inspiré du Bleu de Prusse */
     }
     .checkbox-group h4 {
       font-size: 1em;
@@ -156,7 +157,7 @@
       border: 1px solid #ccc;
       padding: 8px;
       border-radius: 6px;
-      background: #E0FCE3; /* Un léger vert pour rappeler le vert malachite */
+      background: #FFF4CC; /* Ton léger inspiré du Jaune */
       width: max-content;
       margin: auto;
     }
@@ -183,7 +184,7 @@
     }
     /* Boutons d'action */
     .btn-performance {
-      background-color: #EE72F8;
+      background-color: #1D63FF;
       color: #fff;
       padding: 6px 12px;
       border: none;
@@ -193,7 +194,7 @@
       transition: background-color 0.3s ease;
     }
     .btn-performance:hover {
-      background-color: #D95BE3;
+      background-color: #1A56E6;
     }
     @media (max-width: 768px) {
       .filter-row {
@@ -438,7 +439,7 @@
         </div>
       </div>
     </div>
-
+    
     <!-- Tableau principal -->
     <table id="contrats">
       <thead>
@@ -455,12 +456,12 @@
       </tbody>
     </table>
   </div>
-
+  
   <!-- Footer -->
   <footer class="footer">
     <p>&copy; Baptiste Plat Garnier</p>
   </footer>
-
+  
   <!-- Modal de performance -->
   <div id="performanceModal" class="modal">
     <div class="modal-content">
@@ -469,7 +470,7 @@
       <div id="profileChartsContainer"></div>
     </div>
   </div>
-
+  
   <!-- Inclusion de PapaParse et Chart.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -531,8 +532,8 @@
         </table>`;
       return tableFraisFixes + tableFraisRecurrents + tableFraisGestion;
     }
-
-    // Fonction pour afficher les données dans le tableau principal
+    
+    // Affichage des données dans le tableau principal
     function afficherDonnees(donnees) {
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
@@ -570,6 +571,8 @@
         }
         tr.appendChild(tdActions);
         tbody.appendChild(tr);
+        
+        // Ligne supplémentaire
         const extraRow = document.createElement("tr");
         extraRow.id = "extra_" + index;
         extraRow.className = "extra-info";
@@ -601,8 +604,8 @@
         tbody.appendChild(extraRow);
       });
     }
-
-    // Fonction de bascule pour les lignes supplémentaires
+    
+    // Basculement des lignes supplémentaires
     function toggleExtra(index, btn) {
       const extraRow = document.getElementById("extra_" + index);
       if (extraRow.style.display === "none" || extraRow.style.display === "") {
@@ -613,7 +616,7 @@
         btn.textContent = "▼";
       }
     }
-
+    
     // Remplissage des menus déroulants
     function remplirFiltreAssureur(donnees) {
       const select = document.getElementById("assureur");
@@ -635,18 +638,20 @@
         select.appendChild(option);
       });
     }
-
-    // Fonction de filtrage combiné
+    
+    // Filtrage des données
     function filtrerDonnees(donnees) {
       const filtreAssureur = document.getElementById("assureur").value;
       const filtreDistributeur = document.getElementById("distributeur").value;
       const filtreNom = document.getElementById("nom").value.toLowerCase();
+      
       const maxVersement = parseFloat(document.getElementById("versement").value);
       const maxVersementLibre = parseFloat(document.getElementById("versement_libre").value);
       const maxVersementMensuel = parseFloat(document.getElementById("versement_mensuel").value);
       const maxVersementTrimestriel = parseFloat(document.getElementById("versement_trimestriel").value);
       const maxVersementSemestre = parseFloat(document.getElementById("versement_semestre").value);
       const maxVersementAnnuel = parseFloat(document.getElementById("versement_annuel").value);
+      
       const checkboxes = document.querySelectorAll(".checkbox-filter");
       const donneesFiltrees = donnees.filter(item => {
         let versementInitial = parseFloat(item.versement.replace(/[^\d.]/g, '')) || 0;
@@ -655,6 +660,7 @@
         let versementTrimestriel = parseFloat((item["Versement trimestriel prog min."] || "0").replace(/[^\d.]/g, '')) || 0;
         let versementSemestre = parseFloat((item["Versement semestre prog min."] || "0").replace(/[^\d.]/g, '')) || 0;
         let versementAnnuel = parseFloat((item["Versement annuel prog min."] || "0").replace(/[^\d.]/g, '')) || 0;
+        
         let conditionsCheckbox = true;
         checkboxes.forEach(checkbox => {
           if (checkbox.checked) {
@@ -679,8 +685,8 @@
       });
       afficherDonnees(donneesFiltrees);
     }
-
-    // Fonction pour ouvrir le modal de performance
+    
+    // Affichage du modal de performance
     function viewPerformance(contract) {
       const modal = document.getElementById("performanceModal");
       modal.style.display = "block";
@@ -734,7 +740,7 @@
                 labels: ['UC', 'Fonds en euros'],
                 datasets: [{
                   data: [partUC, partFonds],
-                  backgroundColor: ['#36A2EB', '#FFCE56']
+                  backgroundColor: ['#36A2EB', '#FFCE32']
                 }]
               },
               options: { responsive: true }
@@ -746,7 +752,7 @@
         }
       });
     }
-
+    
     // Fermeture du modal
     document.getElementById("modalClose").addEventListener("click", function() {
       document.getElementById("performanceModal").style.display = "none";
@@ -757,7 +763,7 @@
         modal.style.display = "none";
       }
     });
-
+    
     // Initialisation du comparateur principal
     function init() {
       const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?output=csv';
@@ -813,7 +819,7 @@
         }
       });
     }
-
+    
     window.addEventListener("DOMContentLoaded", init);
   </script>
 </body>
