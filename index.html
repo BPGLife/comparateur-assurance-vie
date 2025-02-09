@@ -127,7 +127,8 @@
       padding: 5px 8px;
       border-radius: 4px;
       white-space: normal;
-      max-width: 1000px; /* Augmentation de la largeur maximale */
+      /* Modification ici : fixer une largeur minimale */
+      min-width: 750px;
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.3s ease;
@@ -548,7 +549,7 @@
       return tableFraisFixes + tableFraisRecurrents + tableFraisGestion;
     }
     
-    // Affichage des données dans le tableau principal
+    // Fonction pour afficher les données dans le tableau principal
     function afficherDonnees(donnees) {
       const tbody = document.querySelector("#contrats tbody");
       tbody.innerHTML = "";
