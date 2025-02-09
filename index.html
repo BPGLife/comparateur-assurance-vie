@@ -137,9 +137,9 @@
     .info-icon:hover::after {
       opacity: 1;
     }
-    /* Masquage complet des info-icons dans le modal */
-    .modal .info-icon,
-    .modal .info-icon::after {
+    /* Masquage spécifique des info-icons dans le modal de performance */
+    #performanceModal .info-icon,
+    #performanceModal .info-icon::after {
       display: none !important;
     }
     /* Cases à cocher */
@@ -721,14 +721,15 @@
       document.getElementById("modalTitle").textContent = `Performances de ${contract.nom}`;
       const chartsContainer = document.getElementById("profileChartsContainer");
       chartsContainer.innerHTML = "";
-      const performanceCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?output=csv';
+      // Utilisation de l'URL complète pour le CSV de performance
+      const performanceCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTN6FYOsXyedk2KNxaqBAUz4ctA_fUPeT7dr3Ki4-uks2FUg2D9TqseBYT9u05sA_LCbR47rJbkNWGI/pub?gid=1183800682&single=true&output=csv';
       
       Papa.parse(performanceCsvUrl, {
         download: true,
         header: true,
         complete: function(results) {
           const perfData = results.data;
-          // Comparaison insensible à la casse et suppression des espaces en trop
+          // Comparaison insensible à la casse et suppression des espaces inutiles
           const contractPerfRows = perfData.filter(row => 
             row["Nom du contrat"] &&
             row["Nom du contrat"].toLowerCase().trim() === contract.nom.toLowerCase().trim()
