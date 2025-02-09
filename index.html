@@ -126,9 +126,11 @@
       color: #fff;
       padding: 5px 8px;
       border-radius: 4px;
-      white-space: nowrap;
-      opacity: 0;
+      /* Permettre le retour à la ligne */
+      white-space: normal;
+      max-width: 250px;
       pointer-events: none;
+      opacity: 0;
       transition: opacity 0.3s ease;
       z-index: 100;
     }
@@ -326,19 +328,22 @@
       <!-- Ligne 2 : Checkboxes indépendantes -->
       <div class="filter-row" style="justify-content: center;">
         <div>
-          <input type="checkbox" id="gestion" class="checkbox-filter" data-column="Gestion pilotée" data-value="Gestion pilotée">
+          <input type="checkbox" id="gestion" class="checkbox-filter" data-column="Gestion pilotée" data-value="Gestion pilotée"
+            data-tooltip="La gestion pilotée, ou gestion déléguée, consiste à investir de manière profilée, dans un portefeuille prédéfini en fonction du risque.">
           <label for="gestion">Gestion pilotée</label>
-          <span class="info-icon" data-tooltip="Ce contrat offre une gestion pilotée par des experts.">ℹ</span>
+          <span class="info-icon" data-tooltip="La gestion pilotée, ou gestion déléguée, consiste à investir de manière profilée, dans un portefeuille prédéfini en fonction du risque.">ℹ</span>
         </div>
         <div>
-          <input type="checkbox" id="versements_programmes" class="checkbox-filter" data-column="Versements programmés" data-value="Versements programmés">
+          <input type="checkbox" id="versements_programmes" class="checkbox-filter" data-column="Versements programmés" data-value="Versements programmés"
+            data-tooltip="Les versements programmés – ou versements libres programmés (VLP) dans le jargon des assureurs – sont une méthode d’épargne qui consiste à investir une somme d’argent de manière automatique et régulière, par exemple mensuellement ou trimestriellement.">
           <label for="versements_programmes">Versements programmés</label>
-          <span class="info-icon" data-tooltip="Ce contrat permet des versements programmés réguliers.">ℹ</span>
+          <span class="info-icon" data-tooltip="Les versements programmés – ou versements libres programmés (VLP) dans le jargon des assureurs – sont une méthode d’épargne qui consiste à investir une somme d’argent de manière automatique et régulière, par exemple mensuellement ou trimestriellement.">ℹ</span>
         </div>
         <div>
-          <input type="checkbox" id="multipoches" class="checkbox-filter" data-column="Multipoches" data-value="Multipoches">
+          <input type="checkbox" id="multipoches" class="checkbox-filter" data-column="Multipoches" data-value="Multipoches"
+            data-tooltip="Elle permet de combiner Gestion Libre et Pilotée dans un même contrat.">
           <label for="multipoches">Multipoches</label>
-          <span class="info-icon" data-tooltip="Ce contrat propose l'option Multipoches.">ℹ</span>
+          <span class="info-icon" data-tooltip="Elle permet de combiner Gestion Libre et Pilotée dans un même contrat.">ℹ</span>
         </div>
       </div>
       <!-- Ligne 3 : Groupes de filtres -->
@@ -379,62 +384,70 @@
         <div class="checkbox-group">
           <h4>Options financières en gestion libre</h4>
           <div>
-            <input type="checkbox" id="securisation" class="checkbox-filter" data-column="Sécurisation des plus-values" data-value="Sécurisation des plus-values">
+            <input type="checkbox" id="securisation" class="checkbox-filter" data-column="Sécurisation des plus-values" data-value="Sécurisation des plus-values"
+              data-tooltip="La sécurisation consiste à réaliser un arbitrage automatique lorsque la plus-value latente d’un support atteint un certain pourcentage.">
             <label for="securisation">Sécurisation des plus-values</label>
-            <span class="info-icon" data-tooltip="Ce contrat offre une sécurisation optimisée de vos plus-values.">ℹ</span>
+            <span class="info-icon" data-tooltip="La sécurisation consiste à réaliser un arbitrage automatique lorsque la plus-value latente d’un support atteint un certain pourcentage.">ℹ</span>
           </div>
           <div>
-            <input type="checkbox" id="dynamisation" class="checkbox-filter" data-column="Dynamisation des plus-values" data-value="Dynamisation des plus-values">
+            <input type="checkbox" id="dynamisation" class="checkbox-filter" data-column="Dynamisation des plus-values" data-value="Dynamisation des plus-values"
+              data-tooltip="La dynamisation des intérêts consiste à arbitrer chaque année les intérêts du fonds en euros vers une unité de compte définie à l’avance, au moment du versement des intérêts.">
             <label for="dynamisation">Dynamisation des plus-values</label>
-            <span class="info-icon" data-tooltip="Ce contrat permet une dynamisation active de vos plus-values.">ℹ</span>
+            <span class="info-icon" data-tooltip="La dynamisation des intérêts consiste à arbitrer chaque année les intérêts du fonds en euros vers une unité de compte définie à l’avance, au moment du versement des intérêts.">ℹ</span>
           </div>
           <div>
-            <input type="checkbox" id="investissement" class="checkbox-filter" data-column="Investissement progressif" data-value="Investissement progressif">
+            <input type="checkbox" id="investissement" class="checkbox-filter" data-column="Investissement progressif" data-value="Investissement progressif"
+              data-tooltip="Cette option permet de basculer petit à petit un capital placé sur le fonds en euros vers des unités de compte. Elle est adaptée lorsque vous avez perçu un capital important (une vente immobilière par exemple) que vous souhaitez investir sur les marchés sans avoir à déterminer le meilleur moment.">
             <label for="investissement">Investissement progressif</label>
-            <span class="info-icon" data-tooltip="Ce contrat propose un investissement progressif adapté.">ℹ</span>
+            <span class="info-icon" data-tooltip="Cette option permet de basculer petit à petit un capital placé sur le fonds en euros vers des unités de compte. Elle est adaptée lorsque vous avez perçu un capital important (une vente immobilière par exemple) que vous souhaitez investir sur les marchés sans avoir à déterminer le meilleur moment.">ℹ</span>
           </div>
           <div>
-            <input type="checkbox" id="stoploss" class="checkbox-filter" data-column="Stop/Loss" data-value="Stop/Loss">
+            <input type="checkbox" id="stoploss" class="checkbox-filter" data-column="Stop/Loss" data-value="Stop/Loss"
+              data-tooltip="Un stop loss permet de définir une limite basse (par exemple 10 % plus bas que le cours actuel) qui déclenchera la cession totale du support s’il passe en-dessous.">
             <label for="stoploss">Stop/Loss</label>
-            <span class="info-icon" data-tooltip="Ce contrat inclut un mécanisme de stop/loss pour limiter les pertes.">ℹ</span>
+            <span class="info-icon" data-tooltip="Un stop loss permet de définir une limite basse (par exemple 10 % plus bas que le cours actuel) qui déclenchera la cession totale du support s’il passe en-dessous.">ℹ</span>
           </div>
           <div>
-            <input type="checkbox" id="reequilibrage" class="checkbox-filter" data-column="Réequilibrage auitomatique" data-value="Réequilibrage auitomatique">
+            <input type="checkbox" id="reequilibrage" class="checkbox-filter" data-column="Réequilibrage auitomatique" data-value="Réequilibrage auitomatique"
+              data-tooltip="Le rééquilibrage automatique permet de réaliser périodiquement les arbitrages nécessaires pour rétablir l’allocation-cible.">
             <label for="reequilibrage">Réequilibrage auitomatique</label>
-            <span class="info-icon" data-tooltip="Ce contrat offre un rééquilibrage automatique de votre portefeuille.">ℹ</span>
+            <span class="info-icon" data-tooltip="Le rééquilibrage automatique permet de réaliser périodiquement les arbitrages nécessaires pour rétablir l’allocation-cible.">ℹ</span>
           </div>
         </div>
         <div class="checkbox-group">
           <h4>Supports d'investissement</h4>
           <div>
-            <input type="checkbox" id="etf" class="checkbox-filter" data-column="ETF" data-value="ETF">
+            <input type="checkbox" id="etf" class="checkbox-filter" data-column="ETF" data-value="ETF"
+              data-tooltip="Un ETF ou Exchange Traded Fund est un fonds indiciel coté en Bourse qui réplique la performance, à la hausse comme à la baisse, d’un indice donné en investissant dans un panier d’actions ou d’obligations conçu pour reproduire les positions de l’indice.">
             <label for="etf">ETF</label>
-            <span class="info-icon" data-tooltip="Support d'investissement : ETF.">ℹ</span>
+            <span class="info-icon" data-tooltip="Un ETF ou Exchange Traded Fund est un fonds indiciel coté en Bourse qui réplique la performance, à la hausse comme à la baisse, d’un indice donné en investissant dans un panier d’actions ou d’obligations conçu pour reproduire les positions de l’indice.">ℹ</span>
           </div>
           <div>
-            <input type="checkbox" id="titres_vifs" class="checkbox-filter" data-column="Titres Vifs" data-value="Titres Vifs">
+            <input type="checkbox" id="titres_vifs" class="checkbox-filter" data-column="Titres Vifs" data-value="Titres Vifs"
+              data-tooltip="Un « titre vif » est une action ou une obligation individuelle cotée. Constituer un portefeuille de titres vifs, c'est sélectionner les actions dans lesquelles on souhaite investir, sans passer par une société de gestion.">
             <label for="titres_vifs">Titres Vifs</label>
-            <span class="info-icon" data-tooltip="Support d'investissement : Titres Vifs.">ℹ</span>
+            <span class="info-icon" data-tooltip="Un « titre vif » est une action ou une obligation individuelle cotée. Constituer un portefeuille de titres vifs, c'est sélectionner les actions dans lesquelles on souhaite investir, sans passer par une société de gestion.">ℹ</span>
           </div>
           <div>
-            <input type="checkbox" id="fcpr" class="checkbox-filter" data-column="FCPR" data-value="FCPR">
+            <input type="checkbox" id="fcpr" class="checkbox-filter" data-column="FCPR" data-value="FCPR"
+              data-tooltip="Le FCPR est un véhicule de placement conçu pour investir dans des titres de sociétés non cotées.">
             <label for="fcpr">FCPR</label>
-            <span class="info-icon" data-tooltip="Support d'investissement : FCPR.">ℹ</span>
+            <span class="info-icon" data-tooltip="Le FCPR est un véhicule de placement conçu pour investir dans des titres de sociétés non cotées.">ℹ</span>
           </div>
           <div>
             <input type="checkbox" id="scpi" class="checkbox-filter" data-column="SCPI" data-value="SCPI">
             <label for="scpi">SCPI</label>
-            <span class="info-icon" data-tooltip="Support d'investissement : SCPI.">ℹ</span>
+            <span class="info-icon" data-tooltip="SCPI">ℹ</span>
           </div>
           <div>
             <input type="checkbox" id="opci" class="checkbox-filter" data-column="OPCI" data-value="OPCI">
             <label for="opci">OPCI</label>
-            <span class="info-icon" data-tooltip="Support d'investissement : OPCI.">ℹ</span>
+            <span class="info-icon" data-tooltip="OPCI">ℹ</span>
           </div>
           <div>
             <input type="checkbox" id="sci" class="checkbox-filter" data-column="SCI" data-value="SCI">
             <label for="sci">SCI</label>
-            <span class="info-icon" data-tooltip="Support d'investissement : SCI.">ℹ</span>
+            <span class="info-icon" data-tooltip="SCI">ℹ</span>
           </div>
         </div>
       </div>
@@ -540,6 +553,7 @@
       donnees.forEach((item, index) => {
         const tr = document.createElement("tr");
         tr.style.backgroundColor = (index % 2 === 0) ? "#fff" : "#EFEFEF";
+        
         const tdNom = document.createElement("td");
         const toggleBtn = document.createElement("button");
         toggleBtn.className = "toggle-arrow";
@@ -550,15 +564,19 @@
         tdNom.appendChild(toggleBtn);
         tdNom.insertAdjacentText("beforeend", " " + item.nom);
         tr.appendChild(tdNom);
+        
         const tdAssureur = document.createElement("td");
         tdAssureur.textContent = item.assureur;
         tr.appendChild(tdAssureur);
+        
         const tdDistributeur = document.createElement("td");
         tdDistributeur.textContent = item.distributeur;
         tr.appendChild(tdDistributeur);
+        
         const tdVersement = document.createElement("td");
         tdVersement.textContent = item.versement;
         tr.appendChild(tdVersement);
+        
         const tdActions = document.createElement("td");
         if (item["Gestion pilotée"] && item["Gestion pilotée"].toLowerCase().trim() === "gestion pilotée") {
           const btnPerformance = document.createElement("button");
@@ -572,7 +590,6 @@
         tr.appendChild(tdActions);
         tbody.appendChild(tr);
         
-        // Ligne supplémentaire pour afficher les informations complémentaires
         const extraRow = document.createElement("tr");
         extraRow.id = "extra_" + index;
         extraRow.className = "extra-info";
@@ -605,7 +622,7 @@
       });
     }
     
-    // Fonction de bascule pour les lignes supplémentaires
+    // Basculement des lignes supplémentaires
     function toggleExtra(index, btn) {
       const extraRow = document.getElementById("extra_" + index);
       if (extraRow.style.display === "none" || extraRow.style.display === "") {
@@ -639,7 +656,7 @@
       });
     }
     
-    // Fonction de filtrage des données
+    // Filtrage des données
     function filtrerDonnees(donnees) {
       const filtreAssureur = document.getElementById("assureur").value;
       const filtreDistributeur = document.getElementById("distributeur").value;
@@ -653,6 +670,7 @@
       const maxVersementAnnuel = parseFloat(document.getElementById("versement_annuel").value);
       
       const checkboxes = document.querySelectorAll(".checkbox-filter");
+      
       const donneesFiltrees = donnees.filter(item => {
         let versementInitial = parseFloat(item.versement.replace(/[^\d.]/g, '')) || 0;
         let versementLibre = parseFloat((item["Versement libre min."] || "0").replace(/[^\d.]/g, '')) || 0;
@@ -776,6 +794,7 @@
           afficherDonnees(data);
           remplirFiltreAssureur(data);
           remplirFiltreDistributeur(data);
+          
           const sliderIds = [
             "versement", "versement_libre", "versement_mensuel",
             "versement_trimestriel", "versement_semestre", "versement_annuel"
@@ -785,7 +804,7 @@
             slider.min = 0;
             slider.max = 5000;
             slider.step = 50;
-            // Désormais, la valeur par défaut est le maximum
+            // Valeur par défaut = maximum pour afficher tous les contrats
             slider.value = 5000;
             const numberInput = document.getElementById(id + "_number");
             if (numberInput) {
@@ -825,3 +844,4 @@
   </script>
 </body>
 </html>
+
