@@ -62,12 +62,18 @@
     /* Zone des filtres */
     .filters {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
+      flex-direction: column;
       gap: 15px;
       margin-bottom: 25px;
     }
-    .filters > div {
+    /* Chaque ligne de filtre */
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+    .filter-row > div {
       margin: 5px;
     }
     .filters label {
@@ -152,7 +158,6 @@
       padding: 8px;
       border-radius: 6px;
       background: #f0f4f8;
-      /* Au lieu de 100% on réduit la largeur au maximum du contenu */
       width: max-content;
       margin: auto;
     }
@@ -192,7 +197,7 @@
       background-color: #357ab8;
     }
     @media (max-width: 768px) {
-      .filters {
+      .filter-row {
         flex-direction: column;
         align-items: center;
       }
@@ -299,134 +304,138 @@
   <div class="container">
     <!-- Zone des filtres -->
     <div class="filters">
-      <div>
-        <label for="assureur">Assureur :</label>
-        <select id="assureur">
-          <option value="">Tous</option>
-        </select>
-      </div>
-      <div>
-        <label for="distributeur">Distributeur :</label>
-        <select id="distributeur">
-          <option value="">Tous</option>
-        </select>
-      </div>
-      <div>
-        <label for="nom">Nom du contrat :</label>
-        <input type="text" id="nom" placeholder="Rechercher un contrat">
-      </div>
-      <!-- Groupe pour les options de versement -->
-      <div class="range-group">
-        <h4>Options de versement</h4>
+      <!-- Ligne 1 : Dropdowns -->
+      <div class="filter-row">
         <div>
-          <label for="versement">Versement initial (max) :</label>
-          <input type="range" id="versement" value="50" min="0" max="5000" step="50">
-          <input type="number" id="versement_number" value="50" min="0" max="5000" step="50"> €
+          <label for="assureur">Assureur :</label>
+          <select id="assureur">
+            <option value="">Tous</option>
+          </select>
         </div>
         <div>
-          <label for="versement_libre">Versement libre min. :</label>
-          <input type="range" id="versement_libre" value="50" min="0" max="5000" step="50">
-          <input type="number" id="versement_libre_number" value="50" min="0" max="5000" step="50"> €
+          <label for="distributeur">Distributeur :</label>
+          <select id="distributeur">
+            <option value="">Tous</option>
+          </select>
         </div>
         <div>
-          <label for="versement_mensuel">Versement mensuel prog min. :</label>
-          <input type="range" id="versement_mensuel" value="50" min="0" max="5000" step="50">
-          <input type="number" id="versement_mensuel_number" value="50" min="0" max="5000" step="50"> €
-        </div>
-        <div>
-          <label for="versement_trimestriel">Versement trimestriel prog min. :</label>
-          <input type="range" id="versement_trimestriel" value="50" min="0" max="5000" step="50">
-          <input type="number" id="versement_trimestriel_number" value="50" min="0" max="5000" step="50"> €
-        </div>
-        <div>
-          <label for="versement_semestre">Versement semestre prog min. :</label>
-          <input type="range" id="versement_semestre" value="50" min="0" max="5000" step="50">
-          <input type="number" id="versement_semestre_number" value="50" min="0" max="5000" step="50"> €
-        </div>
-        <div>
-          <label for="versement_annuel">Versement annuel prog min. :</label>
-          <input type="range" id="versement_annuel" value="50" min="0" max="5000" step="50">
-          <input type="number" id="versement_annuel_number" value="50" min="0" max="5000" step="50"> €
+          <label for="nom">Nom du contrat :</label>
+          <input type="text" id="nom" placeholder="Rechercher un contrat">
         </div>
       </div>
-      <!-- Checkboxes indépendantes -->
-      <div>
-        <input type="checkbox" id="gestion" class="checkbox-filter" data-column="Gestion pilotée" data-value="Gestion pilotée">
-        <label for="gestion">Gestion pilotée</label>
-        <span class="info-icon" data-tooltip="Ce contrat offre une gestion pilotée par des experts.">ℹ</span>
-      </div>
-      <div>
-        <input type="checkbox" id="versements_programmes" class="checkbox-filter" data-column="Versements programmés" data-value="Versements programmés">
-        <label for="versements_programmes">Versements programmés</label>
-        <span class="info-icon" data-tooltip="Ce contrat permet des versements programmés réguliers.">ℹ</span>
-      </div>
-      <!-- Regroupement des options financières en gestion libre -->
-      <div class="checkbox-group">
-        <h4>Options financières en gestion libre</h4>
+      <!-- Ligne 2 : Checkboxes indépendantes -->
+      <div class="filter-row" style="justify-content: center;">
         <div>
-          <input type="checkbox" id="securisation" class="checkbox-filter" data-column="Sécurisation des plus-values" data-value="Sécurisation des plus-values">
-          <label for="securisation">Sécurisation des plus-values</label>
-          <span class="info-icon" data-tooltip="Ce contrat offre une sécurisation optimisée de vos plus-values.">ℹ</span>
+          <input type="checkbox" id="gestion" class="checkbox-filter" data-column="Gestion pilotée" data-value="Gestion pilotée">
+          <label for="gestion">Gestion pilotée</label>
+          <span class="info-icon" data-tooltip="Ce contrat offre une gestion pilotée par des experts.">ℹ</span>
         </div>
         <div>
-          <input type="checkbox" id="dynamisation" class="checkbox-filter" data-column="Dynamisation des plus-values" data-value="Dynamisation des plus-values">
-          <label for="dynamisation">Dynamisation des plus-values</label>
-          <span class="info-icon" data-tooltip="Ce contrat permet une dynamisation active de vos plus-values.">ℹ</span>
+          <input type="checkbox" id="versements_programmes" class="checkbox-filter" data-column="Versements programmés" data-value="Versements programmés">
+          <label for="versements_programmes">Versements programmés</label>
+          <span class="info-icon" data-tooltip="Ce contrat permet des versements programmés réguliers.">ℹ</span>
         </div>
         <div>
-          <input type="checkbox" id="investissement" class="checkbox-filter" data-column="Investissement progressif" data-value="Investissement progressif">
-          <label for="investissement">Investissement progressif</label>
-          <span class="info-icon" data-tooltip="Ce contrat propose un investissement progressif adapté.">ℹ</span>
-        </div>
-        <div>
-          <input type="checkbox" id="stoploss" class="checkbox-filter" data-column="Stop/Loss" data-value="Stop/Loss">
-          <label for="stoploss">Stop/Loss</label>
-          <span class="info-icon" data-tooltip="Ce contrat inclut un mécanisme de stop/loss pour limiter les pertes.">ℹ</span>
-        </div>
-        <div>
-          <input type="checkbox" id="reequilibrage" class="checkbox-filter" data-column="Réequilibrage auitomatique" data-value="Réequilibrage auitomatique">
-          <label for="reequilibrage">Réequilibrage auitomatique</label>
-          <span class="info-icon" data-tooltip="Ce contrat offre un rééquilibrage automatique de votre portefeuille.">ℹ</span>
+          <input type="checkbox" id="multipoches" class="checkbox-filter" data-column="Multipoches" data-value="Multipoches">
+          <label for="multipoches">Multipoches</label>
+          <span class="info-icon" data-tooltip="Ce contrat propose l'option Multipoches.">ℹ</span>
         </div>
       </div>
-      <!-- Nouvelle checkbox "Multipoches" (hors groupe) -->
-      <div>
-        <input type="checkbox" id="multipoches" class="checkbox-filter" data-column="Multipoches" data-value="Multipoches">
-        <label for="multipoches">Multipoches</label>
-        <span class="info-icon" data-tooltip="Ce contrat propose l'option Multipoches.">ℹ</span>
-      </div>
-      <!-- Nouveau groupe "Supports d'investissement" -->
-      <div class="checkbox-group">
-        <h4>Supports d'investissement</h4>
-        <div>
-          <input type="checkbox" id="etf" class="checkbox-filter" data-column="ETF" data-value="ETF">
-          <label for="etf">ETF</label>
-          <span class="info-icon" data-tooltip="Support d'investissement : ETF.">ℹ</span>
+      <!-- Ligne 3 : Groupes de filtres -->
+      <div class="filter-row" style="justify-content: center;">
+        <div class="range-group">
+          <h4>Options de versement</h4>
+          <div>
+            <label for="versement">Versement initial (max) :</label>
+            <input type="range" id="versement" value="50" min="0" max="5000" step="50">
+            <input type="number" id="versement_number" value="50" min="0" max="5000" step="50"> €
+          </div>
+          <div>
+            <label for="versement_libre">Versement libre min. :</label>
+            <input type="range" id="versement_libre" value="50" min="0" max="5000" step="50">
+            <input type="number" id="versement_libre_number" value="50" min="0" max="5000" step="50"> €
+          </div>
+          <div>
+            <label for="versement_mensuel">Versement mensuel prog min. :</label>
+            <input type="range" id="versement_mensuel" value="50" min="0" max="5000" step="50">
+            <input type="number" id="versement_mensuel_number" value="50" min="0" max="5000" step="50"> €
+          </div>
+          <div>
+            <label for="versement_trimestriel">Versement trimestriel prog min. :</label>
+            <input type="range" id="versement_trimestriel" value="50" min="0" max="5000" step="50">
+            <input type="number" id="versement_trimestriel_number" value="50" min="0" max="5000" step="50"> €
+          </div>
+          <div>
+            <label for="versement_semestre">Versement semestre prog min. :</label>
+            <input type="range" id="versement_semestre" value="50" min="0" max="5000" step="50">
+            <input type="number" id="versement_semestre_number" value="50" min="0" max="5000" step="50"> €
+          </div>
+          <div>
+            <label for="versement_annuel">Versement annuel prog min. :</label>
+            <input type="range" id="versement_annuel" value="50" min="0" max="5000" step="50">
+            <input type="number" id="versement_annuel_number" value="50" min="0" max="5000" step="50"> €
+          </div>
         </div>
-        <div>
-          <input type="checkbox" id="titres_vifs" class="checkbox-filter" data-column="Titres Vifs" data-value="Titres Vifs">
-          <label for="titres_vifs">Titres Vifs</label>
-          <span class="info-icon" data-tooltip="Support d'investissement : Titres Vifs.">ℹ</span>
+        <div class="checkbox-group">
+          <h4>Options financières en gestion libre</h4>
+          <div>
+            <input type="checkbox" id="securisation" class="checkbox-filter" data-column="Sécurisation des plus-values" data-value="Sécurisation des plus-values">
+            <label for="securisation">Sécurisation des plus-values</label>
+            <span class="info-icon" data-tooltip="Ce contrat offre une sécurisation optimisée de vos plus-values.">ℹ</span>
+          </div>
+          <div>
+            <input type="checkbox" id="dynamisation" class="checkbox-filter" data-column="Dynamisation des plus-values" data-value="Dynamisation des plus-values">
+            <label for="dynamisation">Dynamisation des plus-values</label>
+            <span class="info-icon" data-tooltip="Ce contrat permet une dynamisation active de vos plus-values.">ℹ</span>
+          </div>
+          <div>
+            <input type="checkbox" id="investissement" class="checkbox-filter" data-column="Investissement progressif" data-value="Investissement progressif">
+            <label for="investissement">Investissement progressif</label>
+            <span class="info-icon" data-tooltip="Ce contrat propose un investissement progressif adapté.">ℹ</span>
+          </div>
+          <div>
+            <input type="checkbox" id="stoploss" class="checkbox-filter" data-column="Stop/Loss" data-value="Stop/Loss">
+            <label for="stoploss">Stop/Loss</label>
+            <span class="info-icon" data-tooltip="Ce contrat inclut un mécanisme de stop/loss pour limiter les pertes.">ℹ</span>
+          </div>
+          <div>
+            <input type="checkbox" id="reequilibrage" class="checkbox-filter" data-column="Réequilibrage auitomatique" data-value="Réequilibrage auitomatique">
+            <label for="reequilibrage">Réequilibrage auitomatique</label>
+            <span class="info-icon" data-tooltip="Ce contrat offre un rééquilibrage automatique de votre portefeuille.">ℹ</span>
+          </div>
         </div>
-        <div>
-          <input type="checkbox" id="fcpr" class="checkbox-filter" data-column="FCPR" data-value="FCPR">
-          <label for="fcpr">FCPR</label>
-          <span class="info-icon" data-tooltip="Support d'investissement : FCPR.">ℹ</span>
-        </div>
-        <div>
-          <input type="checkbox" id="scpi" class="checkbox-filter" data-column="SCPI" data-value="SCPI">
-          <label for="scpi">SCPI</label>
-          <span class="info-icon" data-tooltip="Support d'investissement : SCPI.">ℹ</span>
-        </div>
-        <div>
-          <input type="checkbox" id="opci" class="checkbox-filter" data-column="OPCI" data-value="OPCI">
-          <label for="opci">OPCI</label>
-          <span class="info-icon" data-tooltip="Support d'investissement : OPCI.">ℹ</span>
-        </div>
-        <div>
-          <input type="checkbox" id="sci" class="checkbox-filter" data-column="SCI" data-value="SCI">
-          <label for="sci">SCI</label>
-          <span class="info-icon" data-tooltip="Support d'investissement : SCI.">ℹ</span>
+        <div class="checkbox-group">
+          <h4>Supports d'investissement</h4>
+          <div>
+            <input type="checkbox" id="etf" class="checkbox-filter" data-column="ETF" data-value="ETF">
+            <label for="etf">ETF</label>
+            <span class="info-icon" data-tooltip="Support d'investissement : ETF.">ℹ</span>
+          </div>
+          <div>
+            <input type="checkbox" id="titres_vifs" class="checkbox-filter" data-column="Titres Vifs" data-value="Titres Vifs">
+            <label for="titres_vifs">Titres Vifs</label>
+            <span class="info-icon" data-tooltip="Support d'investissement : Titres Vifs.">ℹ</span>
+          </div>
+          <div>
+            <input type="checkbox" id="fcpr" class="checkbox-filter" data-column="FCPR" data-value="FCPR">
+            <label for="fcpr">FCPR</label>
+            <span class="info-icon" data-tooltip="Support d'investissement : FCPR.">ℹ</span>
+          </div>
+          <div>
+            <input type="checkbox" id="scpi" class="checkbox-filter" data-column="SCPI" data-value="SCPI">
+            <label for="scpi">SCPI</label>
+            <span class="info-icon" data-tooltip="Support d'investissement : SCPI.">ℹ</span>
+          </div>
+          <div>
+            <input type="checkbox" id="opci" class="checkbox-filter" data-column="OPCI" data-value="OPCI">
+            <label for="opci">OPCI</label>
+            <span class="info-icon" data-tooltip="Support d'investissement : OPCI.">ℹ</span>
+          </div>
+          <div>
+            <input type="checkbox" id="sci" class="checkbox-filter" data-column="SCI" data-value="SCI">
+            <label for="sci">SCI</label>
+            <span class="info-icon" data-tooltip="Support d'investissement : SCI.">ℹ</span>
+          </div>
         </div>
       </div>
     </div>
@@ -817,7 +826,7 @@
             slider.step = 50;
             slider.value = 50;
             const numberInput = document.getElementById(id + "_number");
-            if(numberInput){
+            if (numberInput) {
               numberInput.min = 0;
               numberInput.max = 5000;
               numberInput.step = 50;
