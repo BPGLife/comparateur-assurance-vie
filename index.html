@@ -127,7 +127,7 @@
       padding: 5px 8px;
       border-radius: 4px;
       white-space: normal;
-      /* Modification ici : fixer une largeur minimale */
+      /* Pour le reste du site, une largeur minimale de 750px */
       min-width: 750px;
       pointer-events: none;
       opacity: 0;
@@ -136,6 +136,10 @@
     }
     .info-icon:hover::after {
       opacity: 1;
+    }
+    /* Rétablissement du comportement normal pour les info-icons dans le modal */
+    .modal .info-icon::after {
+      min-width: auto;
     }
     /* Cases à cocher */
     .filters input[type="checkbox"] {
@@ -737,7 +741,7 @@
             containerDiv.style.gap = "20px";
             const tableDiv = document.createElement("div");
             tableDiv.style.flex = "1";
-            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2020", "2018", "2017", "2016"];
+            const yearsArray = ["2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016"];
             let tableHTML = `<table class="perf-table"><thead><tr><th>Année</th><th>Performance (%)</th></tr></thead><tbody>`;
             yearsArray.forEach(year => {
               const perfValue = (profileRow[year] !== undefined && profileRow[year] !== "") ? profileRow[year] : "-";
