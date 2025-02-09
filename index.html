@@ -127,7 +127,7 @@
       padding: 5px 8px;
       border-radius: 4px;
       white-space: normal;
-      /* Pour le reste du site, une largeur minimale de 500px */
+      /* Largeur minimale fixée à 500px pour le reste du site */
       min-width: 500px;
       pointer-events: none;
       opacity: 0;
@@ -137,9 +137,10 @@
     .info-icon:hover::after {
       opacity: 1;
     }
-    /* Désactivation des tooltips dans le modal */
+    /* Masquage complet des info-icons dans le modal */
+    .modal .info-icon,
     .modal .info-icon::after {
-      content: none !important;
+      display: none !important;
     }
     /* Cases à cocher */
     .filters input[type="checkbox"] {
